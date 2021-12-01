@@ -1,0 +1,56 @@
+{% extends './_form.html' %}
+{% block content %}
+  {{ form.errors }}
+  <form method="POST">
+    <input type="hidden" name='opener' id="input_opener">
+    <div class="form">
+      {% csrf_token %}
+      {% for field in form.hidden_fields %}
+        {{ field }}
+      {% endfor %}
+      {% for field in form.visible_fields%}
+        <div class="field-wrapper">
+          {% if field.errors %}
+            <div class="errors">
+              {{ field.errors }}
+            </div>
+          {% endif %}
+          <div class="control">
+            <div class="label">
+              {{ field.label_tag }}
+            </div>
+            <div class="field">
+              {{ field }}
+            </div>
+          </div>
+          <div class="help_text">
+            {{ field.help_text}}
+          </div>
+        </div>
+      {% endfor %}
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+  <script>
+    if(window.opener) {
+      document.getElementById('input_opener').value = window.opener.location.href
+    }
+  </script>
+{% endblock %}
+{% block bottomscript %}
+  {{ block.super }}
+  <script>
+
+    addRelatedPopupButton( 'id_mmodelcategory', 'MmodelCategory', '{% url "libtekin:mmodelcategory-create" %}')
+
+    function getControlIds(modelName) {
+      controlIds = {
+        'MmodelCategory': ['id_mmodelcategory']
+      }
+      return( controlIds[modelName])
+    }
+
+  </script>
+
+{% endblock %}

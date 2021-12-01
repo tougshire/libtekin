@@ -1,0 +1,12 @@
+{% extends './_base.html' %}
+{% block content %}
+  <div class="object">
+    {{ object }}
+  </div>
+  <div>
+  <a href="{% url 'libtekin:entity-update' object.pk %}">Edit</a>
+  </div>
+  <div>
+  <a href="{% url 'libtekin:entity-delete' object.pk %}">Delete</a>
+  </div>
+{% endblock %}

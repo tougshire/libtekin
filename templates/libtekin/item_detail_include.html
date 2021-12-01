@@ -1,0 +1,43 @@
+  <h2>{{ object }}</h2>
+  <div class="detail">
+    {% include './_detail_field.html' with label=item_labels.common_name field=object.common_name %}
+    {% include './_detail_field.html' with label=item_labels.mmodel field=object.mmodel %}
+    {% include './_detail_field.html' with label=item_labels.primary_id field=object.primary_id %}
+    {% include './_detail_field.html' with label=item_labels.serial_number field=object.serial_number %}
+    {% include './_detail_field.html' with label=item_labels.service_number field=object.service_number %}
+    {% include './_detail_field.html' with label=item_labels.asset_number field=object.asset_number %}
+    {% include './_detail_field.html' with label=item_labels.barcode field=object.barcode %}
+    {% include './_detail_field.html' with label=item_labels.network_name field=object.network_name %}
+    {% include './_detail_field.html' with label=item_labels.condition field=object.condition %}
+    {% include './_detail_field.html' with label=item_labels.borrower field=object.home %}
+    {% include './_detail_field.html' with label=item_labels.borrower field=object.location %}
+    {% include './_detail_field.html' with label=item_labels.assignee field=object.assignee %}
+    {% include './_detail_field.html' with label=item_labels.borrower field=object.borrower %}
+    {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
+
+    <h3>Notes</h3>
+    {% for itemnote in current_notes %}
+      <div class="relatedset" id="div_itemnote-{{ forloop.counter0 }}">
+        <div class="fieldWrapper">
+          <div class="control">
+            <div class="label">
+              {{ itemnote_labels.when }}
+            </div>
+            <div class="field">
+              {{ itemnote.when }}
+            </div>
+          </div>
+        </div>
+        <div class="fieldWrapper">
+          <div class="control">
+            <div class="label">
+              {{ itemnote_labels.text }}
+            </div>
+            <div class="field">
+              {{ itemnote.text }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>

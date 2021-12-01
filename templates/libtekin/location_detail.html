@@ -1,0 +1,18 @@
+{% extends './_base.html' %}
+{% block content %}
+  <div class="object">
+    {{ object }}
+  </div>
+  {% for item in item_set.all %}
+    <div class="relatedset">
+      {{ item }}
+    </div>
+  {% endfor %}
+
+  <div>
+  <a href="{% url 'libtekin:location-update' object.pk %}">Edit</a>
+  </div>
+  <div>
+  <a href="{% url 'libtekin:location-delete' object.pk %}">Delete</a>
+  </div>
+{% endblock %}

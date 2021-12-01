@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Library Technical Inventory</title>
+<link rel="stylesheet" href="{% static 'libtekin/libtekin.css' %}">
+</head>
+<body>
+{% block menu %}
+<div class="menu menu-top">
+<div class="menu-item">Home</div>
+<div class="menu-item"><a href="{% url 'libtekin:item-list' %}">List</a></div>
+</div>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block bottomscript %}{% endblock %}
+</body>
+</html>

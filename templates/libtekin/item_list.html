@@ -1,0 +1,163 @@
+{% extends './_base.html' %}
+{% block content %}
+  <button type="button" id='btn_showviewform' class="show">Show Sort/Filter form</button>
+  <div id='div_viewform' class="viewform hidden" >
+    <form method="POST">
+      {% csrf_token %}
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Model is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__mmodel__in">
+              {% for mmodel in mmodels %}
+                <option value="{{ mmodel.pk }}"{% if 'mmodel__in' in filter_object %}{% if mmodel.pk|lower in filter_object.mmodel__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Category is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__mmodel__mmodelcategory__in">
+              {% for mmodelcategory in mmodelcategories %}
+                <option value="{{ mmodelcategory.pk }}"{% if 'mmodel__mmodelcategory__in' in filter_object %}{% if mmodelcategory.pk|lower in filter_object.mmodel__mmodelcategory__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Condition is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__condition__in">
+              {% for condition in conditions %}
+                <option value="{{ condition.pk }}"{% if 'condition__in' in filter_object %}{% if condition.pk|lower in filter_object.condition__in %} selected="SELECTED" {% endif %}{% endif %}>{{ condition }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Save Search
+          </div>
+          <div class="field">
+            <input name="viewitem__name" value="{{ viewitem__name }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            &nbsp;
+          </div>
+          <div class="field">
+            <button type="submit" name="query_submitted" value='True'>Submit</button>
+          </div>
+        </div>
+        <div class="help_text">
+          &nbsp;
+        </div>
+      </div>
+    </form>
+    <form method="POST">
+      {% csrf_token %}
+      <h3>Saved View</h3>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Get Saved View
+          </div>
+          <div class="field">
+            <select name="viewitem__name">
+              <option value=''>-----</option>
+              {% for viewitem in viewitems%}
+                <option value="{{ viewitem.name }}">{{ viewitem.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Action
+          </div>
+          <div class="field">
+            <button type="submit" name="get_viewitem" value="get">Get</button>
+            <button type="submit" name="delete_viewitem" value="delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="list">
+    <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
+      <div class="row">
+        {% include './_list_head.html' with field='' %}
+        {% include './_list_head.html' with field=item_labels.common_name %}
+        {% include './_list_head.html' with field=item_labels.mmodel %}
+        {% include './_list_head.html' with field=item_labels.primary_id %}
+        {% include './_list_head.html' with field=item_labels.serial_number %}
+        {% include './_list_head.html' with field=item_labels.service_number %}
+        {% include './_list_head.html' with field=item_labels.asset_number %}
+        {% include './_list_head.html' with field=item_labels.barcode %}
+        {% include './_list_head.html' with field=item_labels.network_name %}
+        {% include './_list_head.html' with field=item_labels.condition %}
+        {% include './_list_head.html' with field=item_labels.home %}
+        {% include './_list_head.html' with field=item_labels.location %}
+        {% include './_list_head.html' with field=item_labels.assignee %}
+        {% include './_list_head.html' with field=item_labels.borrower %}
+        {% include './_list_head.html' with field=item_labels.owner %}
+      </div>
+      {% for item in object_list %}
+        <div class="row">
+          <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
+          {% include './_list_field.html' with field=item.common_name %}
+            {% include './_list_head.html' with field=item_labels.mmodel %}
+          {% include './_list_field.html' with field=item.primary_id %}
+          {% include './_list_field.html' with field=item.serial_number %}
+          {% include './_list_field.html' with field=item.service_number %}
+          {% include './_list_field.html' with field=item.asset_number %}
+          {% include './_list_field.html' with field=item.barcode %}
+          {% include './_list_field.html' with field=item.network_name %}
+          {% include './_list_field.html' with field=item.condition %}
+          {% include './_list_field.html' with field=item.home %}
+          {% include './_list_field.html' with field=item.location %}
+          {% include './_list_field.html' with field=item.assignee %}
+          {% include './_list_field.html' with field=item.borrower %}
+          {% include './_list_field.html' with field=item.owner %}
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% endblock %}
+{% block bottomscript %}
+  {{ block.super }}
+  <script>
+    document.getElementById('btn_showviewform').addEventListener('click', function(e){
+      e.preventDefault
+      var viewDiv = document.getElementById('div_viewform')
+      viewDiv.classList.toggle('hidden')
+      if( viewDiv.classList.contains('hidden')) {
+        e.target.textContent='Show Sort/Filter Form'
+      } else {
+        e.target.textContent='Hide Sort/Filter Form'
+      }
+    });
+  </script>
+{% endblock %}

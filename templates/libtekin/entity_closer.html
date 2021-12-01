@@ -1,0 +1,9 @@
+{% extends './_base.html' %}
+{% block content %}
+<script>
+if(window.opener) {
+  window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Entity')
+  window.close()
+}
+</script>
+{% endblock %}

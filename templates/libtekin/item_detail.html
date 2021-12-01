@@ -1,0 +1,12 @@
+{% extends './_base.html' %}
+{% block content %}
+
+  {% include './item_detail_include.html' %}
+
+  <div>
+  <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+  </div>
+  <div>
+  <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
+  </div>
+{% endblock %}

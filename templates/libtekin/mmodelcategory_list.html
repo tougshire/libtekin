@@ -1,0 +1,10 @@
+{% extends './_base.html' %}
+{% block content %}
+<div class="object-list">
+<div><a href="{% url 'libtekin:mmodel-create' %}">create</a></div>
+{% for mmodel in object_list %}
+<div><a href="{% url 'libtekin:mmodel-detail' mmodel.pk %}">{{ mmodel }}</a></div>
+{% endfor %}
+<div><a href="{% url 'libtekin:mmodel-create' %}">create</a></div>
+</div>
+{% endblock %}

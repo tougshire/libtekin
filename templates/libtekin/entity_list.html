@@ -1,0 +1,10 @@
+{% extends './_base.html' %}
+{% block content %}
+<div class="object-list">
+<div><a href="{% url 'libtekin:entity-create' %}">create</a></div>
+{% for entity in object_list %}
+<div><a href="{% url 'libtekin:entity-detail' entity.pk %}">{{ entity }}</a></div>
+{% endfor %}
+<div><a href="{% url 'libtekin:entity-create' %}">create</a></div>
+</div>
+{% endblock %}
