@@ -169,7 +169,7 @@ class Mmodel(models.Model):
         blank=True,
         help_text='The categories , such as Laptop or Phone, to which this item belongs'
     )
-    primary_id_is = models.CharField(
+    primary_id_field = models.CharField(
         'Primary ID Field',
         max_length=50,
         choices=ID_CHOICES,
@@ -210,7 +210,7 @@ class Item(models.Model):
         blank=True,
         help_text='The primary ID used for this item'
     )
-    primary_id_is = models.CharField(
+    primary_id_field = models.CharField(
         'primary id is',
         max_length=50,
         choices=Mmodel.ID_CHOICES,
@@ -312,8 +312,8 @@ class Item(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if(self.primary_id_is):
-            setattr(self, 'primary_id', getattr(self, self.primary_id_is))
+        if(self.primary_id_field):
+            setattr(self, 'primary_id', getattr(self, self.primary_id_field))
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

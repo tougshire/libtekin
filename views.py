@@ -382,7 +382,7 @@ class EntityClose(PermissionRequiredMixin, DetailView):
 
 def get_primary_id_field( request, mmodel_id):
     try:
-        return Mmodel.objects.get(pk=mmodel_id).primary_id_is
+        return Mmodel.objects.get(pk=mmodel_id).primary_id_field
     except ObjectDoesNotExist:
         return None
 

@@ -1,9 +1,14 @@
 {% extends './_base.html' %}
 {% block content %}
 <script>
-if(window.opener) {
-  window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Mmodel')
-  window.close()
-}
+  if(window.opener) {
+    window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Mmodel')
+    if (typeof(window.opener.set_primary_id_field) == 'function') {
+      console.log('in mmodel_closer.  object:')
+      console.log('{{ object.primary_id_field }} ')
+      window.opener.set_primary_id_field('{{ object.primary_id_field }}')
+    }
+    window.close()
+  }
 </script>
 {% endblock %}

@@ -12,7 +12,7 @@
 
       {% include './_form_field.html' with field=form.common_name %}
       {% include './_form_field.html' with field=form.mmodel %}
-      {% include './_form_field.html' with field=form.primary_id_is %}
+      {% include './_form_field.html' with field=form.primary_id_field %}
       {% include './_form_field.html' with field=form.primary_id %}
       {% include './_form_field.html' with field=form.serial_number %}
       {% include './_form_field.html' with field=form.service_number %}
@@ -91,27 +91,31 @@
 {% block bottomscript %}
   {{ block.super }}
   <script>
-  addFormsetListener('btn_add-itemnote', "id_itemnote_set-", 'div_itemnote-empty', 'div_insert-itemnote' )
+    addFormsetListener('btn_add-itemnote', "id_itemnote_set-", 'div_itemnote-empty', 'div_insert-itemnote' )
 
-  addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
-  addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
-  addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
-  addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
-  addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
-  addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
+    addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
+    addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
+    addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
+    addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
+    addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
+    addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
 
-  function getControlIds(modelName) {
-    controlIds={
-      'Mmodel': ['id_mmodel'],
-      'Location': ['id_location', 'id_home'],
-      'Entity': ['id_borrower', 'id_assignee', 'id_owner']
+    function getControlIds(modelName) {
+      console.log('getControlIds is called')
+      controlIds={
+        'Mmodel': ['id_mmodel'],
+        'Location': ['id_location', 'id_home'],
+        'Entity': ['id_borrower', 'id_assignee', 'id_owner']
+      }
+      return controlIds[modelName]
     }
-    return controlIds[modelName]
-  }
 
   </script>
   <script>
-    function get_default_primary_id_field() {
+    function set_primary_id_field(primaryIdField) {
+      console.log('in item_form.html')
+      console.log('{{ form.primary_id_field.id_for_label }}')
+      document.getElementById('{{ form.primary_id_field.id_for_label }}').value=primaryIdField
     }
   </script>
 

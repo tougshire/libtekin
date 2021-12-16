@@ -15,7 +15,7 @@ class ItemForm(ModelForm):
         fields = [
             'common_name',
             'mmodel',
-            'primary_id_is',
+            'primary_id_field',
             'serial_number',
             'service_number',
             'asset_number',
@@ -47,7 +47,7 @@ class MmodelForm(ModelForm):
             'model_name',
             'model_number',
             'categories',
-            'primary_id_is'
+            'primary_id_field'
         ]
 
 class MmodelCategoryForm(ModelForm):
