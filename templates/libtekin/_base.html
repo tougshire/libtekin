@@ -1,4 +1,5 @@
 {% load static %}
+{% load url_utils %}
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -8,9 +9,19 @@
 <body>
 {% block menu %}
 <div class="menu menu-top">
-<div class="menu-item">Home</div>
+<div class="menu-item menu-item-home">Home</div>
 <div class="menu-item"><a href="{% url 'libtekin:item-list' %}">List</a></div>
-</div>
+  {% url_if 'profile' as url_if %}
+  {% if url_if > '' %}
+    <div class="menu-item">
+      <a href="{{ url_if }}">{{ user.username }}</a> /
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  {% else %}
+    <div class="menu-item"><a href="{% url 'logout' %}">Logout {{ user.username }}</a></div>
+  {% endif %}
+
+  </div>
 {% endblock %}
 {% block content %}{% endblock %}
 {% block bottomscript %}{% endblock %}

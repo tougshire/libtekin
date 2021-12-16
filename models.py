@@ -132,7 +132,6 @@ class MmodelCategory(models.Model):
         help_text='A name for sorting, not normally displayed.  This can be as simple as "A","B", or "C", or something like "B Laptops"'
     )
 
-
     def __str__(self):
         return self.name
 
@@ -167,6 +166,7 @@ class Mmodel(models.Model):
     categories = models.ManyToManyField(
         MmodelCategory,
         verbose_name='categories',
+        blank=True,
         help_text='The categories , such as Laptop or Phone, to which this item belongs'
     )
     primary_id_is = models.CharField(
