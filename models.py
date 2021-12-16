@@ -170,8 +170,9 @@ class Mmodel(models.Model):
         help_text='The categories , such as Laptop or Phone, to which this item belongs'
     )
     primary_id_is = models.CharField(
-        'Primary ID is',
+        'Primary ID Field',
         max_length=50,
+        choices=ID_CHOICES,
         blank=True,
         help_text='By default, the field which should be used as the primary ID field (ex: "SN", "Tag Number", etc)'
     )
