@@ -6,8 +6,6 @@ register = template.Library()
 @register.simple_tag
 def url_if(pathname):
     try:
-        print(pathname)
-        print( reverse(pathname))
         return reverse(pathname)
     except:
         return None
