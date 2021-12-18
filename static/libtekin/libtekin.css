@@ -35,9 +35,18 @@
 .list .row {
     display:table-row
 }
+.list .rowhead {
+    background-color:#eeeeff;
+}
 
 .list .field {
-    display:table-cell
+    display:table-cell;
+    border: 1px solid lightblue;
+    padding-left: .2em;
+    padding-right: .2em;
+}
+.list .rowhead .field {
+    border:1px solid blue;
 }
 .list .field::after {
     content: "\00a0"

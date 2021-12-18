@@ -84,8 +84,6 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
 
         if 'copy' in self.request.POST:
-            print('tp_lcic33')
-            print(form.instance.pk)
             form.instance.pk=None
 
         update_history(form, 'Item', form.instance, self.request.user)
@@ -149,21 +147,15 @@ class ItemList(PermissionRequiredMixin, ListView):
     permission_required = 'libtekin.view_item'
     model = Item
     filter_object = {}
-    order_by = ''
-    order_by_fields=[
-        {
-            'name': 'mmodel',
-            'label': 'Model'
-        },
-        {
-            'name': 'common_name',
-            'label': 'Common Name'
-        },
-        {
-            'name': 'primary_id',
-            'label': 'Primary ID'
-        }
-    ]
+    order_by = []
+    order_by_fields=[]
+    for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number']:
+        order_by_fields.append(
+            { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
+        )
+        order_by_fields.append(
+            { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
+        )
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -175,12 +167,12 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         if 'query_submitted' in self.request.POST:
 
-            for x in range(1,3):
-                order_by_x = 'order_by_' + x
-                if order_by_x in self.request.POST:
+            for i in range(0,3):
+                order_by_i = 'order_by_{}'.format(i)
+                if order_by_i in self.request.POST:
                     for field in self.order_by_fields:
-                        if self.request.POST.get(order_by_x) == field['name']:
-                            order_by.append = field['name']
+                        if self.request.POST.get(order_by_i) == field['name']:
+                            order_by.append(field['name'])
 
             for fieldname in ['mmodel', 'mmodel__mmodelcategory', 'condition']:
                 filterfieldname = 'filter__' + fieldname + '__in'
@@ -210,8 +202,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
                 if order_by:
                     self.order_by = order_by
-                    viewitem.sortstring = order_by
-                    queryset = queryset.order_by(order_by,)
+                    viewitem.sortstring = ','.join(order_by)
+                    queryset = queryset.order_by(*order_by)
 
                 viewitem.save()
 
@@ -228,8 +220,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             try:
                 filter_object = json.loads(viewitem.filterstring)
-                order_by = viewitem.sortstring
-                queryset = super().get_queryset().filter(**filter_object).order_by(order_by)
+                order_by = viewitem.sortstring.split(',')
+                queryset = super().get_queryset().filter(**filter_object).order_by(*order_by)
                 self.filter_object = filter_object
 
                 return queryset
@@ -256,7 +248,7 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             try:
                 filter_object = json.loads(viewitem.filterstring)
-                order_by = viewitem.sortstring
+                order_by = viewitem.sortstring.split(',')
                 try:
                     self.filter_object = filter_object
                     self.order_by = order_by
@@ -280,13 +272,23 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['conditions'] = Condition.objects.all()
         context_data['viewitems'] = ViewItem.objects.filter(user=self.request.user).all()
         context_data['order_by_fields'] = self.order_by_fields
-        context_data['order_by_1'] = self.order_by
+
+        for i in range(0,3):
+            try:
+                context_data['order_by_{}'.format(i)] = self.order_by[i]
+            except IndexError:
+                pass
+
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
         if self.request.POST.get('viewitem__name'):
             context_data['viewitem__name'] = self.request.POST.get('viewitem__name')
 
-        # context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+#        context_data['item_labels'] = {}
+#        for fieldname in ['common_name', 'mmodel']:
+#            context_data['item_labels'][fieldname] = Item._meta.get_field("common_name").verbose_name.capitalize()
+
+        context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
         return context_data
 
