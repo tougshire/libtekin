@@ -1,4 +1,4 @@
-from django.forms import ModelForm, inlineformset_factory
+from django.forms import ModelForm, inlineformset_factory, Select
 from .models import Entity, Item, ItemNote, Location, Mmodel, MmodelCategory
 
 class EntityForm(ModelForm):
@@ -8,6 +8,13 @@ class EntityForm(ModelForm):
             'friendly_name',
             'full_name',
         ]
+
+class MmodelSelect(Select):
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
+        if value:
+            option['attrs']['data-primary_id_field'] = value.instance.primary_id_field
+        return option
 
 class ItemForm(ModelForm):
     class Meta:
@@ -28,6 +35,9 @@ class ItemForm(ModelForm):
             'location',
             'barcode'
         ]
+        widgets = {
+            'mmodel': MmodelSelect
+        }
 
 class ItemNoteForm(ModelForm):
     class Meta:

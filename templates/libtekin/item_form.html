@@ -112,11 +112,25 @@
 
   </script>
   <script>
-    function set_primary_id_field(primaryIdField) {
+    function setPrimaryIdField() {
       console.log('in item_form.html')
       console.log('{{ form.primary_id_field.id_for_label }}')
-      document.getElementById('{{ form.primary_id_field.id_for_label }}').value=primaryIdField
+      var primaryIdField = document.getElementById('{{ form.primary_id_field.id_for_label }}')
+      var mmodel = document.getElementById('{{ form.mmodel.id_for_label }}')
+      var mmodelSelectedOptions = mmodel.selectedOptions
+      console.log('mmodelSelectedOptionsCount:')
+      console.log(mmodelSelectedOptions.length)
+      if(mmodelSelectedOptions.length==1) {
+        console.log('mmodelSelectedOptionsCount==1')
+        primaryIdField.value=mmodelSelectedOptions[0].getAttribute('data-primary_id_field')
+      }
     }
+    function getPrimaryIdFromDatabase() {
+
+    }
+    document.getElementById('{{ form.mmodel.id_for_label }}').addEventListener('change', function() {
+      setPrimaryIdField();
+    })
   </script>
 
 {% endblock %}

@@ -7,6 +7,24 @@
       <div class="field-wrapper">
         <div class="control">
           <div class="label">
+            Sort By
+          </div>
+          <div class="field">
+            <script>
+              console.log('order_by_1:')
+              console.log('{{ order_by_1 }}')
+            </script>
+            <select name="order_by_1">
+              {% for field in order_by_fields %}
+                <option value="{{ field.name }}"{% if order_by_1 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
             Model is in
           </div>
           <div class="field">
@@ -127,7 +145,7 @@
         <div class="row">
           <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
           {% include './_list_field.html' with field=item.common_name %}
-            {% include './_list_head.html' with field=item_labels.mmodel %}
+          {% include './_list_field.html' with field=item.mmodel %}
           {% include './_list_field.html' with field=item.primary_id %}
           {% include './_list_field.html' with field=item.serial_number %}
           {% include './_list_field.html' with field=item.service_number %}

@@ -144,14 +144,39 @@ class ItemList(PermissionRequiredMixin, ListView):
     permission_required = 'libtekin.view_item'
     model = Item
     filter_object = {}
+    order_by = ''
+    order_by_fields=[
+        {
+            'name': 'mmodel',
+            'label': 'Model'
+        },
+        {
+            'name': 'common_name',
+            'label': 'Common Name'
+        },
+        {
+            'name': 'primary_id',
+            'label': 'Primary ID'
+        }
+    ]
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
 
+        order_by = []
+        filter_object={}
+
         if 'query_submitted' in self.request.POST:
-            filter_object={}
+
+            for x in range(1,3):
+                order_by_x = 'order_by_' + x
+                if order_by_x in self.request.POST:
+                    for field in self.order_by_fields:
+                        if self.request.POST.get(order_by_x) == field['name']:
+                            order_by.append = field['name']
+
             for fieldname in ['mmodel', 'mmodel__mmodelcategory', 'condition']:
                 filterfieldname = 'filter__' + fieldname + '__in'
                 if filterfieldname in self.request.POST and self.request.POST.get(filterfieldname) > '':
@@ -167,39 +192,57 @@ class ItemList(PermissionRequiredMixin, ListView):
             if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
                 viewitem__name = self.request.POST.get('viewitem__name')
 
-            if filter_object:
-                self.filter_object = filter_object
+            if filter_object or order_by:
+
+                queryset = super().get_queryset()
 
                 viewitem, created = ViewItem.objects.get_or_create( user=self.request.user, name=viewitem__name )
-                viewitem.filterstring = json.dumps( filter_object )
+
+                if filter_object:
+                    self.filter_object = filter_object
+                    viewitem.filterstring = json.dumps( filter_object )
+                    queryset = queryset.filter(**filter_object)
+
+                if order_by:
+                    self.order_by = order_by
+                    viewitem.sortstring = order_by
+                    queryset = queryset.order_by(order_by,)
+
                 viewitem.save()
 
-                return super().get_queryset().filter(**filter_object)
+                return queryset
 
         elif 'get_viewitem' in self.request.POST:
+
             viewitem__name = ''
+
             if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
                 viewitem__name = self.request.POST.get('viewitem__name')
 
             viewitem, created = ViewItem.objects.get_or_create( user=self.request.user, name=viewitem__name )
+
             try:
                 filter_object = json.loads(viewitem.filterstring)
-                queryset = super().get_queryset().filter(**filter_object)
+                order_by = viewitem.sortstring
+                queryset = super().get_queryset().filter(**filter_object).order_by(order_by)
                 self.filter_object = filter_object
+
                 return queryset
+
             except json.JSONDecodeError:
                 pass
 
         elif 'delete_viewitem' in self.request.POST:
-            viewitem__name = ''
-            if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
-                viewitem__name = self.request.POST.get('viewitem__name')
 
+            viewitem__name = ''
+
+            if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
+
+                viewitem__name = self.request.POST.get('viewitem__name')
                 ViewItem.objects.filter( user=self.request.user, name=viewitem__name ).delete()
 
 
         # this code runs if no queryset has been returned yet
-
             viewitem = ViewItem.objects.filter( user=self.request.user, is_default=True ).last()
             if viewitem is None:
                 viewitem = ViewItem.objects.filter( user=self.request.user ).last()
@@ -208,9 +251,13 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             try:
                 filter_object = json.loads(viewitem.filterstring)
+                order_by = viewitem.sortstring
                 try:
                     self.filter_object = filter_object
-                    return super().get_queryset().filter(**filter_object)
+                    self.order_by = order_by
+
+                    return super().get_queryset().filter(**filter_object).order_by(order_by)
+
                 except (ValueError, TypeError, FieldError):
                     print('Field/Value/Type Error')
                     viewitem.delete()
@@ -227,6 +274,8 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
         context_data['viewitems'] = ViewItem.objects.filter(user=self.request.user).all()
+        context_data['order_by_fields'] = self.order_by_fields
+        context_data['order_by_1'] = self.order_by
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
         if self.request.POST.get('viewitem__name'):

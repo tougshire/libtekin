@@ -2,11 +2,9 @@
 {% block content %}
 <script>
   if(window.opener) {
-    window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Mmodel')
-    if (typeof(window.opener.set_primary_id_field) == 'function') {
-      console.log('in mmodel_closer.  object:')
-      console.log('{{ object.primary_id_field }} ')
-      window.opener.set_primary_id_field('{{ object.primary_id_field }}')
+    window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Mmodel', attrs=[ { 'name':'data-primary_id_field','value':'{{ object.primary_id_field }}' } ] )
+    if (typeof(window.opener.setPrimaryIdField) == 'function') {
+      window.opener.setPrimaryIdField()
     }
     window.close()
   }
