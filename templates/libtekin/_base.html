@@ -8,19 +8,21 @@
 </head>
 <body>
 {% block menu %}
-<div class="menu menu-top">
-<div class="menu-item menu-item-home">Home</div>
-<div class="menu-item"><a href="{% url 'libtekin:item-list' %}">List</a></div>
-  {% url_if 'profile' as url_if %}
-  {% if url_if > '' %}
-    <div class="menu-item">
-      <a href="{{ url_if }}">{{ user.username }}</a> /
-      <a href="{% url 'logout' %}">Logout</a>
-    </div>
-  {% else %}
-    <div class="menu-item"><a href="{% url 'logout' %}">Logout {{ user.username }}</a></div>
-  {% endif %}
-
+  <div class="menu menu-top">
+    <div class="menu-item menu-item-home">Home</div>
+    <div class="menu-item"><a href="{% url 'libtekin:item-list' %}">Items</a></div>
+    <div class="menu-item"><a href="{% url 'libtekin:mmodel-list' %}">Models</a></div>
+    <div class="menu-item"><a href="{% url 'libtekin:location-list' %}">Locations</a></div>
+    <div class="menu-item"><a href="{% url 'libtekin:entity-list' %}">People/Groups</a></div>
+    {% url_if 'profile' as url_if %}
+    {% if url_if > '' %}
+      <div class="menu-item">
+        <a href="{{ url_if }}">{{ user.username }}</a> /
+        <a href="{% url 'logout' %}">Logout</a>
+      </div>
+    {% else %}
+      <div class="menu-item"><a href="{% url 'logout' %}">Logout {{ user.username }}</a></div>
+    {% endif %}
   </div>
 {% endblock %}
 {% block content %}{% endblock %}

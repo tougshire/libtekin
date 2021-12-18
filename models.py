@@ -451,7 +451,7 @@ class History(models.Model):
             object = model.objects.get(pk=self.objectid)
             return f'{self.when.strftime("%Y-%m-%d")}: {self.modelname}: [{object}] [{self.fieldname}] changed to "{new_value_trunc}"'
 
-        except exceptions as e:
+        except Exception as e:
             print (e)
 
         return f'{"mdy".format(self.when.strftime("%Y-%m-%d"))}: {self.modelname}: {self.objectid} [{self.fieldname}] changed to "{new_value_trunc}"'

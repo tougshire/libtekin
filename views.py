@@ -83,6 +83,11 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
 
+        if 'copy' in self.request.POST:
+            print('tp_lcic33')
+            print(form.instance.pk)
+            form.instance.pk=None
+
         update_history(form, 'Item', form.instance, self.request.user)
 
         response = super().form_valid(form)
