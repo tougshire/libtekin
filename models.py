@@ -163,11 +163,13 @@ class Mmodel(models.Model):
         blank=True,
         help_text='The model number if different than model name'
     )
-    categories = models.ManyToManyField(
+    category = models.ForeignKey(
         MmodelCategory,
-        verbose_name='categories',
+        verbose_name='category',
         blank=True,
-        help_text='The categories , such as Laptop or Phone, to which this item belongs'
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='The category, such as Laptop or Phone, to which this item belongs'
     )
     primary_id_field = models.CharField(
         'Primary ID Field',
@@ -183,6 +185,25 @@ class Mmodel(models.Model):
     class Meta:
         ordering = [ 'brand', 'model_name' ]
         verbose_name = 'model'
+
+class Role(models.Model):
+    name = models.CharField(
+        'name',
+        max_length=75,
+        help_text='The name of the role ("Public", "Staff", etc)'
+    )
+    sort_name = models.CharField(
+        'sort name',
+        max_length=25,
+        blank=True,
+        help_text='A name for sorting, not normally displayed.  This can be as simple as "A","B", or "C", or something like "B Public"'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['sort_name', 'name']
 
 class ItemNotDeletedManager(models.Manager):
     def get_queryset(self):
@@ -298,6 +319,13 @@ class Item(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         help_text='The condition of this item'
+    )
+    role = models.ForeignKey(
+        Role,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='The roles to which this item belongs'
     )
     latest_inventory = models.DateField(
         'Latest Inventory Date',

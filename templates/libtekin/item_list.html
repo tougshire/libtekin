@@ -39,6 +39,7 @@
                 <option value="{{ mmodel.pk }}"{% if 'mmodel__in' in filter_object %}{% if mmodel.pk|lower in filter_object.mmodel__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
               {% endfor %}
             </select>
+            <input type="checkbox" name="filter__mmodel__none">
           </div>
         </div>
       </div>
@@ -48,11 +49,26 @@
             Category is in
           </div>
           <div class="field">
-            <select multiple name="filter__mmodel__mmodelcategory__in">
+            <select multiple name="filter__mmodel__category__in">
               {% for mmodelcategory in mmodelcategories %}
-                <option value="{{ mmodelcategory.pk }}"{% if 'mmodel__mmodelcategory__in' in filter_object %}{% if mmodelcategory.pk|lower in filter_object.mmodel__mmodelcategory__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
+                <option value="{{ mmodelcategory.pk }}"{% if 'mmodel__category__in' in filter_object %}{% if mmodelcategory.pk|lower in filter_object.mmodel__category__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
               {% endfor %}
             </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Role is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__role__in">
+              {% for role in roles %}
+                <option value="{{ role.pk }}"{% if 'role__in' in filter_object %}{% if role.pk|lower in filter_object.role__in %} selected="SELECTED" {% endif %}{% endif %}>{{ role }}</option>
+              {% endfor %}
+            </select>
+            <input type="checkbox" name="filter__role__none" {% if 'role__none' in filter_object %} checked="CHECKED"{% endif %}>No Role
           </div>
         </div>
       </div>
@@ -140,6 +156,7 @@
         {% include './_list_head.html' with field=item_labels.asset_number %}
         {% include './_list_head.html' with field=item_labels.barcode %}
         {% include './_list_head.html' with field=item_labels.network_name %}
+        {% include './_list_head.html' with field=item_labels.role %}
         {% include './_list_head.html' with field=item_labels.condition %}
         {% include './_list_head.html' with field=item_labels.home %}
         {% include './_list_head.html' with field=item_labels.location %}
@@ -158,6 +175,7 @@
           {% include './_list_field.html' with field=item.asset_number %}
           {% include './_list_field.html' with field=item.barcode %}
           {% include './_list_field.html' with field=item.network_name %}
+          {% include './_list_field.html' with field=item.role %}
           {% include './_list_field.html' with field=item.condition %}
           {% include './_list_field.html' with field=item.home %}
           {% include './_list_field.html' with field=item.location %}

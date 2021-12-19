@@ -1,13 +1,7 @@
 {% extends './_base.html' %}
 {% block content %}
-  <div class="object">
-    {{ object }}
-  </div>
-  {% for item in item_set.all %}
-    <div class="relatedset">
-      {{ item }}
-    </div>
-  {% endfor %}
+
+  {% include './mmodel_detail_include.html' %}
 
   <div>
   <a href="{% url 'libtekin:mmodel-update' object.pk %}">Edit</a>

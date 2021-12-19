@@ -1,10 +1,27 @@
 {% extends './_base.html' %}
 {% block content %}
-<div class="object-list">
-<div><a href="{% url 'libtekin:mmodel-create' %}">create</a></div>
-{% for mmodel in object_list %}
-<div><a href="{% url 'libtekin:mmodel-detail' mmodel.pk %}">{{ mmodel }}</a></div>
-{% endfor %}
-<div><a href="{% url 'libtekin:mmodel-create' %}">create</a></div>
+
+<div class="list">
+  <div><a href="{% url 'libtekin:mmodel-create' %}">create</a></div>
+    <div class="row rowhead">
+      {% include './_list_head.html' with field='' %}
+      {% include './_list_head.html' with field=mmodel_labels.brand %}
+      {% include './_list_head.html' with field=mmodel_labels.model_name %}
+      {% include './_list_head.html' with field=mmodel_labels.model_number %}
+      {% include './_list_head.html' with field=mmodel_labels.category %}
+      {% include './_list_head.html' with field=mmodel_labels.primary_id_field %}
+    </div>
+    {% for mmodel in object_list %}
+      <div class="row">
+        <div class="listfield"><a href="{% url 'libtekin:mmodel-detail' mmodel.pk %}">view</a></div>
+        {% include './_list_field.html' with field=mmodel.brand %}
+        {% include './_list_field.html' with field=mmodel.model_name %}
+        {% include './_list_field.html' with field=mmodel.model_number %}
+        {% include './_list_field.html' with field=mmodel.category %}
+        {% include './_list_field.html' with field=mmodel.primary_id_field %}
+      </div>
+    {% endfor %}
+
+  </div>
 </div>
 {% endblock %}

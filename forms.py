@@ -26,6 +26,7 @@ class ItemForm(ModelForm):
             'serial_number',
             'service_number',
             'asset_number',
+            'barcode',
             'condition',
             'network_name',
             'assignee',
@@ -33,7 +34,7 @@ class ItemForm(ModelForm):
             'borrower',
             'home',
             'location',
-            'barcode'
+            'role',
         ]
         widgets = {
             'mmodel': MmodelSelect
@@ -43,7 +44,7 @@ class ItemNoteForm(ModelForm):
     class Meta:
         model = ItemNote
         fields = [
-                'item',
+            'item',
             'when',
             'text',
             'is_current_status',
@@ -56,7 +57,7 @@ class MmodelForm(ModelForm):
             'brand',
             'model_name',
             'model_number',
-            'categories',
+            'category',
             'primary_id_field'
         ]
 

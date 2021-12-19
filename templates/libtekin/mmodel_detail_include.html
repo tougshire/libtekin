@@ -1,0 +1,25 @@
+<h2>{{ object }}</h2>
+<div class="detail">
+  {% include './_detail_field.html' with label=mmodel_labels.brand field=object.brand %}
+  {% include './_detail_field.html' with label=mmodel_labels.model_name field=object.model_name %}
+  {% include './_detail_field.html' with label=mmodel_labels.model_number field=object.model_number %}
+  {% include './_detail_field.html' with label=mmodel_labels.category field=object.category %}
+  {% include './_detail_field.html' with label=mmodel_labels.primary_id_field field=object.primary_id_field %}
+
+  <h3>Items</h3>
+  {% for item in object.item_set.all %}
+    <div class="relatedset relateditem" id="div_item-{{ forloop.counter0 }}">
+      <div class="fieldWrapper">
+        <div class="control">
+          <div class="label">
+            {{ item_labels.common_name }}
+          </div>
+          <div class="field">
+            {{ item.common_name }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+

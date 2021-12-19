@@ -38,5 +38,86 @@
       "name": "Not Properly Usable",
       "sort_name": "E Not Usable"
     }
+  },
+  {
+    "model": "libtekin.role",
+    "pk": 1,
+    "fields": {
+      "name": "Staff",
+      "sort_name": "A Staff"
+    }
+  },
+  {
+    "model": "libtekin.role",
+    "pk": 2,
+    "fields": {
+      "name": "Public",
+      "sort_name": "B Public"
+    }
+  },
+  {
+    "model": "libtekin.role",
+    "pk": 3,
+    "fields": {
+      "name": "Facility",
+      "sort_name": "C Facility"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Laptop Computer"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Desktop Computer"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 3,
+    "fields": {
+      "name": "Tablet Computer"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 4,
+    "fields": {
+      "name": "Phone"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 5,
+    "fields": {
+      "name": "Monitor"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 6,
+    "fields": {
+      "name": "Printer"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 7,
+    "fields": {
+      "name": "Periferal"
+    }
+  },
+  {
+    "model": "libtekin.mmodelcategory",
+    "pk": 8,
+    "fields": {
+      "name": "Backbone (router, etc)"
+    }
   }
+
 ]

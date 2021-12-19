@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from .forms import EntityForm, ItemForm, ItemNoteForm, ItemItemNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
-from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, ViewItem, History
+from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, Role, ViewItem, History
 
 def update_history(form, modelname, object, user):
     for fieldname in form.changed_data:
@@ -67,6 +67,14 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         return response
 
+    def get_success_url(self):
+        if self.request.POST['opener'] > '':
+            return reverse_lazy('libtekin:item-close', kwargs={'pk': self.object.pk})
+        else:
+            return reverse_lazy('libtekin:item-detail', kwargs={'pk': self.object.pk})
+
+
+
 class ItemUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.change_item'
     model = Item
@@ -104,10 +112,11 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             for form in itemnotes.forms:
                 print( form.errors )
 
-
-
-
         return response
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:mmodel-detail', pk=self.object.pk)
+
 
 class ItemDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_item'
@@ -116,7 +125,6 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-        #context_data['current_notes'] = self.object.itemnote_set.all().filter(is_current_status=True)
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
@@ -147,6 +155,7 @@ class ItemList(PermissionRequiredMixin, ListView):
     permission_required = 'libtekin.view_item'
     model = Item
     filter_object = {}
+    exclude_object = {}
     order_by = []
     order_by_fields=[]
     for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number']:
@@ -174,7 +183,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                         if self.request.POST.get(order_by_i) == field['name']:
                             order_by.append(field['name'])
 
-            for fieldname in ['mmodel', 'mmodel__mmodelcategory', 'condition']:
+            for fieldname in ['mmodel', 'mmodel__category', 'condition', 'role']:
                 filterfieldname = 'filter__' + fieldname + '__in'
                 if filterfieldname in self.request.POST and self.request.POST.get(filterfieldname) > '':
                     postfields = self.request.POST.getlist(filterfieldname)
@@ -184,6 +193,11 @@ class ItemList(PermissionRequiredMixin, ListView):
                             fieldlist.append(postfield)
                     if fieldlist:
                         filter_object[fieldname + '__in'] = postfields
+
+                filterfieldnone = 'filter__' + fieldname + '__none'
+                if filterfieldnone in self.request.POST:
+                    filter_object[fieldname] = None
+
 
             viewitem__name = ''
             if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
@@ -270,6 +284,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['mmodels'] = Mmodel.objects.all()
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
+        context_data['roles'] = Role.objects.all()
         context_data['viewitems'] = ViewItem.objects.filter(user=self.request.user).all()
         context_data['order_by_fields'] = self.order_by_fields
 
@@ -284,13 +299,14 @@ class ItemList(PermissionRequiredMixin, ListView):
         if self.request.POST.get('viewitem__name'):
             context_data['viewitem__name'] = self.request.POST.get('viewitem__name')
 
-#        context_data['item_labels'] = {}
-#        for fieldname in ['common_name', 'mmodel']:
-#            context_data['item_labels'][fieldname] = Item._meta.get_field("common_name").verbose_name.capitalize()
-
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
         return context_data
+
+class ItemClose(PermissionRequiredMixin, DetailView):
+    permission_required = 'libtekin.view_item'
+    model = Item
+    template_name = 'libtekin/item_closer.html'
 
 class MmodelCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'libtekin.add_mmodel'
@@ -299,9 +315,9 @@ class MmodelCreate(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         if self.request.POST['opener'] > '':
-            return reverse_lazy('libtekin:mmodel_close', kwargs={'pk': self.object.pk})
+            return reverse_lazy('libtekin:mmodel-close', kwargs={'pk': self.object.pk})
         else:
-            return super().get_success_url()
+            return reverse_lazy('libtekin:mmodel-detail', kwargs={'pk': self.object.pk})
 
         return response
 
@@ -310,9 +326,21 @@ class MmodelUpdate(PermissionRequiredMixin, UpdateView):
     model = Mmodel
     form_class = MmodelForm
 
+    def get_success_url(self):
+        return reverse_lazy('libtekin:mmodel-detail', kwargs={'pk': self.object.pk})
+
+
 class MmodelDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_mmodel'
     model = Mmodel
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+        context_data['mmodel_labels'] = { field.name: field.verbose_name.title() for field in Mmodel._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+
+        return context_data
+
 
 class MmodelDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'libtekin.delete_mmodel'
@@ -322,6 +350,11 @@ class MmodelDelete(PermissionRequiredMixin, DeleteView):
 class MmodelList(PermissionRequiredMixin, ListView):
     permission_required = 'libtekin.view_mmodel'
     model = Mmodel
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['mmodel_labels'] = { field.name: field.verbose_name.title() for field in Mmodel._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        return context_data
 
 class MmodelClose(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_mmodel'
@@ -335,9 +368,9 @@ class MmodelCategoryCreate(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         if self.request.POST['opener'] > '':
-            return reverse_lazy('libtekin:mmodelcategory_close', kwargs={'pk': self.object.pk})
+            return reverse_lazy('libtekin:mmodelcategory-close', kwargs={'pk': self.object.pk})
         else:
-            return super().get_success_url()
+            return reverse_lazy('libtekin:mmodelcategory-detail', kwargs={'pk': self.object.pk})
 
         return response
 
@@ -345,6 +378,9 @@ class MmodelCategoryUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.change_MmodelCategory'
     model = MmodelCategory
     form_class = MmodelCategoryForm
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:mmodelcategory-detail', kwargs={'pk': self.object.pk})
 
 class MmodelCategoryDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_MmodelCategory'
@@ -371,16 +407,17 @@ class LocationCreate(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         if self.request.POST['opener'] > '':
-            return reverse_lazy('libtekin:location_close', kwargs={'pk': self.object.pk})
+            return reverse_lazy('libtekin:location-close', kwargs={'pk': self.object.pk})
         else:
-            return super().get_success_url()
-
-        return response
+            return reverse_lazy('libtekin:location-detail', kwargs={'pk': self.object.pk})
 
 class LocationUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.change_location'
     model = Location
     form_class = LocationForm
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:location-detail', kwargs={'pk': self.object.pk})
 
 class LocationDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_location'
@@ -407,16 +444,18 @@ class EntityCreate(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         if self.request.POST['opener'] > '':
-            return reverse_lazy('libtekin:entity_close', kwargs={'pk': self.object.pk})
+            return reverse_lazy('libtekin:entity-close', kwargs={'pk': self.object.pk})
         else:
-            return super().get_success_url()
-
-        return response
+            return reverse_lazy('libtekin:entity-detail', kwargs={'pk': self.object.pk})
 
 class EntityUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.change_entity'
     model = Entity
     form_class = EntityForm
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:entity-detail', kwargs={'pk': self.object.pk})
+
 
 class EntityDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_entity'

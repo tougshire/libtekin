@@ -17,7 +17,7 @@
 
     <h3>Notes</h3><span id="div_notesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for itemnote in object.itemnote_set.all %}
-      <div class="relatedset itemnote{% if itemnote.is_current_status %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
+      <div class="relatedset relateditemnote{% if itemnote.is_current_status %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
         <div class="fieldWrapper">
           <div class="control">
             <div class="label">
