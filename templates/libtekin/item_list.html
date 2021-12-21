@@ -177,11 +177,11 @@
           {% include './_list_field.html' with field=item.network_name %}
           {% include './_list_field.html' with field=item.role %}
           {% include './_list_field.html' with field=item.condition %}
-          {% include './_list_field.html' with field=item.home %}
-          {% include './_list_field.html' with field=item.location %}
-          {% include './_list_field.html' with field=item.assignee %}
-          {% include './_list_field.html' with field=item.borrower %}
-          {% include './_list_field.html' with field=item.owner %}
+          {% include './_list_field.html' with field=item.home.short_name %}
+          {% include './_list_field.html' with field=item.location.short_name %}
+          {% include './_list_field.html' with field=item.assignee.friendly_name %}
+          {% include './_list_field.html' with field=item.borrower.friendly_name %}
+          {% include './_list_field.html' with field=item.owner.friendly_name %}
         </div>
       {% endfor %}
 

@@ -7,6 +7,7 @@ class EntityForm(ModelForm):
         fields = [
             'friendly_name',
             'full_name',
+            'category',
         ]
 
 class MmodelSelect(Select):

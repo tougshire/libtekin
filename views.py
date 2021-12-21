@@ -68,7 +68,7 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         return response
 
     def get_success_url(self):
-        if self.request.POST['opener'] > '':
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
             return reverse_lazy('libtekin:item-close', kwargs={'pk': self.object.pk})
         else:
             return reverse_lazy('libtekin:item-detail', kwargs={'pk': self.object.pk})
@@ -115,7 +115,7 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
         return response
 
     def get_success_url(self):
-        return reverse_lazy('libtekin:mmodel-detail', pk=self.object.pk)
+        return reverse_lazy('libtekin:item-detail', kwargs={ 'pk':self.object.pk })
 
 
 class ItemDetail(PermissionRequiredMixin, DetailView):
@@ -314,7 +314,7 @@ class MmodelCreate(PermissionRequiredMixin, CreateView):
     form_class = MmodelForm
 
     def get_success_url(self):
-        if self.request.POST['opener'] > '':
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
             return reverse_lazy('libtekin:mmodel-close', kwargs={'pk': self.object.pk})
         else:
             return reverse_lazy('libtekin:mmodel-detail', kwargs={'pk': self.object.pk})
@@ -367,7 +367,7 @@ class MmodelCategoryCreate(PermissionRequiredMixin, CreateView):
     form_class = MmodelCategoryForm
 
     def get_success_url(self):
-        if self.request.POST['opener'] > '':
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
             return reverse_lazy('libtekin:mmodelcategory-close', kwargs={'pk': self.object.pk})
         else:
             return reverse_lazy('libtekin:mmodelcategory-detail', kwargs={'pk': self.object.pk})
@@ -406,7 +406,7 @@ class LocationCreate(PermissionRequiredMixin, CreateView):
     form_class = LocationForm
 
     def get_success_url(self):
-        if self.request.POST['opener'] > '':
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
             return reverse_lazy('libtekin:location-close', kwargs={'pk': self.object.pk})
         else:
             return reverse_lazy('libtekin:location-detail', kwargs={'pk': self.object.pk})
@@ -443,7 +443,7 @@ class EntityCreate(PermissionRequiredMixin, CreateView):
     form_class = EntityForm
 
     def get_success_url(self):
-        if self.request.POST['opener'] > '':
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
             return reverse_lazy('libtekin:entity-close', kwargs={'pk': self.object.pk})
         else:
             return reverse_lazy('libtekin:entity-detail', kwargs={'pk': self.object.pk})

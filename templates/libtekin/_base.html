@@ -15,14 +15,19 @@
     <div class="menu-item"><a href="{% url 'libtekin:location-list' %}">Locations</a></div>
     <div class="menu-item"><a href="{% url 'libtekin:entity-list' %}">People/Groups</a></div>
     {% url_if 'profile' as url_if %}
-    {% if url_if > '' %}
+    {% if user.username %}
       <div class="menu-item">
-        <a href="{{ url_if }}">{{ user.username }}</a> /
+        {% if url_if > '' %}
+          <a href="{{ url_if }}">{{ user.username }}</a>
+        {% else %}
+          {{ user.username }}
+        {% endif %}
         <a href="{% url 'logout' %}">Logout</a>
       </div>
     {% else %}
-      <div class="menu-item"><a href="{% url 'logout' %}">Logout {{ user.username }}</a></div>
+      <div class="menu-item"><a href="{% url 'login' %}">Login</a></div>
     {% endif %}
+
   </div>
 {% endblock %}
 {% block content %}{% endblock %}
