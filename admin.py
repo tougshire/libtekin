@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Condition, Entity, EntityCategory, Item, ItemNote, Location, LocationCategory, Mmodel,
-                     MmodelCategory, ViewItem, History)
+                     MmodelCategory, History)
 
 admin.site.register(Condition)
 admin.site.register(EntityCategory)
@@ -20,4 +20,4 @@ class ItemAdmin(admin.ModelAdmin):
 admin.site.register(Item, ItemAdmin)
 
 admin.site.register(History)
-admin.site.register(ViewItem)
+

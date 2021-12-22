@@ -4,6 +4,7 @@ from django.urls import reverse
 from datetime import date
 from django.conf import settings
 from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 
 class Condition(models.Model):
     name = models.CharField(
@@ -387,44 +388,6 @@ class ItemNote(models.Model):
 
     class Meta:
         ordering = ['-when']
-
-class ViewItem(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name='user',
-        on_delete=models.CASCADE,
-        help_text='The user of this search'
-    )
-    name = models.CharField(
-        'name',
-        max_length=50,
-        help_text="The name of the search"
-    )
-    is_default = models.BooleanField(
-        default=False,
-        help_text='If this is a default'
-    )
-    modified = models.DateTimeField(
-        auto_now=True,
-        help_text='The date this search was saved'
-    )
-    filterstring = models.TextField(
-        blank=True,
-        help_text='The filter string'
-    )
-    sortstring = models.CharField(
-        max_length=100,
-        blank=True,
-        help_text='The sort string'
-    )
-
-    class Meta:
-        ordering = ['modified']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'name'], name='unique_view'
-            )
-        ]
 
 class History(models.Model):
 

@@ -8,7 +8,9 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from .forms import EntityForm, ItemForm, ItemNoteForm, ItemItemNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
-from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, Role, ViewItem, History
+from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, Role, History
+from tougshire_vistas.models import Vista
+from tougshire_vistas.views import get_vista_object
 
 def update_history(form, modelname, object, user):
     for fieldname in form.changed_data:
@@ -165,119 +167,127 @@ class ItemList(PermissionRequiredMixin, ListView):
         order_by_fields.append(
             { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
         )
+    filter_fields = {
+        'in':['mmodel', 'mmodel__category', 'condition', 'role']
+    }
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
 
-        order_by = []
-        filter_object={}
+        vista_object = get_vista_object(self, super().get_queryset(), 'libtekin.item' )
+        self.filter_object = vista_object['filter_object']
+        self.order_by = vista_object['order_by']
+        return vista_object['queryset']
 
-        if 'query_submitted' in self.request.POST:
+        # order_by = []
+        # filter_object={}
 
-            for i in range(0,3):
-                order_by_i = 'order_by_{}'.format(i)
-                if order_by_i in self.request.POST:
-                    for field in self.order_by_fields:
-                        if self.request.POST.get(order_by_i) == field['name']:
-                            order_by.append(field['name'])
+        # if 'query_submitted' in self.request.POST:
 
-            for fieldname in ['mmodel', 'mmodel__category', 'condition', 'role']:
-                filterfieldname = 'filter__' + fieldname + '__in'
-                if filterfieldname in self.request.POST and self.request.POST.get(filterfieldname) > '':
-                    postfields = self.request.POST.getlist(filterfieldname)
-                    fieldlist = []
-                    for postfield in postfields:
-                        if postfield.isdecimal():
-                            fieldlist.append(postfield)
-                    if fieldlist:
-                        filter_object[fieldname + '__in'] = postfields
+        #     for i in range(0,3):
+        #         order_by_i = 'order_by_{}'.format(i)
+        #         if order_by_i in self.request.POST:
+        #             for field in self.order_by_fields:
+        #                 if self.request.POST.get(order_by_i) == field['name']:
+        #                     order_by.append(field['name'])
 
-                filterfieldnone = 'filter__' + fieldname + '__none'
-                if filterfieldnone in self.request.POST:
-                    filter_object[fieldname] = None
+        #     for fieldname in ['mmodel', 'mmodel__category', 'condition', 'role']:
+        #         filterfieldname = 'filter__' + fieldname + '__in'
+        #         if filterfieldname in self.request.POST and self.request.POST.get(filterfieldname) > '':
+        #             postfields = self.request.POST.getlist(filterfieldname)
+        #             fieldlist = []
+        #             for postfield in postfields:
+        #                 if postfield.isdecimal():
+        #                     fieldlist.append(postfield)
+        #             if fieldlist:
+        #                 filter_object[fieldname + '__in'] = postfields
 
-
-            viewitem__name = ''
-            if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
-                viewitem__name = self.request.POST.get('viewitem__name')
-
-            if filter_object or order_by:
-
-                queryset = super().get_queryset()
-
-                viewitem, created = ViewItem.objects.get_or_create( user=self.request.user, name=viewitem__name )
-
-                if filter_object:
-                    self.filter_object = filter_object
-                    viewitem.filterstring = json.dumps( filter_object )
-                    queryset = queryset.filter(**filter_object)
-
-                if order_by:
-                    self.order_by = order_by
-                    viewitem.sortstring = ','.join(order_by)
-                    queryset = queryset.order_by(*order_by)
-
-                viewitem.save()
-
-                return queryset
-
-        elif 'get_viewitem' in self.request.POST:
-
-            viewitem__name = ''
-
-            if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
-                viewitem__name = self.request.POST.get('viewitem__name')
-
-            viewitem, created = ViewItem.objects.get_or_create( user=self.request.user, name=viewitem__name )
-
-            try:
-                filter_object = json.loads(viewitem.filterstring)
-                order_by = viewitem.sortstring.split(',')
-                queryset = super().get_queryset().filter(**filter_object).order_by(*order_by)
-                self.filter_object = filter_object
-
-                return queryset
-
-            except json.JSONDecodeError:
-                pass
-
-        elif 'delete_viewitem' in self.request.POST:
-
-            viewitem__name = ''
-
-            if 'viewitem__name' in self.request.POST and self.request.POST.get('viewitem__name') > '':
-
-                viewitem__name = self.request.POST.get('viewitem__name')
-                ViewItem.objects.filter( user=self.request.user, name=viewitem__name ).delete()
+        #         filterfieldnone = 'filter__' + fieldname + '__none'
+        #         if filterfieldnone in self.request.POST:
+        #             filter_object[fieldname] = None
 
 
-        # this code runs if no queryset has been returned yet
-            viewitem = ViewItem.objects.filter( user=self.request.user, is_default=True ).last()
-            if viewitem is None:
-                viewitem = ViewItem.objects.filter( user=self.request.user ).last()
-            if viewitem is None:
-                viewitem, created = ViewItem.objects.get_or_create( user=self.request.user )
+        #     vista__name = ''
+        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
+        #         vista__name = self.request.POST.get('vista__name')
 
-            try:
-                filter_object = json.loads(viewitem.filterstring)
-                order_by = viewitem.sortstring.split(',')
-                try:
-                    self.filter_object = filter_object
-                    self.order_by = order_by
 
-                    return super().get_queryset().filter(**filter_object).order_by(order_by)
+        #     if filter_object or order_by:
 
-                except (ValueError, TypeError, FieldError):
-                    print('Field/Value/Type Error')
-                    viewitem.delete()
+        #         queryset = super().get_queryset()
 
-            except json.JSONDecodeError:
-                print('deserialization error')
-                viewitem.delete()
+        #         vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='libtekin.item', name=vista__name )
 
-        return super().get_queryset()
+        #         if filter_object:
+        #             self.filter_object = filter_object
+        #             vista.filterstring = json.dumps( filter_object )
+        #             queryset = queryset.filter(**filter_object)
+
+        #         if order_by:
+        #             self.order_by = order_by
+        #             vista.sortstring = ','.join(order_by)
+        #             queryset = queryset.order_by(*order_by)
+
+        #         vista.save()
+
+        #         return queryset
+
+        # elif 'get_vista' in self.request.POST:
+
+        #     vista__name = ''
+
+        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
+        #         vista__name = self.request.POST.get('vista__name')
+
+        #     vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='libtekin.item', name=vista__name )
+
+        #     try:
+        #         filter_object = json.loads(vista.filterstring)
+        #         order_by = vista.sortstring.split(',')
+        #         queryset = super().get_queryset().filter(**filter_object).order_by(*order_by)
+        #         self.filter_object = filter_object
+
+        #         return queryset
+
+        #     except json.JSONDecodeError:
+        #         pass
+
+        # elif 'delete_vista' in self.request.POST:
+        #     vista__name = ''
+
+        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
+
+        #         vista__name = self.request.POST.get('vista__name')
+        #         Vista.objects.filter( user=self.request.user, model_name='libtekin.item', name=vista__name ).delete()
+
+
+        # # this code runs if no queryset has been returned yet
+        #     vista = Vista.objects.filter( user=self.request.user, model_name='Item', is_default=True ).last()
+        #     if vista is None:
+        #         vista = Vista.objects.filter( user=self.request.user, model_name='Item' ).last()
+        #     if vista is None:
+        #         vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='Item' )
+
+        #     try:
+        #         filter_object = json.loads(vista.filterstring)
+        #         order_by = vista.sortstring.split(',')
+        #         try:
+        #             self.filter_object = filter_object
+        #             self.order_by = order_by
+
+        #             return super().get_queryset().filter(**filter_object).order_by(order_by)
+
+        #         except (ValueError, TypeError, FieldError):
+        #             print('Field/Value/Type Error')
+        #             vista.delete()
+
+        #     except json.JSONDecodeError:
+        #         print('deserialization error')
+        #         vista.delete()
+
+        # return super().get_queryset()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -285,7 +295,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
         context_data['roles'] = Role.objects.all()
-        context_data['viewitems'] = ViewItem.objects.filter(user=self.request.user).all()
+        context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         context_data['order_by_fields'] = self.order_by_fields
 
         for i in range(0,3):
@@ -296,8 +306,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
-        if self.request.POST.get('viewitem__name'):
-            context_data['viewitem__name'] = self.request.POST.get('viewitem__name')
+        if self.request.POST.get('vista__name'):
+            context_data['vista__name'] = self.request.POST.get('vista__name')
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 

@@ -93,7 +93,7 @@
             Save Search
           </div>
           <div class="field">
-            <input name="viewitem__name" value="{{ viewitem__name }}">
+            <input name="vista__name" value="">
           </div>
         </div>
       </div>
@@ -121,10 +121,10 @@
             Get Saved View
           </div>
           <div class="field">
-            <select name="viewitem__name">
+            <select name="vista__name">
               <option value=''>-----</option>
-              {% for viewitem in viewitems%}
-                <option value="{{ viewitem.name }}">{{ viewitem.name }}</option>
+              {% for vista in vistas%}
+                <option value="{{ vista.name }}">{{ vista.name }}</option>
               {% endfor %}
             </select>
           </div>
@@ -136,8 +136,8 @@
             Action
           </div>
           <div class="field">
-            <button type="submit" name="get_viewitem" value="get">Get</button>
-            <button type="submit" name="delete_viewitem" value="delete">Delete</button>
+            <button type="submit" name="get_vista" value="get">Get</button>
+            <button type="submit" name="delete_vista" value="delete">Delete</button>
           </div>
         </div>
       </div>
