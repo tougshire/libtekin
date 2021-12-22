@@ -170,6 +170,32 @@ class ItemList(PermissionRequiredMixin, ListView):
     filter_fields = {
         'in':['mmodel', 'mmodel__category', 'condition', 'role']
     }
+    showable_fields = []
+    shown_fields = []
+    for fieldname in [
+            'common_name',
+            'mmodel',
+            'primary_id_field',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'condition',
+            'network_name',
+            'assignee',
+            'owner',
+            'borrower',
+            'home',
+            'location',
+            'role',
+        ]:
+        showable_fields.append(
+            {
+                'name':fieldname,
+                'label':Item._meta.get_field(fieldname).verbose_name.title()
+            }
+        )
+        shown_fields.append(fieldname)
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -179,115 +205,10 @@ class ItemList(PermissionRequiredMixin, ListView):
         vista_object = get_vista_object(self, super().get_queryset(), 'libtekin.item' )
         self.filter_object = vista_object['filter_object']
         self.order_by = vista_object['order_by']
+        print('tp lcfmf55 order by')
+        print(self.order_by)
+        self.shown_fields = vista_object['shown_fields']
         return vista_object['queryset']
-
-        # order_by = []
-        # filter_object={}
-
-        # if 'query_submitted' in self.request.POST:
-
-        #     for i in range(0,3):
-        #         order_by_i = 'order_by_{}'.format(i)
-        #         if order_by_i in self.request.POST:
-        #             for field in self.order_by_fields:
-        #                 if self.request.POST.get(order_by_i) == field['name']:
-        #                     order_by.append(field['name'])
-
-        #     for fieldname in ['mmodel', 'mmodel__category', 'condition', 'role']:
-        #         filterfieldname = 'filter__' + fieldname + '__in'
-        #         if filterfieldname in self.request.POST and self.request.POST.get(filterfieldname) > '':
-        #             postfields = self.request.POST.getlist(filterfieldname)
-        #             fieldlist = []
-        #             for postfield in postfields:
-        #                 if postfield.isdecimal():
-        #                     fieldlist.append(postfield)
-        #             if fieldlist:
-        #                 filter_object[fieldname + '__in'] = postfields
-
-        #         filterfieldnone = 'filter__' + fieldname + '__none'
-        #         if filterfieldnone in self.request.POST:
-        #             filter_object[fieldname] = None
-
-
-        #     vista__name = ''
-        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
-        #         vista__name = self.request.POST.get('vista__name')
-
-
-        #     if filter_object or order_by:
-
-        #         queryset = super().get_queryset()
-
-        #         vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='libtekin.item', name=vista__name )
-
-        #         if filter_object:
-        #             self.filter_object = filter_object
-        #             vista.filterstring = json.dumps( filter_object )
-        #             queryset = queryset.filter(**filter_object)
-
-        #         if order_by:
-        #             self.order_by = order_by
-        #             vista.sortstring = ','.join(order_by)
-        #             queryset = queryset.order_by(*order_by)
-
-        #         vista.save()
-
-        #         return queryset
-
-        # elif 'get_vista' in self.request.POST:
-
-        #     vista__name = ''
-
-        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
-        #         vista__name = self.request.POST.get('vista__name')
-
-        #     vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='libtekin.item', name=vista__name )
-
-        #     try:
-        #         filter_object = json.loads(vista.filterstring)
-        #         order_by = vista.sortstring.split(',')
-        #         queryset = super().get_queryset().filter(**filter_object).order_by(*order_by)
-        #         self.filter_object = filter_object
-
-        #         return queryset
-
-        #     except json.JSONDecodeError:
-        #         pass
-
-        # elif 'delete_vista' in self.request.POST:
-        #     vista__name = ''
-
-        #     if 'vista__name' in self.request.POST and self.request.POST.get('vista__name') > '':
-
-        #         vista__name = self.request.POST.get('vista__name')
-        #         Vista.objects.filter( user=self.request.user, model_name='libtekin.item', name=vista__name ).delete()
-
-
-        # # this code runs if no queryset has been returned yet
-        #     vista = Vista.objects.filter( user=self.request.user, model_name='Item', is_default=True ).last()
-        #     if vista is None:
-        #         vista = Vista.objects.filter( user=self.request.user, model_name='Item' ).last()
-        #     if vista is None:
-        #         vista, created = Vista.objects.get_or_create( user=self.request.user, model_name='Item' )
-
-        #     try:
-        #         filter_object = json.loads(vista.filterstring)
-        #         order_by = vista.sortstring.split(',')
-        #         try:
-        #             self.filter_object = filter_object
-        #             self.order_by = order_by
-
-        #             return super().get_queryset().filter(**filter_object).order_by(order_by)
-
-        #         except (ValueError, TypeError, FieldError):
-        #             print('Field/Value/Type Error')
-        #             vista.delete()
-
-        #     except json.JSONDecodeError:
-        #         print('deserialization error')
-        #         vista.delete()
-
-        # return super().get_queryset()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -297,12 +218,17 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['roles'] = Role.objects.all()
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         context_data['order_by_fields'] = self.order_by_fields
+        context_data['order_by'] = self.order_by
+        print('tp lcmf50 order_by')
+        print(context_data['order_by'])
+        context_data['showable_fields'] = self.showable_fields
+        context_data['shown_fields'] = self.shown_fields
 
-        for i in range(0,3):
-            try:
-                context_data['order_by_{}'.format(i)] = self.order_by[i]
-            except IndexError:
-                pass
+#        for i in range(0,3):
+#            try:
+#                context_data['order_by_{}'.format(i)] = self.order_by[i]
+#            except IndexError:
+#                pass
 
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
