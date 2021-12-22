@@ -28,12 +28,12 @@
       {% include './_form_field.html' with field=form.owner %}
 
       <h3>Notes</h3>
-      <button id="btn_add-itemnote">Add Item Note</button>
-      <div id="div_insert-itemnote"></div>
-      {{ itemnotes.management_form }}
-      {% for form in itemnotes.forms %}
+      <button id="btn_add-timelynote">Add Item Note</button>
+      <div id="div_insert-timelynote"></div>
+      {{ timelynotes.management_form }}
+      {% for form in timelynotes.forms %}
         <h4>Note</h4>
-        <div class="formset" id="div_itemnote-{{ forloop.counter0 }}">
+        <div class="formset" id="div_timelynote-{{ forloop.counter0 }}">
           {{ form.errors }}
           {% for field in form.hidden_fields %}
             {{ field }}
@@ -60,11 +60,11 @@
           {% endfor %}
         </div>
       {% endfor %}
-      <div style="display:none" class="emptyformset" id="div_itemnote-empty">
-        {% for field in itemnotes.empty_form.hidden_fields %}
+      <div style="display:none" class="emptyformset" id="div_timelynote-empty">
+        {% for field in timelynotes.empty_form.hidden_fields %}
           {{ field }}
         {% endfor %}
-        {% for field in itemnotes.empty_form.visible_fields%}
+        {% for field in timelynotes.empty_form.visible_fields%}
           <div class="fieldWrapper">
             {% if field.errors %}
               <div class="errors">
@@ -93,7 +93,7 @@
 {% block bottomscript %}
   {{ block.super }}
   <script>
-    addFormsetListener('btn_add-itemnote', "id_itemnote_set-", 'div_itemnote-empty', 'div_insert-itemnote' )
+    addFormsetListener('btn_add-timelynote', "id_timelynote_set-", 'div_timelynote-empty', 'div_insert-timelynote' )
 
     addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
     addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')

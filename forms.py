@@ -1,5 +1,5 @@
 from django.forms import ModelForm, inlineformset_factory, Select
-from .models import Entity, Item, ItemNote, Location, Mmodel, MmodelCategory
+from .models import Entity, Item, TimelyNote, Location, Mmodel, MmodelCategory
 
 class EntityForm(ModelForm):
     class Meta:
@@ -41,9 +41,9 @@ class ItemForm(ModelForm):
             'mmodel': MmodelSelect
         }
 
-class ItemNoteForm(ModelForm):
+class TimelyNoteForm(ModelForm):
     class Meta:
-        model = ItemNote
+        model = TimelyNote
         fields = [
             'item',
             'when',
@@ -79,4 +79,4 @@ class LocationForm(ModelForm):
             'category'
         ]
 
-ItemItemNoteFormSet = inlineformset_factory(Item, ItemNote, ItemNoteForm, extra=0)
+ItemTimelyNoteFormSet = inlineformset_factory(Item, TimelyNote, TimelyNoteForm, extra=0)

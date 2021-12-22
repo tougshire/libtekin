@@ -16,15 +16,15 @@
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
 
     <h3>Notes</h3><span id="div_notesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
-    {% for itemnote in object.itemnote_set.all %}
-      <div class="relatedset relateditemnote{% if itemnote.is_current_status %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
+    {% for timelynote in object.timelynote_set.all %}
+      <div class="relatedset relatedtimelynote{% if timelynote.is_current_status %} current{% endif %}" id="div_timelynote-{{ forloop.counter0 }}">
         <div class="fieldWrapper">
           <div class="control">
             <div class="label">
               Note:
             </div>
             <div class="field">
-              {{ itemnote.when }}: {{ itemnote.text }}
+              {{ timelynote.when }}: {{ timelynote.text }}
             </div>
           </div>
         </div>
@@ -34,23 +34,23 @@
 
   <script>
     function toggleCurrentNotes() {
-      var itemNotes=document.getElementsByClassName('relateditemnote')
+      var timelyNotes=document.getElementsByClassName('relatedtimelynote')
       var notesShowing = document.getElementById('div_notesShowing')
       var toggleCurrent = document.getElementById('a_toggleCurrent')
       if(toggleCurrent.textContent=='Show All '){
-        for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('current'))){
+        for(timelyNote of timelyNotes) {
+          if(!(timelyNote.classList.contains('current'))){
             console.log('removing hidden')
-            itemNote.classList.remove('hidden')
+            timelyNote.classList.remove('hidden')
           }
         }
         toggleCurrent.textContent='Show Current '
         notesShowing.textContent='Showing All '
       } else {
-        for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('current'))){
+        for(timelyNote of timelyNotes) {
+          if(!(timelyNote.classList.contains('current'))){
             console.log('adding hidden')
-            itemNote.classList.add('hidden')
+            timelyNote.classList.add('hidden')
           }
         }
         toggleCurrent.textContent='Show All '

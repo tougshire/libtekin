@@ -7,8 +7,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.core.exceptions import FieldError, ObjectDoesNotExist
-from .forms import EntityForm, ItemForm, ItemNoteForm, ItemItemNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
-from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, Role, History
+from .forms import EntityForm, ItemForm, TimelyNoteForm, ItemTimelyNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
+from .models import Condition, Entity, Item, TimelyNote, Location, Mmodel, MmodelCategory, Role, History
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import get_vista_object
 
@@ -40,9 +40,9 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         context_data = super().get_context_data(**kwargs)
 
         if self.request.POST:
-            context_data['itemnotes'] = ItemItemNoteFormSet(self.request.POST)
+            context_data['timelynotes'] = ItemTimelyNoteFormSet(self.request.POST)
         else:
-            context_data['itemnotes'] = ItemItemNoteFormSet()
+            context_data['timelynotes'] = ItemTimelyNoteFormSet()
 
         return context_data
 
@@ -54,17 +54,17 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         self.object = form.save()
 
-        itemnotes = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+        timelynotes = ItemTimelyNoteFormSet(self.request.POST, instance=self.object)
 
-        if itemnotes.is_valid():
-            for form in itemnotes.forms:
-                update_history(form, 'ItemNote', form.instance, self.request.user)
+        if timelynotes.is_valid():
+            for form in timelynotes.forms:
+                update_history(form, 'TimelyNote', form.instance, self.request.user)
 
-            itemnotes.save()
+            timelynotes.save()
         else:
             print("formset is not not valid")
-            print(itemnotes.errors)
-            for form in itemnotes.forms:
+            print(timelynotes.errors)
+            for form in timelynotes.forms:
                 print( form.errors )
 
         return response
@@ -85,9 +85,9 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         if self.request.POST:
-            context_data['itemnotes'] = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+            context_data['timelynotes'] = ItemTimelyNoteFormSet(self.request.POST, instance=self.object)
         else:
-            context_data['itemnotes'] = ItemItemNoteFormSet(instance=self.object)
+            context_data['timelynotes'] = ItemTimelyNoteFormSet(instance=self.object)
 
         return context_data
 
@@ -100,18 +100,18 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
 
         response = super().form_valid(form)
 
-        itemnotes = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+        timelynotes = ItemTimelyNoteFormSet(self.request.POST, instance=self.object)
 
-        if itemnotes.is_valid():
+        if timelynotes.is_valid():
 
-            for form in itemnotes.forms:
+            for form in timelynotes.forms:
                 update_history(form, 'Item', form.instance, self.request.user)
 
-            itemnotes.save()
+            timelynotes.save()
         else:
             print("formset is not not valid")
-            print(itemnotes.errors)
-            for form in itemnotes.forms:
+            print(timelynotes.errors)
+            for form in timelynotes.forms:
                 print( form.errors )
 
         return response
@@ -128,7 +128,7 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
 
         context_data = super().get_context_data(**kwargs)
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
-        context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['timelynote_labels'] = { field.name: field.verbose_name.title() for field in TimelyNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
         return context_data
 
@@ -147,9 +147,9 @@ class ItemSoftDelete(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-        context_data['current_notes'] = self.object.itemnote_set.all().filter(is_current_status=True)
+        context_data['current_notes'] = self.object.timelynote_set.all().filter(is_current_status=True)
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
-        context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['timelynote_labels'] = { field.name: field.verbose_name.title() for field in TimelyNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
         return context_data
 

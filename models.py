@@ -357,11 +357,11 @@ class Item(models.Model):
     objects = ItemNotDeletedManager()
     all_objects = models.Manager()
 
-class ItemNotesCurrentManager(models.Manager):
+class TimelyNotesCurrentManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_current_status=True)
 
-class ItemNote(models.Model):
+class TimelyNote(models.Model):
     item = models.ForeignKey(
         Item,
         on_delete=models.SET_NULL,
@@ -388,6 +388,35 @@ class ItemNote(models.Model):
 
     class Meta:
         ordering = ['-when']
+
+class UntimedNote(models.Model):
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text='The item to which this note applies'
+    )
+    text = models.TextField(
+        'text',
+        help_text='The text of the note'
+    )
+    subject = models.CharField(
+        'subject',
+        max_length=50,
+        blank=True,
+        help_text='The subject of the note'
+    )
+    is_major = models.BooleanField(
+        'is major',
+        default=False,
+        help_text='If this note should be displayed by default (if not then displayed when "show all notes" is selected)'
+    )
+
+    def __str__(self):
+        return f'{self.subject}: {self.text}'
+
+    class Meta:
+        ordering = ['subject']
 
 class History(models.Model):
 
