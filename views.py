@@ -194,6 +194,20 @@ class ItemList(PermissionRequiredMixin, ListView):
     exclude_object = {}
     order_by = []
     order_by_fields=[]
+    common_text_search=""
+    common_text_fields=[
+            'common_name',
+            'mmodel__model_name',
+            'mmodel__category__name',
+            'mmodel__brand',
+            'primary_id',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'network_name',
+    ]
+
     for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number']:
         order_by_fields.append(
             { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
@@ -239,9 +253,8 @@ class ItemList(PermissionRequiredMixin, ListView):
         vista_object = get_vista_object(self, super().get_queryset(), 'libtekin.item' )
         self.filter_object = vista_object['filter_object']
         self.order_by = vista_object['order_by']
-        print('tp lcfmf55 order by')
-        print(self.order_by)
         self.shown_fields = vista_object['shown_fields']
+        self.common_text_search = vista_object['common_text_search']
         return vista_object['queryset']
 
     def get_context_data(self, **kwargs):
@@ -253,16 +266,9 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         context_data['order_by_fields'] = self.order_by_fields
         context_data['order_by'] = self.order_by
-        print('tp lcmf50 order_by')
-        print(context_data['order_by'])
         context_data['showable_fields'] = self.showable_fields
         context_data['shown_fields'] = self.shown_fields
-
-#        for i in range(0,3):
-#            try:
-#                context_data['order_by_{}'.format(i)] = self.order_by[i]
-#            except IndexError:
-#                pass
+        context_data['common_text_search'] = self.common_text_search
 
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
