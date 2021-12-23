@@ -15,7 +15,23 @@
     {% include './_detail_field.html' with label=item_labels.borrower field=object.borrower %}
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
 
-    <h3>Notes</h3><span id="div_notesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
+    <h3>Notes</h3><span id="div_untimedNotesShowing">Showing All Notes </span><a href="#" id="a_toggleMajor">Show Major</a>
+    {% for untimednote in object.untimednote_set.all %}
+      <div class="relatedset relateduntimednote{% if untimednote.is_major %} current{% endif %}" id="div_untimednote-{{ forloop.counter0 }}">
+        <div class="fieldWrapper">
+          <div class="control">
+            <div class="label">
+              Note:
+            </div>
+            <div class="field">
+              {{ untimednote.subject }}: {{ untimednote.text }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <h3>Timed Notes</h3><span id="div_timelyNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for timelynote in object.timelynote_set.all %}
       <div class="relatedset relatedtimelynote{% if timelynote.is_current_status %} current{% endif %}" id="div_timelynote-{{ forloop.counter0 }}">
         <div class="fieldWrapper">
@@ -35,7 +51,7 @@
   <script>
     function toggleCurrentNotes() {
       var timelyNotes=document.getElementsByClassName('relatedtimelynote')
-      var notesShowing = document.getElementById('div_notesShowing')
+      var timelyNotesShowing = document.getElementById('div_timelyNotesShowing')
       var toggleCurrent = document.getElementById('a_toggleCurrent')
       if(toggleCurrent.textContent=='Show All '){
         for(timelyNote of timelyNotes) {
@@ -45,7 +61,7 @@
           }
         }
         toggleCurrent.textContent='Show Current '
-        notesShowing.textContent='Showing All '
+        timelyNotesShowing.textContent='Showing All '
       } else {
         for(timelyNote of timelyNotes) {
           if(!(timelyNote.classList.contains('current'))){
@@ -54,12 +70,42 @@
           }
         }
         toggleCurrent.textContent='Show All '
-        notesShowing.textContent='Showing Current '
+        timelyNotesShowing.textContent='Showing Current '
       }
     }
     toggleCurrentNotes()
     document.getElementById('a_toggleCurrent').addEventListener('click', function(e) {
       e.preventDefault()
       toggleCurrentNotes()
+    });
+
+    function toggleMajorNotes() {
+      var untimedNotes=document.getElementsByClassName('relateduntimednote')
+      var untimedNotesShowing = document.getElementById('div_untimedNotesShowing')
+      var toggleMajor = document.getElementById('a_toggleMajor')
+      if(toggleMajor.textContent=='Show All '){
+        for(untimedNote of untimedNotes) {
+          if(!(untimedNote.classList.contains('current'))){
+            console.log('removing hidden')
+            untimedNote.classList.remove('hidden')
+          }
+        }
+        toggleMajor.textContent='Show Major '
+        untimedNotesShowing.textContent='Showing All '
+      } else {
+        for(untimedNote of untimedNotes) {
+          if(!(untimedNote.classList.contains('current'))){
+            console.log('adding hidden')
+            untimedNote.classList.add('hidden')
+          }
+        }
+        toggleMajor.textContent='Show All '
+        untimedNotesShowing.textContent='Showing Major '
+      }
+    }
+    toggleMajorNotes()
+    document.getElementById('a_toggleMajor').addEventListener('click', function(e) {
+      e.preventDefault()
+      toggleMajorNotes()
     });
   </script>

@@ -7,8 +7,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.core.exceptions import FieldError, ObjectDoesNotExist
-from .forms import EntityForm, ItemForm, TimelyNoteForm, ItemTimelyNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
-from .models import Condition, Entity, Item, TimelyNote, Location, Mmodel, MmodelCategory, Role, History
+from .forms import EntityForm, ItemForm, TimelyNoteForm, ItemTimelyNoteFormSet, ItemUntimedNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
+from .models import Condition, Entity, Item, TimelyNote, UntimedNote, Location, Mmodel, MmodelCategory, Role, History
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import get_vista_object
 
@@ -41,8 +41,11 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         if self.request.POST:
             context_data['timelynotes'] = ItemTimelyNoteFormSet(self.request.POST)
+            context_data['untimednotes'] = ItemUntimedNoteFormSet(self.request.POST)
+
         else:
             context_data['timelynotes'] = ItemTimelyNoteFormSet()
+            context_data['untimednotes'] = ItemUntimedNoteFormSet()
 
         return context_data
 
@@ -67,6 +70,19 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
             for form in timelynotes.forms:
                 print( form.errors )
 
+        untimednotes = ItemUntimedNoteFormSet(self.request.POST, instance=self.object)
+
+        if untimednotes.is_valid():
+            for form in untimednotes.forms:
+                update_history(form, 'UntimedNote', form.instance, self.request.user)
+
+            untimednotes.save()
+        else:
+            print("formset is not not valid")
+            print(untimednotes.errors)
+            for form in untimednotes.forms:
+                print( form.errors )
+
         return response
 
     def get_success_url(self):
@@ -86,8 +102,10 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
         context_data = super().get_context_data(**kwargs)
         if self.request.POST:
             context_data['timelynotes'] = ItemTimelyNoteFormSet(self.request.POST, instance=self.object)
+            context_data['untimednotes'] = ItemUntimedNoteFormSet(self.request.POST, instance=self.object)
         else:
             context_data['timelynotes'] = ItemTimelyNoteFormSet(instance=self.object)
+            context_data['untimednotes'] = ItemUntimedNoteFormSet(instance=self.object)
 
         return context_data
 
@@ -113,6 +131,22 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             print(timelynotes.errors)
             for form in timelynotes.forms:
                 print( form.errors )
+
+        untimednotes = ItemUntimedNoteFormSet(self.request.POST, instance=self.object)
+
+        if untimednotes.is_valid():
+
+            for form in untimednotes.forms:
+                update_history(form, 'Item', form.instance, self.request.user)
+
+            untimednotes.save()
+        else:
+            print("formset is not not valid")
+            print(untimednotes.errors)
+            for form in untimednotes.forms:
+                print( form.errors )
+
+
 
         return response
 
