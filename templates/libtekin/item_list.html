@@ -34,7 +34,7 @@
             Quick Search
           </div>
           <div class="field">
-            <input name="common_text_search" value="{{ common_text_search }}">
+            <input id="ctl_common_text_search" name="common_text_search" value="{{ common_text_search }}">
           </div>
         </div>
       </div>
@@ -278,14 +278,33 @@
 {% block bottomscript %}
   {{ block.super }}
   <script>
-    document.getElementById('btn_showviewform').addEventListener('click', function(e){
-      e.preventDefault
+
+    function toggleSortFilterForm() {
+      btnShowviewform = document.getElementById('btn_showviewform')
       var viewDiv = document.getElementById('div_viewform')
       viewDiv.classList.toggle('hidden')
       if( viewDiv.classList.contains('hidden')) {
-        e.target.textContent='Show Sort/Filter Form'
+        btnShowviewform.textContent='Show Sort/Filter Form'
       } else {
-        e.target.textContent='Hide Sort/Filter Form'
+        document.getElementById("ctl_common_text_search").focus()
+        btnShowviewform.textContent='Hide Sort/Filter Form'
+      }
+    }
+  </script>
+  <script>
+    document.getElementById('btn_showviewform').addEventListener('click', function(e){
+      e.preventDefault
+      toggleSortFilterForm()
+    });
+
+  </script>
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if(e.ctrlKey) {
+        if(e.which==70) {
+          e.preventDefault();
+          toggleSortFilterForm()
+        }
       }
     });
   </script>
