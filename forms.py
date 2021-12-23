@@ -1,5 +1,6 @@
 from django.forms import ModelForm, inlineformset_factory, Select
 from .models import Entity, Item, TimelyNote, UntimedNote, Location, Mmodel, MmodelCategory
+from django import forms
 
 class EntityForm(ModelForm):
     class Meta:
@@ -39,7 +40,8 @@ class ItemForm(ModelForm):
             'role',
         ]
         widgets = {
-            'mmodel': MmodelSelect
+            'mmodel': MmodelSelect,
+            'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
         }
 
 class TimelyNoteForm(ModelForm):
