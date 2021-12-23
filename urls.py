@@ -10,6 +10,7 @@ urlpatterns = [
     path('item/<int:pk>/delete/', views.ItemSoftDelete.as_view(), name='item-delete'),
     path('item/list/', views.ItemList.as_view(), name='item-list'),
     path('item/<int:pk>/close/', views.ItemClose.as_view(), name="item-close"),
+    path('item/<int:pk>/copy/', views.copy_item, name='item-copy'),
     path('entity/create/', views.EntityCreate.as_view(), name='entity-create'),
     path('entity/<int:pk>/update/', views.EntityUpdate.as_view(), name='entity-update'),
     path('entity/<int:pk>/detail/', views.EntityDetail.as_view(), name='entity-detail'),

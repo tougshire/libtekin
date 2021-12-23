@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
@@ -29,6 +30,12 @@ def update_history(form, modelname, object, user):
         )
 
         history.save()
+
+def copy_item(request, pk):
+    item = Item.objects.get(pk=pk)
+    item.pk=None
+    item.save() # item is now a new item, the original item is untouched
+    return HttpResponseRedirect(reverse('libtekin:item-update', kwargs={'pk':item.pk}))
 
 class ItemCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'libtekin.add_item'

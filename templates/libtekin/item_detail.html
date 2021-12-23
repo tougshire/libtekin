@@ -7,6 +7,9 @@
   <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
   </div>
   <div>
+    <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
+  </div>
+  <div>
   <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
   </div>
 {% endblock %}
