@@ -218,6 +218,11 @@
         {% if 'owner' in shown_fields or not shown_fields %}
           {% include './_list_head.html' with field=item_labels.owner %}
         {% endif %}
+        {% if 'latest_inventory' in shown_fields or not shown_fields %}
+          {% include './_list_head.html' with field=item_labels.latest_inventory %}
+        {% endif %}
+
+
       </div>
 
       {% for item in object_list %}
@@ -267,6 +272,9 @@
           {% endif %}
           {% if 'owner' in shown_fields or not shown_fields %}
             {% include './_list_field.html' with field=item.owner.friendly_name %}
+          {% endif %}
+          {% if 'latest_inventory' in shown_fields or not shown_fields %}
+            {% include './_list_field.html' with field=item.latest_inventory %}
           {% endif %}
 
         </div>

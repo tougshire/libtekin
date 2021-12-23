@@ -34,6 +34,7 @@ class ItemForm(ModelForm):
             'owner',
             'borrower',
             'home',
+            'latest_inventory',
             'location',
             'role',
         ]

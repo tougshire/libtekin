@@ -14,6 +14,7 @@
     {% include './_detail_field.html' with label=item_labels.assignee field=object.assignee %}
     {% include './_detail_field.html' with label=item_labels.borrower field=object.borrower %}
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
+    {% include './_detail_field.html' with label=item_labels.latest_inventory field=object.latest_inventory %}
 
     <h3>Notes</h3><span id="div_untimedNotesShowing">Showing All Notes </span><a href="#" id="a_toggleMajor">Show Major</a>
     {% for untimednote in object.untimednote_set.all %}

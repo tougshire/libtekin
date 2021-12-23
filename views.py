@@ -215,7 +215,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'network_name',
     ]
 
-    for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number']:
+    for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
         order_by_fields.append(
             { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
         )
@@ -243,6 +243,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'home',
             'location',
             'role',
+            'latest_inventory'
         ]:
         showable_fields.append(
             {
