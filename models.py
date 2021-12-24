@@ -137,7 +137,7 @@ class MmodelCategory(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ['sort_name']
 
 class Mmodel(models.Model):
 

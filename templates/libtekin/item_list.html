@@ -309,9 +309,11 @@
   <script>
     document.addEventListener('keydown', function(e) {
       if(e.ctrlKey) {
-        if(e.which==70) {
-          e.preventDefault();
-          toggleSortFilterForm()
+        if(e.shiftKey) {
+          if(e.which==70) {
+            e.preventDefault();
+            toggleSortFilterForm()
+          }
         }
       }
     });
