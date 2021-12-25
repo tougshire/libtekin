@@ -34,6 +34,7 @@ def update_history(form, modelname, object, user):
 def copy_item(request, pk):
     item = Item.objects.get(pk=pk)
     item.pk=None
+    item.common_name = '[copy of] ' + item.common_name
     item.save() # item is now a new item, the original item is untouched
     return HttpResponseRedirect(reverse('libtekin:item-update', kwargs={'pk':item.pk}))
 

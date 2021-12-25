@@ -141,12 +141,14 @@ class MmodelCategory(models.Model):
 
 class Mmodel(models.Model):
 
-    ID_CHOICES=[
-        ('serial_number', 'Serial Number'),
-        ('service_number', 'Service Number'),
-        ('asset_number', 'Asset Number'),
-        ('common_name', 'Common Name'),
-    ]
+    if hasattr(settings,'LIBTEKIN_ID_CHOICES'):
+        ID_CHOICES=settings.LIBTEKIN_ID_CHOICES
+    else:
+        ID_CHOICES=[
+            ('serial_number', 'Serial Number'),
+            ('service_number', 'Service Number'),
+            ('asset_number', 'Asset Number'),
+        ]
 
     brand = models.CharField(
         'brand',
