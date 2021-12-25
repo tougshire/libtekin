@@ -332,6 +332,7 @@ class Item(models.Model):
         'Latest Inventory Date',
         null=True,
         blank=True,
+        default=date.today,
         help_text='The date that this item was last confirmed in inventory'
     )
     is_deleted = models.BooleanField(

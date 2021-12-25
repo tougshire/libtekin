@@ -25,7 +25,13 @@
   {% else %}
     <div class="menu-item"><a href="{% url 'login' %}">Login</a></div>
   {% endif %}
-
+  {% if user.is_staff %}
+    <div class='menu-item'>
+      <a href="{% url 'admin:app_list' 'libtekin' %}..">
+        admin
+      </a>
+    </div>
+  {% endif %}
 </div>
 
   <div class="menu menu-top">

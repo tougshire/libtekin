@@ -153,8 +153,6 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             for form in untimednotes.forms:
                 print( form.errors )
 
-
-
         return response
 
     def get_success_url(self):
