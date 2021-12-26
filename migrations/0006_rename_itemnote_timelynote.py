@@ -9,9 +9,9 @@ class Migration(migrations.Migration):
         ('libtekin', '0005_delete_vista'),
     ]
 
-    operations = [
-        migrations.RenameModel(
-            old_name='ItemNote',
-            new_name='TimelyNote',
-        ),
-    ]
+    operations = []
+    #     migrations.RenameModel(
+    #         old_name='ItemNote',
+    #         new_name='TimelyNote',
+    #     ),
+    # ]

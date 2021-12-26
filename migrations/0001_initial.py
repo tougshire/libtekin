@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='ItemNote',
+            name='TimelyNote',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.TextField(help_text='The text of the note', verbose_name='text')),
