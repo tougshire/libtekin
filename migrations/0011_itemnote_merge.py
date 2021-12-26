@@ -3,6 +3,11 @@ import django.db.models.deletion
 
 def forwards(apps, schema_editor):
     try:
+        ItemNote = apps.get_model('libtekin', 'ItemNote')
+    except LookupError:
+        return
+
+    try:
         TimelyNote = apps.get_model('libtekin', 'TimelyNote')
 
         for timelynote in TimelyNote.objects.all():
