@@ -17,32 +17,16 @@
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
     {% include './_detail_field.html' with label=item_labels.latest_inventory field=object.latest_inventory %}
 
-    <h3>Notes</h3><span id="div_untimedNotesShowing">Showing All Notes </span><a href="#" id="a_toggleMajor">Show Major</a>
-    {% for untimednote in object.untimednote_set.all %}
-      <div class="relatedset relateduntimednote{% if untimednote.is_major %} current{% endif %}" id="div_untimednote-{{ forloop.counter0 }}">
+    <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleMajor">Show Major</a>
+    {% for itemnote in object.itemnote_set.all %}
+      <div class="relatedset relateditemnote{% if itemnote.is_major %} major{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
         <div class="fieldWrapper">
           <div class="control">
             <div class="label">
               Note:
             </div>
             <div class="field">
-              {{ untimednote.subject }}: {{ untimednote.text }}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-
-    <h3>Timed Notes</h3><span id="div_timelyNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
-    {% for timelynote in object.timelynote_set.all %}
-      <div class="relatedset relatedtimelynote{% if timelynote.is_current_status %} current{% endif %}" id="div_timelynote-{{ forloop.counter0 }}">
-        <div class="fieldWrapper">
-          <div class="control">
-            <div class="label">
-              Note:
-            </div>
-            <div class="field">
-              {{ timelynote.when }}: {{ timelynote.text }}
+              {{ itemnote }}
             </div>
           </div>
         </div>
@@ -51,58 +35,27 @@
   </div>
 
   <script>
-    function toggleCurrentNotes() {
-      var timelyNotes=document.getElementsByClassName('relatedtimelynote')
-      var timelyNotesShowing = document.getElementById('div_timelyNotesShowing')
-      var toggleCurrent = document.getElementById('a_toggleCurrent')
-      if(toggleCurrent.textContent=='Show All '){
-        for(timelyNote of timelyNotes) {
-          if(!(timelyNote.classList.contains('current'))){
-            console.log('removing hidden')
-            timelyNote.classList.remove('hidden')
-          }
-        }
-        toggleCurrent.textContent='Show Current '
-        timelyNotesShowing.textContent='Showing All '
-      } else {
-        for(timelyNote of timelyNotes) {
-          if(!(timelyNote.classList.contains('current'))){
-            console.log('adding hidden')
-            timelyNote.classList.add('hidden')
-          }
-        }
-        toggleCurrent.textContent='Show All '
-        timelyNotesShowing.textContent='Showing Current '
-      }
-    }
-    toggleCurrentNotes()
-    document.getElementById('a_toggleCurrent').addEventListener('click', function(e) {
-      e.preventDefault()
-      toggleCurrentNotes()
-    });
-
     function toggleMajorNotes() {
-      var untimedNotes=document.getElementsByClassName('relateduntimednote')
-      var untimedNotesShowing = document.getElementById('div_untimedNotesShowing')
+      var itemNotes=document.getElementsByClassName('relateditemnote')
+      var itemNotesShowing = document.getElementById('div_itemNotesShowing')
       var toggleMajor = document.getElementById('a_toggleMajor')
       if(toggleMajor.textContent=='Show All '){
-        for(untimedNote of untimedNotes) {
-          if(!(untimedNote.classList.contains('current'))){
-            console.log('removing hidden')
-            untimedNote.classList.remove('hidden')
+        for(itemNote of itemNotes) {
+          if(!(itemNote.classList.contains('major'))){
+            itemNote.classList.remove('hidden')
           }
         }
         toggleMajor.textContent='Show Major '
-        untimedNotesShowing.textContent='Showing All '
+        itemNotesShowing.textContent='Showing All '
       } else {
-        for(untimedNote of untimedNotes) {
-          if(!(untimedNote.classList.contains('current'))){
+        for(itemNote of itemNotes) {
+          if(!(itemNote.classList.contains('major'))){
             console.log('adding hidden')
-            untimedNote.classList.add('hidden')
+            itemNote.classList.add('hidden')
           }
         }
         toggleMajor.textContent='Show All '
-        untimedNotesShowing.textContent='Showing Major '
+        itemNotesShowing.textContent='Showing Major '
       }
     }
     toggleMajorNotes()

@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from .models import (Condition, Entity, EntityCategory, Item, TimelyNote, Location, LocationCategory, Mmodel,
+from .models import (Condition, Entity, EntityCategory, Item, ItemNote, Location, LocationCategory, Mmodel,
                      MmodelCategory, History)
 
 admin.site.register(Condition)
 admin.site.register(EntityCategory)
 admin.site.register(Entity)
-admin.site.register(TimelyNote)
+admin.site.register(ItemNote)
 admin.site.register(Location)
 admin.site.register(LocationCategory)
 admin.site.register(MmodelCategory)

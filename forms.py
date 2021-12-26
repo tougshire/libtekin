@@ -1,5 +1,5 @@
 from django.forms import ModelForm, inlineformset_factory, Select
-from .models import Entity, Item, TimelyNote, UntimedNote, Location, Mmodel, MmodelCategory
+from .models import Entity, Item, ItemNote, Location, Mmodel, MmodelCategory
 from django import forms
 
 class EntityForm(ModelForm):
@@ -44,14 +44,15 @@ class ItemForm(ModelForm):
             'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
         }
 
-class TimelyNoteForm(ModelForm):
+class ItemNoteForm(ModelForm):
     class Meta:
-        model = TimelyNote
+        model = ItemNote
         fields = [
             'item',
             'when',
             'text',
-            'is_current_status',
+            'details',
+            'is_major',
         ]
 
 class MmodelForm(ModelForm):
@@ -82,16 +83,4 @@ class LocationForm(ModelForm):
             'category'
         ]
 
-class UntimedNoteForm(ModelForm):
-    class Meta:
-        model = UntimedNote
-        fields = [
-            'item',
-            'subject',
-            'text',
-            'is_major',
-        ]
-
-
-ItemTimelyNoteFormSet = inlineformset_factory(Item, TimelyNote, TimelyNoteForm, extra=0)
-ItemUntimedNoteFormSet = inlineformset_factory(Item, UntimedNote, UntimedNoteForm, extra=0)
+ItemItemNoteFormSet = inlineformset_factory(Item, ItemNote, ItemNoteForm, extra=0)

@@ -60,12 +60,12 @@
       </div>
 
       <h3>Notes</h3>
-      <button id="btn_add-untimednote">Add Note</button>
-      <div id="div_insert-untimednote"></div>
-      {{ untimednotes.management_form }}
-      {% for form in untimednotes.forms %}
+      <button id="btn_add-itemnote">Add Note</button>
+      <div id="div_insert-itemnote"></div>
+      {{ itemnotes.management_form }}
+      {% for form in itemnotes.forms %}
         <h4>Note</h4>
-        <div class="formset" id="div_untimednote-{{ forloop.counter0 }}">
+        <div class="formset" id="div_itemnote-{{ forloop.counter0 }}">
           {{ form.errors }}
           {% for field in form.hidden_fields %}
             {{ field }}
@@ -92,70 +92,11 @@
           {% endfor %}
         </div>
       {% endfor %}
-      <div style="display:none" class="emptyformset" id="div_untimednote-empty">
-        {% for field in untimednotes.empty_form.hidden_fields %}
+      <div style="display:none" class="emptyformset" id="div_itemnote-empty">
+        {% for field in itemnotes.empty_form.hidden_fields %}
           {{ field }}
         {% endfor %}
-        {% for field in untimednotes.empty_form.visible_fields%}
-          <div class="fieldWrapper">
-            {% if field.errors %}
-              <div class="errors">
-                {{ field.errors }}
-              </div>
-            {% endif %}
-            <div class="control">
-              <div class="label">
-                {{ field.label_tag }}
-              </div>
-              <div class="field">
-                {{ field }}
-              </div>
-            </div>
-            <div class="help_text">
-              {{ field.help_text}}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-
-      <h3>Timed Notes</h3>
-      <button id="btn_add-timelynote">Add Timed Note</button>
-      <div id="div_insert-timelynote"></div>
-      {{ timelynotes.management_form }}
-      {% for form in timelynotes.forms %}
-        <h4>Note</h4>
-        <div class="formset" id="div_timelynote-{{ forloop.counter0 }}">
-          {{ form.errors }}
-          {% for field in form.hidden_fields %}
-            {{ field }}
-          {% endfor %}
-          {% for field in form.visible_fields%}
-            <div class="fieldWrapper">
-              {% if field.errors %}
-                <div class="errors">
-                  {{ field.errors }}
-                </div>
-              {% endif %}
-              <div class="control">
-                <div class="label">
-                  {{ field.label_tag }}
-                </div>
-                <div class="field">
-                  {{ field }}
-                </div>
-              </div>
-              <div class="help_text">
-                {{ field.help_text}}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      {% endfor %}
-      <div style="display:none" class="emptyformset" id="div_timelynote-empty">
-        {% for field in timelynotes.empty_form.hidden_fields %}
-          {{ field }}
-        {% endfor %}
-        {% for field in timelynotes.empty_form.visible_fields%}
+        {% for field in itemnotes.empty_form.visible_fields%}
           <div class="fieldWrapper">
             {% if field.errors %}
               <div class="errors">
@@ -183,8 +124,7 @@
 {% block bottomscript %}
   {{ block.super }}
   <script>
-    addFormsetListener('btn_add-timelynote', "id_timelynote_set-", 'div_timelynote-empty', 'div_insert-timelynote' )
-    addFormsetListener('btn_add-untimednote', "id_untimednote_set-", 'div_untimednote-empty', 'div_insert-untimednote' )
+    addFormsetListener('btn_add-itemnote', "id_itemnote_set-", 'div_itemnote-empty', 'div_insert-itemnote' )
 
     addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
     addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')

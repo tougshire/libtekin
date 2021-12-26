@@ -360,66 +360,39 @@ class Item(models.Model):
     objects = ItemNotDeletedManager()
     all_objects = models.Manager()
 
-class TimelyNotesCurrentManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_current_status=True)
-
-class TimelyNote(models.Model):
+class ItemNote(models.Model):
     item = models.ForeignKey(
         Item,
         on_delete=models.SET_NULL,
         null=True,
         help_text='The item to which this note applies'
-    )
-    text = models.TextField(
-        'text',
-        help_text='The text of the note'
     )
     when = models.DateField(
         'when',
-        default=date.today,
-        help_text='The effective date of the note (when it applies as opposed to when it was actually made)'
-    )
-    is_current_status = models.BooleanField(
-        'is current status',
-        default=False,
-        help_text='If this note is a current status of item, for example if the note says the item is overheating and that is still true'
-    )
-
-    def __str__(self):
-        return f'{self.when}: {self.text}'
-
-    class Meta:
-        ordering = ['-when']
-
-class UntimedNote(models.Model):
-    item = models.ForeignKey(
-        Item,
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text='The item to which this note applies'
-    )
-    text = models.TextField(
-        'text',
-        help_text='The text of the note'
-    )
-    subject = models.CharField(
-        'subject',
-        max_length=50,
         blank=True,
-        help_text='The subject of the note'
+        null=True,
+        help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
+    )
+    text = models.CharField(
+        max_length=125,
+        blank=True,
+        help_text='The text of the note.  Can be a subject line or introduction if more is included in details'
+    )
+    details = models.TextField(
+        'details',
+        help_text='The details of the note if the summary is not sufficient'
     )
     is_major = models.BooleanField(
-        'is major',
+        'is major or current status',
         default=False,
-        help_text='If this note should be displayed by default (if not then displayed when "show all notes" is selected)'
+        help_text='If this note is diplayed by default in the item detail view.  If not, it will be displayed when "Show All" is selected'
     )
 
     def __str__(self):
-        return f'{self.subject}: {self.text}'
+        return f'{self.when}: {self.text}' if self.when else self.text
 
     class Meta:
-        ordering = ['subject']
+        ordering = ['-when', 'text']
 
 class History(models.Model):
 
