@@ -380,6 +380,7 @@ class ItemNote(models.Model):
     )
     details = models.TextField(
         'details',
+        blank=True,
         help_text='The details of the note if the summary is not sufficient'
     )
     is_major = models.BooleanField(

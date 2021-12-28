@@ -8,37 +8,7 @@
 </head>
 <body>
 {% block menu %}
-<div class="menu menu-top">
-  <div class="menu-item menu-item-home">Home</div>
-  <div class="menu-item"><a href="{% url 'libtekin:item-list' %}">Items</a></div>
-  <div class="menu-item"><a href="{% url 'libtekin:mmodel-list' %}">Models</a></div>
-  {% url_if 'profile' as url_if %}
-  {% if user.username %}
-    <div class="menu-item">
-      {% if url_if > '' %}
-        <a href="{{ url_if }}">{{ user.username }}</a>
-      {% else %}
-        {{ user.username }}
-      {% endif %}
-      <a href="{% url 'logout' %}">Logout</a>
-    </div>
-  {% else %}
-    <div class="menu-item"><a href="{% url 'login' %}">Login</a></div>
-  {% endif %}
-  {% if user.is_staff %}
-    <div class='menu-item'>
-      <a href="{% url 'admin:app_list' 'libtekin' %}..">
-        admin
-      </a>
-    </div>
-  {% endif %}
-</div>
-
-  <div class="menu menu-top">
-    <div class="menu-item"><a href="{% url 'libtekin:location-list' %}">Locations</a></div>
-    <div class="menu-item"><a href="{% url 'libtekin:entity-list' %}">People/Groups</a></div>
-
-  </div>
+{% include 'suvapuli/menu.html' %}
 {% endblock %}
 {% block content %}{% endblock %}
 {% block bottomscript %}{% endblock %}
