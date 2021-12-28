@@ -54,6 +54,9 @@ class ItemNoteForm(ModelForm):
             'details',
             'is_major',
         ]
+        widgets = {
+            'when':forms.DateInput( attrs={ "type":"date" } ),
+        }
 
 class MmodelForm(ModelForm):
     class Meta:
