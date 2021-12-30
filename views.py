@@ -165,7 +165,7 @@ class ItemList(PermissionRequiredMixin, ListView):
     exclude_object = {}
     order_by = []
     order_by_fields=[]
-    common_text_search=""
+    combined_text_search=""
     common_text_fields=[
             'common_name',
             'mmodel__model_name',
@@ -226,7 +226,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         self.filter_object = vista_object['filter_object']
         self.order_by = vista_object['order_by']
         self.shown_fields = vista_object['shown_fields']
-        self.common_text_search = vista_object['common_text_search']
+        self.combined_text_search = vista_object['combined_text_search']
         return vista_object['queryset']
 
     def get_context_data(self, **kwargs):
@@ -240,7 +240,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['order_by'] = self.order_by
         context_data['showable_fields'] = self.showable_fields
         context_data['shown_fields'] = self.shown_fields
-        context_data['common_text_search'] = self.common_text_search
+        context_data['combined_text_search'] = self.combined_text_search
 
         if self.filter_object:
             context_data['filter_object'] = self.filter_object
