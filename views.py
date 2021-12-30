@@ -166,7 +166,7 @@ class ItemList(PermissionRequiredMixin, ListView):
     order_by = []
     order_by_fields=[]
     combined_text_search=""
-    common_text_fields=[
+    combined_text_fields=[
             'common_name',
             'mmodel__model_name',
             'mmodel__category__name',
@@ -177,6 +177,12 @@ class ItemList(PermissionRequiredMixin, ListView):
             'asset_number',
             'barcode',
             'network_name',
+            'assignee__friendly_name',
+            'assignee__full_name',
+            'borrower__friendly_name',
+            'borrower__full_name',
+            'owner__friendly_name',
+            'owner__full_name',
     ]
 
     for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
@@ -189,8 +195,8 @@ class ItemList(PermissionRequiredMixin, ListView):
     filter_fields = {
         'in':['mmodel', 'mmodel__category', 'condition', 'role']
     }
-    showable_fields = []
-    shown_fields = []
+    showable_columns = []
+    show_columns = []
     for fieldname in [
             'common_name',
             'mmodel',
@@ -209,13 +215,13 @@ class ItemList(PermissionRequiredMixin, ListView):
             'role',
             'latest_inventory'
         ]:
-        showable_fields.append(
+        showable_columns.append(
             {
                 'name':fieldname,
                 'label':Item._meta.get_field(fieldname).verbose_name.title()
             }
         )
-        shown_fields.append(fieldname)
+        show_columns.append(fieldname)
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -225,7 +231,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         vista_object = get_vista_object(self, super().get_queryset(), 'libtekin.item' )
         self.filter_object = vista_object['filter_object']
         self.order_by = vista_object['order_by']
-        self.shown_fields = vista_object['shown_fields']
+        self.show_columns = vista_object['show_columns']
         self.combined_text_search = vista_object['combined_text_search']
         return vista_object['queryset']
 
@@ -238,8 +244,8 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         context_data['order_by_fields'] = self.order_by_fields
         context_data['order_by'] = self.order_by
-        context_data['showable_fields'] = self.showable_fields
-        context_data['shown_fields'] = self.shown_fields
+        context_data['showable_columns'] = self.showable_columns
+        context_data['show_columns'] = self.show_columns
         context_data['combined_text_search'] = self.combined_text_search
 
         if self.filter_object:

@@ -103,9 +103,9 @@
             Show Fields
           </div>
           <div class="field">
-            <select multiple="multiple" name="shown_fields">
+            <select multiple="multiple" name="show_columns">
               {% for field in showable_fields %}
-                <option value="{{ field.name }}"{% if field.name in shown_fields %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
+                <option value="{{ field.name }}"{% if field.name in show_columns %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
               {% endfor %}
             </select>
           </div>
@@ -173,52 +173,52 @@
     <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
       <div class="row rowhead">
         {% include './_list_head.html' with field='' %}
-        {% if 'common_name' in shown_fields or not shown_fields %}
+        {% if 'common_name' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.common_name %}
         {% endif %}
-        {% if 'mmodel' in shown_fields or not shown_fields %}
+        {% if 'mmodel' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.mmodel %}
         {% endif %}
-        {% if 'primary_id' in shown_fields or not shown_fields %}
+        {% if 'primary_id' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.primary_id %}
         {% endif %}
-        {% if 'serial_number' in shown_fields or not shown_fields %}
+        {% if 'serial_number' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.serial_number %}
         {% endif %}
-        {% if 'service_number' in shown_fields or not shown_fields %}
+        {% if 'service_number' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.service_number %}
         {% endif %}
-        {% if 'asset_number' in shown_fields or not shown_fields %}
+        {% if 'asset_number' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.asset_number %}
         {% endif %}
-        {% if 'barcode' in shown_fields or not shown_fields %}
+        {% if 'barcode' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.barcode %}
         {% endif %}
-        {% if 'network_name' in shown_fields or not shown_fields %}
+        {% if 'network_name' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.network_name %}
         {% endif %}
-        {% if 'role' in shown_fields or not shown_fields %}
+        {% if 'role' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.role %}
         {% endif %}
-        {% if 'condition' in shown_fields or not shown_fields %}
+        {% if 'condition' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.condition %}
         {% endif %}
-        {% if 'home' in shown_fields or not shown_fields %}
+        {% if 'home' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.home %}
         {% endif %}
-        {% if 'location' in shown_fields or not shown_fields %}
+        {% if 'location' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.location %}
         {% endif %}
-        {% if 'assignee' in shown_fields or not shown_fields %}
+        {% if 'assignee' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.assignee %}
         {% endif %}
-        {% if 'borrower' in shown_fields or not shown_fields %}
+        {% if 'borrower' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.borrower %}
         {% endif %}
-        {% if 'owner' in shown_fields or not shown_fields %}
+        {% if 'owner' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.owner %}
         {% endif %}
-        {% if 'latest_inventory' in shown_fields or not shown_fields %}
+        {% if 'latest_inventory' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.latest_inventory %}
         {% endif %}
 
@@ -228,52 +228,52 @@
       {% for item in object_list %}
         <div class="row">
           <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
-          {% if 'common_name' in shown_fields or not shown_fields %}
+          {% if 'common_name' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.common_name %}
           {% endif %}
-          {% if 'mmodel' in shown_fields or not shown_fields %}
+          {% if 'mmodel' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.mmodel %}
           {% endif %}
-          {% if 'primary_id' in shown_fields or not shown_fields %}
+          {% if 'primary_id' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.primary_id %}
           {% endif %}
-          {% if 'serial_number' in shown_fields or not shown_fields %}
+          {% if 'serial_number' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.serial_number %}
           {% endif %}
-          {% if 'service_number' in shown_fields or not shown_fields %}
+          {% if 'service_number' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.service_number %}
           {% endif %}
-          {% if 'asset_number' in shown_fields or not shown_fields %}
+          {% if 'asset_number' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.asset_number %}
           {% endif %}
-          {% if 'barcode' in shown_fields or not shown_fields %}
+          {% if 'barcode' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.barcode %}
           {% endif %}
-          {% if 'network_name' in shown_fields or not shown_fields %}
+          {% if 'network_name' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.network_name %}
           {% endif %}
-          {% if 'role' in shown_fields or not shown_fields %}
+          {% if 'role' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.role %}
           {% endif %}
-          {% if 'condition' in shown_fields or not shown_fields %}
+          {% if 'condition' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.condition %}
           {% endif %}
-          {% if 'home' in shown_fields or not shown_fields %}
+          {% if 'home' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.home.short_name %}
           {% endif %}
-          {% if 'location' in shown_fields or not shown_fields %}
+          {% if 'location' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.location.short_name %}
           {% endif %}
-          {% if 'assignee' in shown_fields or not shown_fields %}
+          {% if 'assignee' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.assignee.friendly_name %}
           {% endif %}
-          {% if 'borrower' in shown_fields or not shown_fields %}
+          {% if 'borrower' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.borrower.friendly_name %}
           {% endif %}
-          {% if 'owner' in shown_fields or not shown_fields %}
+          {% if 'owner' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.owner.friendly_name %}
           {% endif %}
-          {% if 'latest_inventory' in shown_fields or not shown_fields %}
+          {% if 'latest_inventory' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.latest_inventory %}
           {% endif %}
 
