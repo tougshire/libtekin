@@ -1,34 +1,38 @@
 {% extends './_form.html' %}
+{% load static %}
 {% block content %}
+  <h2>{{ object }}</h2>
   {{ form.errors }}
   <form method="POST">
-    <input type="hidden" name='opener' id="input_opener">
     <div class="form">
-      {% csrf_token %}
-      {% for field in form.hidden_fields %}
-        {{ field }}
-      {% endfor %}
-      {% for field in form.visible_fields%}
-        <div class="field-wrapper">
-          {% if field.errors %}
-            <div class="errors">
-              {{ field.errors }}
+      <input type="hidden" name='opener' id="input_opener">
+      <div class="form">
+        {% csrf_token %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+        {% for field in form.visible_fields%}
+          <div class="field-wrapper">
+            {% if field.errors %}
+              <div class="errors">
+                {{ field.errors }}
+              </div>
+            {% endif %}
+            <div class="control">
+              <div class="label">
+                {{ field.label_tag }}
+              </div>
+              <div class="field">
+                {{ field }}
+              </div>
             </div>
-          {% endif %}
-          <div class="control">
-            <div class="label">
-              {{ field.label_tag }}
-            </div>
-            <div class="field">
-              {{ field }}
+            <div class="help_text">
+              {{ field.help_text}}
             </div>
           </div>
-          <div class="help_text">
-            {{ field.help_text}}
-          </div>
-        </div>
-      {% endfor %}
-      <button type="submit">Submit</button>
+        {% endfor %}
+        <button type="submit">Submit</button>
+      </div>
     </div>
   </form>
 

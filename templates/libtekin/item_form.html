@@ -5,6 +5,7 @@
   {{ form.errors }}
   <form method="POST">
     <div class="form">
+      <input type="hidden" name='opener' id="input_opener">
       {% csrf_token %}
       {% for field in form.hidden_fields %}
         {{ field }}
@@ -173,6 +174,11 @@
       movePrimaryIdField();
     })
 
+  </script>
+  <script>
+    if(window.opener) {
+      document.getElementById('input_opener').value = window.opener.location.href
+    }
   </script>
 
 {% endblock %}
