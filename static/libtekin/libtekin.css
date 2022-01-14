@@ -9,12 +9,23 @@
     padding: 1px 1px;
 }
 
+.menu-bottom {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 1px 1px;
+}
+
 .form .formset {
     margin-left:2em;
 }
 
 .form .field-wrapper {
     margin-top:.5em;
+}
+
+.form .field {
+    width:80%;
 }
 
 .form .control {
@@ -28,6 +39,18 @@
 .form .help_text {
     margin-left:15%;
 }
+
+input.len100, textarea.len100 {
+    width:100%;
+}
+
+input.len75, textarea.len75 {
+    width:75%;
+}
+input.len50, textarea.len50 {
+    width:50%;
+}
+
 .list {
     width:100%;
     display:table;

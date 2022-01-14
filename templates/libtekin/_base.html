@@ -1,9 +1,14 @@
 {% load static %}
 {% load url_utils %}
+{% load shared_stuff %}
 <!DOCTYPE html>
 <html lang='en'>
 <head>
 <title>Library Technical Inventory</title>
+{% global_css_file as glocssfile %}
+{% if glocssfile %}
+  <link rel="stylesheet" href="{% static glocssfile %}">
+{% endif %}
 <link rel="stylesheet" href="{% static 'libtekin/libtekin.css' %}">
 </head>
 <body>

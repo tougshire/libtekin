@@ -60,73 +60,50 @@
         {% include './_form_field.html' with field=form.latest_inventory %}
       </div>
 
-      <h3>Notes</h3>
-      <button id="btn_add-itemnote">Add Note</button>
-      <div id="div_insert-itemnote"></div>
-      {{ itemnotes.management_form }}
-      {% for form in itemnotes.forms %}
-        <h4>Note</h4>
-        <div class="formset" id="div_itemnote-{{ forloop.counter0 }}">
-          {{ form.errors }}
-          {% for field in form.hidden_fields %}
-            {{ field }}
-          {% endfor %}
-          {% for field in form.visible_fields%}
-            <div class="fieldWrapper">
-              {% if field.errors %}
-                <div class="errors">
-                  {{ field.errors }}
-                </div>
-              {% endif %}
-              <div class="control">
-                <div class="label">
-                  {{ field.label_tag }}
-                </div>
-                <div class="field">
-                  {{ field }}
-                </div>
-              </div>
-              <div class="help_text">
-                {{ field.help_text}}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      {% endfor %}
-      <div style="display:none" class="emptyformset" id="div_itemnote-empty">
-        {% for field in itemnotes.empty_form.hidden_fields %}
-          {{ field }}
-        {% endfor %}
-        {% for field in itemnotes.empty_form.visible_fields%}
-          <div class="fieldWrapper">
-            {% if field.errors %}
-              <div class="errors">
-                {{ field.errors }}
-              </div>
-            {% endif %}
-            <div class="control">
-              <div class="label">
-                {{ field.label_tag }}
-              </div>
-              <div class="field">
-                {{ field }}
-              </div>
-            </div>
-            <div class="help_text">
-              {{ field.help_text}}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
       <button type="submit">Submit</button>
+
     </div>
+    <h3>Notes</h3>
+    {{ itemnotes.management_form }}
+    {% for itemnoteform in itemnotes.forms %}
+      {% if itemnoteform.id.value > 0 %}
+        <div id="div_itemnoteform_{{ itemnoteform.id.value }}" class="itemnoteformsetform"  >
+          {% for hiddenfield in itemnoteform.hidden_fields %}
+            {{ hiddenfield }}
+          {% endfor %}
+          {% include './_form_field.html' with field=itemnoteform.when %}
+          {% include './_form_field.html' with field=itemnoteform.text %}
+          {% include './_form_field.html' with field=itemnoteform.is_major_current %}
+          {% include './_form_field.html' with field=itemnoteform.DELETE %}
+        </div>
+      {% else %}
+        <div class="itemnoteformsetform itemnotenewform" >
+          {% for hiddenfield in itemnoteform.hidden_fields %}
+            {{ hiddenfield }}
+          {% endfor %}
+          {% include './_form_field.html' with field=itemnoteform.when %}
+          {% include './_form_field.html' with field=itemnoteform.text %}
+          {% include './_form_field.html' with field=itemnoteform.is_major_current %}
+          {% include './_form_field.html' with field=itemnoteform.DELETE %}
+        </div>
+      {% endif %}
+    {% endfor %}
+    <table>
+      <tr>
+        <td><button type="button" id="button_additemnote">Add</button></td><td span="*"></td>
+      </tr>
+      {% for itemnote in object.itemnote_set.all %}
+        <tr id="tr_itemnote_{{ itemnote.id }}">
+          <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.text }}</td><td>{{ itemnote.is_major_current }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
   </form>
 {% endblock %}
 {% block bottomscript %}
   {{ block.super }}
   <script>
-    addFormsetListener('btn_add-itemnote', "id_itemnote_set-", 'div_itemnote-empty', 'div_insert-itemnote' )
-
     addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
     addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
     addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
@@ -179,6 +156,40 @@
     if(window.opener) {
       document.getElementById('input_opener').value = window.opener.location.href
     }
+  </script>
+  <script>
+    function enableFormsetForm(formid, displayid) {
+      let form = document.getElementById(formid)
+      document.getElementById(formid).style.display="block"
+      document.getElementById(displayid).style.display="none"
+    }
+    let itemnoteEditButtons = document.getElementsByClassName('itemnote_edit_button')
+    for( itemnoteEditButton of itemnoteEditButtons){
+      itemnoteEditButton.addEventListener('click', function(e){
+        e.preventDefault()
+        enableFormsetForm(e.target.dataset.formid, e.target.dataset.displayid)
+      })
+    }
+    function enableAddFormsetForm(formclass) {
+      let newforms = document.getElementsByClassName(formclass)
+      if( newforms.length > 0) {
+        let newform = newforms[0]
+        newform.style.display="block"
+        newform.classList.remove(formclass)
+      } else {
+        alert('please save before adding more')
+      }
+    }
+
+    document.getElementById('button_additemnote').addEventListener('click', function(e){
+      e.preventDefault()
+      enableAddFormsetForm('itemnotenewform')
+    })
+    let itemnoteforms = document.getElementsByClassName("itemnoteformsetform")
+    for( itemnoteform of itemnoteforms ){
+      itemnoteform.style.display="none"
+    }
+
   </script>
 
 {% endblock %}

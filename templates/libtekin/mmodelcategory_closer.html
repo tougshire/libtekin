@@ -2,7 +2,7 @@
 {% block content %}
 <script>
 if(window.opener) {
-  window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'MmodelCategory')
+  window.opener.addOptionFromPopup({{ object.pk }}, "{{ object }}", 'MmodelCategory')
   window.close()
 }
 </script>

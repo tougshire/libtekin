@@ -2,7 +2,7 @@
 {% block content %}
 <script>
 if(window.opener) {
-  window.opener.refreshFrom({{ object.pk }}, "{{ object }}", 'Entity')
+  window.opener.addOptionFromPopup({{ object.pk }}, "{{ object }}", 'Entity')
   window.close()
 }
 </script>

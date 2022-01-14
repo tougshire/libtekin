@@ -3,13 +3,22 @@
 
   {% include './item_detail_include.html' %}
 
-  <div>
-  <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
-  </div>
-  <div>
-    <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
-  </div>
-  <div>
-  <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
+  <div class="menu menu-bottom">
+    <div class="menu-item">
+    <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+    </div>
+    <div class="menu-item">
+      <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
+    </div>
+    <div class="menu-item">
+    <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
+    </div>
   </div>
 {% endblock %}
+
+<script>
+    document.getElementById('a_addnote').addEventListener('click', function(e) {
+      e.preventDefault()
+      window.open(e.target.href)
+    });
+  </script>

@@ -8,7 +8,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.core.exceptions import FieldError, ObjectDoesNotExist
-from .forms import EntityForm, ItemForm, ItemNoteForm, ItemItemNoteFormSet, LocationForm, MmodelForm, MmodelCategoryForm
+from .forms import EntityForm, ItemForm, LocationForm, MmodelForm, MmodelCategoryForm, ItemItemNoteForm, ItemItemNoteFormset
 from .models import Condition, Entity, Item, ItemNote, Location, Mmodel, MmodelCategory, Role, History
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import get_vista_object
@@ -48,10 +48,9 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         context_data = super().get_context_data(**kwargs)
 
         if self.request.POST:
-            context_data['itemnotes'] = ItemItemNoteFormSet(self.request.POST)
-
+            context_data['itemnotes'] = ItemItemNoteFormset(self.request.POST)
         else:
-            context_data['itemnotes'] = ItemItemNoteFormSet()
+            context_data['itemnotes'] = ItemItemNoteFormset()
 
         return context_data
 
@@ -63,18 +62,16 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         self.object = form.save()
 
-        itemnotes = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+        if self.request.POST:
+            itemnotes = ItemItemNoteFormset(self.request.POST, instance=self.object)
+        else:
+            itemnotes = ItemItemNoteFormset(instance=self.object)
 
-        if itemnotes.is_valid():
-            for form in itemnotes.forms:
-                update_history(form, 'ItemNote', form.instance, self.request.user)
-
+        if(itemnotes).is_valid():
             itemnotes.save()
         else:
-            print("formset is not not valid")
-            print(itemnotes.errors)
-            for form in itemnotes.forms:
-                print( form.errors )
+            return self.form_invalid(form)
+
 
         return response
 
@@ -93,10 +90,11 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
         if self.request.POST:
-            context_data['itemnotes'] = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+            context_data['itemnotes'] = ItemItemNoteFormset(self.request.POST, instance=self.object)
         else:
-            context_data['itemnotes'] = ItemItemNoteFormSet(instance=self.object)
+            context_data['itemnotes'] = ItemItemNoteFormset(instance=self.object)
 
         return context_data
 
@@ -106,19 +104,17 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
 
         response = super().form_valid(form)
 
-        itemnotes = ItemItemNoteFormSet(self.request.POST, instance=self.object)
+        self.object = form.save()
 
-        if itemnotes.is_valid():
+        if self.request.POST:
+            itemnotes = ItemItemNoteFormset(self.request.POST, instance=self.object)
+        else:
+            itemnotes = ItemItemNoteFormset(instance=self.object)
 
-            for form in itemnotes.forms:
-                update_history(form, 'Item', form.instance, self.request.user)
-
+        if(itemnotes).is_valid():
             itemnotes.save()
         else:
-            print("formset is not not valid")
-            print(itemnotes.errors)
-            for form in itemnotes.forms:
-                print( form.errors )
+            return self.form_invalid(form)
 
         return response
 
@@ -435,3 +431,77 @@ def get_primary_id_field( request, mmodel_id):
     except ObjectDoesNotExist:
         return None
 
+
+class ItemItemNoteCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'libtekin.add_item'
+    model = ItemNote
+    form_class = ItemItemNoteForm
+    template_name = 'libtekin/itemitemnote_form.html'
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+
+        context_data['item'] = Item.objects.get(pk=self.kwargs.get('itempk'))
+
+        return context_data
+
+    def form_valid(self, form):
+
+
+        item = Item.objects.get(pk=self.kwargs.get('itempk'))
+
+        self.object = form.save(commit=False)
+        self.object.item = item
+        self.object = form.save()
+
+        response = super().form_valid(form)
+
+        item_url = self.request.build_absolute_uri( reverse('libtekin:item-detail', kwargs={'pk':self.object.item.pk}) )
+        mail_message = "\r".join(
+            [
+                f"Update to { self.object.item }: {self.object.text }"
+                f"Item: { self.object.item.item }",
+                f"Item Urgency: {self.object.item.get_urgency_display}",
+                f"Description: { self.object.item.long_description }",
+                f"Item URL: { item_url }"
+            ]
+        )
+        mail_html_message = "<br>".join(
+            [
+                f"Update to { self.object.item }: {self.object.text }"
+                f"Item: { self.object.item.item }",
+                f"Item Urgency: {self.object.item.get_urgency_display}",
+                f"Item Description: { self.object.item.long_description }",
+                f"Item URL: <a href=\"{ item_url }\">item_url</a>"
+            ]
+        )
+
+        mail_recipients = [
+            tech.user.email for tech in Technician.objects.filter(user__isnull=False).filter(user__email__gt='')
+        ] + ( [ self.object.submitted_by.email ] if self.object.submitted_by is not None and self.object.submitted_by.email > '' else [] )
+
+        send_mail(
+            'Note added to Tech Item: ' + self.object.item.short_description,
+            mail_message,
+            'suvapuli@tougshrire.com',
+            mail_recipients,
+            html_message=mail_html_message,
+            fail_silently=False,
+        )
+
+        return response
+
+    def get_success_url(self):
+
+        item = Item.objects.get(pk=self.kwargs.get('itempk'))
+
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
+            return reverse_lazy('libtekin:item-itemnote-close', kwargs={'pk': self.object.pk})
+        else:
+            return reverse_lazy('libtekin:item-detail', kwargs={'pk': item.pk})
+
+class ItemItemNoteClose(PermissionRequiredMixin, DetailView):
+    permission_required = 'libtekin.add_item'
+    model = ItemNote
+    template_name = 'libtekin/itemitemnote_closer.html'
