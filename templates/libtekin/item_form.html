@@ -140,9 +140,11 @@
     function movePrimaryIdField() {
       var primaryFieldDiv = document.getElementById('div_primary_id_field')
       var primaryDiv = document.getElementById('div_' + document.getElementById('{{ form.primary_id_field.id_for_label }}').value)
-      var parent = primaryDiv.parentElement
-      parent.removeChild(primaryDiv)
-      parent.insertBefore(primaryDiv, primaryFieldDiv.nextSibling)
+      if(primaryDiv!=null) {
+        var parent = primaryDiv.parentElement
+        parent.removeChild(primaryDiv)
+        parent.insertBefore(primaryDiv, primaryFieldDiv.nextSibling)
+      }
     }
     document.getElementById('{{ form.mmodel.id_for_label }}').addEventListener('change', function() {
       setPrimaryIdField();
