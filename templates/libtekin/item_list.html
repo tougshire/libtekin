@@ -85,6 +85,34 @@
       <div class="field-wrapper">
         <div class="control">
           <div class="label">
+            Location is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__location__in">
+              {% for location in locations %}
+                <option value="{{ location.pk }}"{% if 'location__in' in filter_object %}{% if location.pk|lower in filter_object.location__in %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
+            Home is in
+          </div>
+          <div class="field">
+            <select multiple name="filter__home__in">
+              {% for location in locations %}
+                <option value="{{ location.pk }}"{% if 'home__in' in filter_object %}{% if location.pk|lower in filter_object.home__in %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-wrapper">
+        <div class="control">
+          <div class="label">
             Condition is in
           </div>
           <div class="field">

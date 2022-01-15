@@ -179,6 +179,10 @@ class ItemList(PermissionRequiredMixin, ListView):
             'borrower__full_name',
             'owner__friendly_name',
             'owner__full_name',
+            'home__short_name',
+            'home__full_name',
+            'location__short_name',
+            'location__full_name',
     ]
 
     for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
@@ -189,7 +193,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
         )
     filter_fields = {
-        'in':['mmodel', 'mmodel__category', 'condition', 'role']
+        'in':['mmodel', 'mmodel__category', 'condition', 'role', 'location', 'home']
     }
     showable_columns = []
     show_columns = []
@@ -237,6 +241,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
         context_data['roles'] = Role.objects.all()
+        context_data['locations'] = Location.objects.all()
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         context_data['order_by_fields'] = self.order_by_fields
         context_data['order_by'] = self.order_by
