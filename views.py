@@ -248,6 +248,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['showable_columns'] = self.showable_columns
         context_data['show_columns'] = self.show_columns
         context_data['combined_text_search'] = self.combined_text_search
+        context_data['ordering'] = Item._meta.ordering
 
         if self.filter_object:
             context_data['filter_object'] = self.filter_object

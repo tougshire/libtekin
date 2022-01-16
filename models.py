@@ -355,7 +355,7 @@ class Item(models.Model):
         return f'{self.common_name}'
 
     class Meta:
-        ordering = ['common_name']
+        ordering = ['primary_id']
 
     objects = ItemNotDeletedManager()
     all_objects = models.Manager()
