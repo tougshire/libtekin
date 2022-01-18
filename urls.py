@@ -36,6 +36,4 @@ urlpatterns = [
     path('mmodelcategory/list/', views.MmodelCategoryList.as_view(), name='mmodelcategory-list'),
     path('mmodelcategory/<int:pk>/close/', views.MmodelCategoryClose.as_view(), name="mmodelcategory-close"),
     path('mmodel/<int:pk>/primary_id_field/', views.get_primary_id_field, name="get_primary_id_field"),
-    path('item/<int:itempk>/itemnote/create/', views.ItemItemNoteCreate.as_view(), name='item-itemnote-create'),
-    path('item/itemnote/<int:pk>/close/', views.ItemItemNoteClose.as_view(), name='item-itemnote-close'),
 ]

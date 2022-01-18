@@ -60,22 +60,6 @@ class ItemNoteForm(ModelForm):
             'details':forms.Textarea( attrs={ "class":"len75"})
         }
 
-class ItemItemNoteForm(ModelForm):
-    class Meta:
-        model = ItemNote
-        fields = [
-            'item',
-            'when',
-            'text',
-            'details',
-            'is_major',
-        ]
-        widgets = {
-            'when':forms.DateInput( attrs={ "type":"date" } ),
-            'text':forms.TextInput( attrs={ "class":"len75"}),
-            'details':forms.Textarea( attrs={ "class":"len75"})
-        }
-
 class MmodelForm(ModelForm):
     class Meta:
         model = Mmodel
