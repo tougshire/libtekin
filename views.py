@@ -82,7 +82,6 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
             return reverse_lazy('libtekin:item-detail', kwargs={'pk': self.object.pk})
 
 
-
 class ItemUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.change_item'
     model = Item
