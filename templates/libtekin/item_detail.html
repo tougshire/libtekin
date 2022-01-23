@@ -4,15 +4,17 @@
   {% include './item_detail_include.html' %}
 
   <div class="menu menu-bottom">
-    <div class="menu-item">
-    <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
-    </div>
-    <div class="menu-item">
-      <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
-    </div>
-    <div class="menu-item">
-    <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
-    </div>
+    {% if perms.libtekin.change_item %}
+      <div class="menu-item">
+      <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
+      </div>
+      <div class="menu-item">
+      <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
 
