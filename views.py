@@ -193,7 +193,8 @@ class ItemList(PermissionRequiredMixin, ListView):
         )
     filter_fields = {
         'in':['mmodel', 'mmodel__category', 'condition', 'role', 'location', 'home'],
-        'lt':['latest_inventory']
+        'lte':['latest_inventory'],
+        'gte':['latest_inventory'],
     }
     showable_columns = []
     show_columns = []
