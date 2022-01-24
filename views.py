@@ -160,6 +160,15 @@ class ItemList(PermissionRequiredMixin, ListView):
     exclude_object = {}
     order_by = []
     order_by_fields=[]
+
+    for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
+        order_by_fields.append(
+            { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
+        )
+        order_by_fields.append(
+            { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
+        )
+
     combined_text_search=""
     combined_text_fields=[
             'common_name',
@@ -184,13 +193,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             'location__full_name',
     ]
 
-    for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
-        order_by_fields.append(
-            { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
-        )
-        order_by_fields.append(
-            { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
-        )
     filter_fields = {
         'in':['mmodel', 'mmodel__category', 'condition', 'role', 'location', 'home'],
         'lte':['latest_inventory'],
