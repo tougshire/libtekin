@@ -192,7 +192,8 @@ class ItemList(PermissionRequiredMixin, ListView):
             { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
         )
     filter_fields = {
-        'in':['mmodel', 'mmodel__category', 'condition', 'role', 'location', 'home']
+        'in':['mmodel', 'mmodel__category', 'condition', 'role', 'location', 'home'],
+        'lt':['latest_inventory']
     }
     showable_columns = []
     show_columns = []
