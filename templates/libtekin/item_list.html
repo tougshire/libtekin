@@ -62,7 +62,7 @@
             Model is
           </div>
           <div class="field">
-            <select multiple name="filter__compl__in">
+            <select multiple name="filter__mmodel__in">
               {% for mmodel in mmodels %}
                 <option value="{{ mmodel.pk }}"{% if 'mmodel__in' in filter_object %}{% if mmodel.pk|lower in filter_object.mmodel__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
               {% endfor %}
@@ -145,10 +145,10 @@
       <div class="field-wrapper">
         <div class="control">
           <div class="label">
-            Last Inventoried Before
+            Last Inventoried On or Before
           </div>
           <div class="field">
-            <input type="date" name="filter__latest_inventory__lt" value="{{ filter_object.latest_inventory__lt }}">
+            <input type="date" name="filter__latest_inventory__lte" value="{{ filter_object.latest_inventory__lte }}">
           </div>
         </div>
       </div>
