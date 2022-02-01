@@ -12,33 +12,33 @@
           <div class="field">
             <select name="order_by">
               {% if order_by.0 %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if order_by.0 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% else %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if ordering.0 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% endif %}
             </select>
             <select name="order_by">
               {% if order_by.1 %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if order_by.1 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% else %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if ordering.1 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% endif %}
             </select>
             <select name="order_by">
               {% if order_by.2 %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if order_by.2 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% else %}
-                {% for field in order_by_fields %}
+                {% for field in order_by_fields_available %}
                   <option value="{{ field.name }}"{% if ordering.2 == field.name %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
                 {% endfor %}
               {% endif %}
@@ -62,26 +62,29 @@
             Model is
           </div>
           <div class="field">
-            <select multiple name="filter__mmodel__in">
+            <input type="hidden" name="filterop__mmodel" value="in">
+            <select multiple name="filterfield__mmodel">
               {% for mmodel in mmodels %}
-                <option value="{{ mmodel.pk }}"{% if 'mmodel__in' in filter_object %}{% if mmodel.pk|lower in filter_object.mmodel__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
+                <option value="{{ mmodel.pk }}"{% if filterfield__mmodel %}{% if mmodel.pk|lower in filterfield__mmodel %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
               {% endfor %}
             </select>
-            <input type="checkbox" name="filter__mmodel__none">
+            <input type="checkbox" name="filterop__mmodel">
           </div>
         </div>
       </div>
       <div class="field-wrapper">
         <div class="control">
           <div class="label">
-            Category is
+            Category is  {{ filterfield__mmodel__category }}{% if filterfield__mmodel__category %}something{% else %}nothing{% endif %}
           </div>
           <div class="field">
-            <select multiple name="filter__mmodel__category__in">
+            <input type="hidden" name="filterop__mmodel__category" value="in">
+            <select multiple name="filterfield__mmodel__category">
               {% for mmodelcategory in mmodelcategories %}
-                <option value="{{ mmodelcategory.pk }}"{% if 'mmodel__category__in' in filter_object %}{% if mmodelcategory.pk|lower in filter_object.mmodel__category__in %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
+                <option value="{{ mmodelcategory.pk }}"{% if filterfield__mmodel__category %}{% if mmodelcategory.pk|lower in filterfield__mmodel__category %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
               {% endfor %}
             </select>
+            <input type="checkbox" name="filter__mmodel__category__none">
           </div>
         </div>
       </div>
@@ -91,13 +94,14 @@
             Role is
           </div>
           <div class="field">
-            <select multiple name="filter__role__in">
+            <input type="hidden" name="filterop__role" value="in">
+            <select multiple name="filterfield__role">
               {% for role in roles %}
-                <option value="{{ role.pk }}"{% if 'role__in' in filter_object %}{% if role.pk|lower in filter_object.role__in %} selected="SELECTED" {% endif %}{% endif %}>{{ role }}</option>
+                <option value="{{ role.pk }}"{% if filterfield__role %}{% if role.pk|lower in filterfield__role %} selected="SELECTED" {% endif %}{% endif %}>{{ role }}</option>
               {% endfor %}
             </select>
-            <input type="checkbox" name="filter__role__none" {% if 'role__none' in filter_object %} checked="CHECKED"{% endif %}>No Role
-          </div>
+            <input type="checkbox" name="filter__role__none">
+        </div>
         </div>
       </div>
       <div class="field-wrapper">
@@ -106,11 +110,13 @@
             Location is
           </div>
           <div class="field">
-            <select multiple name="filter__location__in">
+            <input type="hidden" name="filterop__location" value="in">
+            <select multiple name="filterfield__location">
               {% for location in locations %}
-                <option value="{{ location.pk }}"{% if 'location__in' in filter_object %}{% if location.pk|lower in filter_object.location__in %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
+                <option value="{{ location.pk }}"{% if filterfield__location %}{% if location.pk|lower in filterfield__location %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
               {% endfor %}
             </select>
+            <input type="checkbox" name="filter__location__none">
           </div>
         </div>
       </div>
@@ -120,11 +126,13 @@
             Home is
           </div>
           <div class="field">
-            <select multiple name="filter__home__in">
+            <input type="hidden" name="filterop__home" value="in">
+            <select multiple name="filterfield__home">
               {% for location in locations %}
-                <option value="{{ location.pk }}"{% if 'home__in' in filter_object %}{% if location.pk|lower in filter_object.home__in %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
+                <option value="{{ location.pk }}"{% if filterfield__home %}{% if location.pk|lower in filterfield__home %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
               {% endfor %}
             </select>
+            <input type="checkbox" name="filter__home__none">
           </div>
         </div>
       </div>
@@ -134,11 +142,13 @@
             Condition is
           </div>
           <div class="field">
-            <select multiple name="filter__condition__in">
+            <input type="hidden" name="filterop__condition" value="in">
+            <select multiple name="filterfield__condition">
               {% for condition in conditions %}
-                <option value="{{ condition.pk }}"{% if 'condition__in' in filter_object %}{% if condition.pk|lower in filter_object.condition__in %} selected="SELECTED" {% endif %}{% endif %}>{{ condition }}</option>
+                <option value="{{ condition.pk }}"{% if filterfield__condition %}{% if condition.pk|lower in filterfield__condition %} selected="SELECTED" {% endif %}{% endif %}>{{ condition }}</option>
               {% endfor %}
             </select>
+            <input type="checkbox" name="filter__location__none">
           </div>
         </div>
       </div>
@@ -148,7 +158,8 @@
             Last Inventoried On or Before
           </div>
           <div class="field">
-            <input type="date" name="filter__latest_inventory__lte" value="{{ filter_object.latest_inventory__lte }}">
+            <input type="hidden" name="filterop__latest_inventory" value="lte">
+            <input type="date" name="filterfield__latest_inventory" value="{{ filterfield__latest_inventory }}">
           </div>
         </div>
       </div>
@@ -185,7 +196,7 @@
             &nbsp;
           </div>
           <div class="field">
-            <button type="submit" name="query_submitted" value='True'>Submit</button>
+            <button type="submit" name="vista_query_submitted" value='True'>Submit</button>
           </div>
         </div>
         <div class="help_text">
@@ -217,7 +228,7 @@
             Action
           </div>
           <div class="field">
-            <button type="submit" name="get_vista" value="get">Get</button>
+            <button type="submit" name="retrieve_vista" value="retrieve_vista">Get</button>
             <button type="submit" name="delete_vista" value="delete">Delete</button>
           </div>
         </div>
