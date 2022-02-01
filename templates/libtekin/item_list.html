@@ -264,6 +264,12 @@
         {% if 'network_name' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.network_name %}
         {% endif %}
+        {% if 'phone_number' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.phone_number %}
+        {% endif %}
+        {% if 'essid' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.essid %}
+        {% endif %}
         {% if 'role' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.role %}
         {% endif %}
@@ -318,6 +324,12 @@
           {% endif %}
           {% if 'network_name' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.network_name %}
+          {% endif %}
+          {% if 'phone_number' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.phone_number %}
+          {% endif %}
+          {% if 'essid' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.essid %}
           {% endif %}
           {% if 'role' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.role %}

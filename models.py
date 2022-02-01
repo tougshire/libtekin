@@ -247,7 +247,6 @@ class Item(models.Model):
         blank=True,
         help_text='The item\'s network name'
     )
-
     serial_number = models.CharField(
         'serial number',
         max_length=100,
@@ -271,6 +270,18 @@ class Item(models.Model):
         max_length=100,
         blank=True,
         help_text='The barcode attached to this item'
+    )
+    phone_number = models.CharField(
+        'phone_number',
+        max_length=100,
+        blank=True,
+        help_text='The phone number of the device'
+    )
+    essid = models.CharField(
+        'ESSID',
+        max_length=100,
+        blank=True,
+        help_text='The device\'s ESSID'
     )
     owner = models.ForeignKey(
         Entity,

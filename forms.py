@@ -29,6 +29,8 @@ class ItemForm(ModelForm):
             'service_number',
             'asset_number',
             'barcode',
+            'phone_number',
+            'essid',
             'condition',
             'network_name',
             'assignee',
