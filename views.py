@@ -10,7 +10,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
-from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista
+from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista
 
 from .forms import (EntityForm, ItemForm, ItemItemNoteFormset, LocationForm,
                     MmodelCategoryForm, MmodelForm)
@@ -172,28 +172,28 @@ class ItemList(PermissionRequiredMixin, ListView):
         }
 
         self.vista_settings['text_fields_available']=[
-                'common_name',
-                'mmodel__model_name',
-                'mmodel__category__name',
-                'mmodel__brand',
-                'primary_id',
-                'serial_number',
-                'service_number',
-                'asset_number',
-                'barcode',
-                'phone_number',
-                'essid',
-                'network_name',
-                'assignee__friendly_name',
-                'assignee__full_name',
-                'borrower__friendly_name',
-                'borrower__full_name',
-                'owner__friendly_name',
-                'owner__full_name',
-                'home__short_name',
-                'home__full_name',
-                'location__short_name',
-                'location__full_name',
+            'common_name',
+            'mmodel__model_name',
+            'mmodel__category__name',
+            'mmodel__brand',
+            'primary_id',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'essid',
+            'network_name',
+            'assignee__friendly_name',
+            'assignee__full_name',
+            'borrower__friendly_name',
+            'borrower__full_name',
+            'owner__friendly_name',
+            'owner__full_name',
+            'home__short_name',
+            'home__full_name',
+            'location__short_name',
+            'location__full_name',
         ]
 
         self.vista_settings['filter_fields_available'] = [
@@ -206,40 +206,39 @@ class ItemList(PermissionRequiredMixin, ListView):
             'latest_inventory'
         ]
 
-        for fieldname in ['common_name', 'mmodel', 'primary_id', 'serial_number','service_number', 'latest_inventory']:
-            self.vista_settings['order_by_fields_available'].append(
-                { 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() }
-            )
-            self.vista_settings['order_by_fields_available'].append(
-                { 'name':'-' + fieldname, 'label':'{} reverse'.format(Item._meta.get_field(fieldname).verbose_name.title()) }
-            )
+        for fieldname in [
+            'common_name',
+            'mmodel',
+            'primary_id',
+            'serial_number',
+            'service_number',
+            'latest_inventory'
+        ]:
+            self.vista_settings['order_by_fields_available'].append(fieldname)
+            self.vista_settings['order_by_fields_available'].append('-' + fieldname)
+
 
         for fieldname in [
-                'common_name',
-                'mmodel',
-                'primary_id_field',
-                'serial_number',
-                'service_number',
-                'asset_number',
-                'barcode',
-                'phone_number',
-                'essid',
-                'condition',
-                'network_name',
-                'assignee',
-                'owner',
-                'borrower',
-                'home',
-                'location',
-                'role',
-                'latest_inventory'
-            ]:
-            self.vista_settings['columns_available'].append(
-                {
-                    'name':fieldname,
-                    'label':Item._meta.get_field(fieldname).verbose_name.title()
-                }
-            )
+            'common_name',
+            'mmodel',
+            'primary_id_field',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'essid',
+            'condition',
+            'network_name',
+            'assignee',
+            'owner',
+            'borrower',
+            'home',
+            'location',
+            'role',
+            'latest_inventory'
+        ]:
+            self.vista_settings['columns_available'].append(fieldname)
 
         return super().setup(request, *args, **kwargs)
 
@@ -256,9 +255,12 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         queryset = super().get_queryset()
         vistaobj={'context':{}, 'queryset':queryset}
+        if 'delete_vista' in self.request.POST:
+            delete_vista(self.request)
+
         if 'vista_query_submitted' in self.request.POST:
             vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset())
-        elif 'get_vista' in self.request.POST:
+        elif 'retrieve_vista' in self.request.POST:
             vistaobj = retrieve_vista(self.request, self.vista_settings, super().get_queryset())
         else:
             try:
@@ -268,7 +270,6 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         for key in vistaobj['context']:
             self.vista_context[key] = vistaobj['context'][key]
-
 
         queryset = vistaobj['queryset']
 
@@ -281,11 +282,16 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['conditions'] = Condition.objects.all()
         context_data['roles'] = Role.objects.all()
         context_data['locations'] = Location.objects.all()
-        context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
-        context_data['order_by_fields_available'] = self.vista_settings['order_by_fields_available']
-        context_data['columns_available'] = self.vista_settings['columns_available']
+        context_data['order_by_fields_available'] = []
         context_data['ordering'] = Item._meta.ordering
+        for fieldname in self.vista_settings['order_by_fields_available']:
+            if fieldname[0] == '-':
+                context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':Item._meta.get_field(fieldname[1:]).verbose_name.title() + ' [Reverse]'})
+            else:
+                context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title()})
+        context_data['columns_available'] = [{ 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() } for fieldname in self.vista_settings['columns_available']]
 
+        context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
         if self.request.POST.get('vista__name'):
             context_data['vista__name'] = self.request.POST.get('vista__name')
 
