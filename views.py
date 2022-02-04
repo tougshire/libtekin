@@ -1,5 +1,4 @@
 import json, sys
-from tkinter import E
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
