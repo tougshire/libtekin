@@ -1,4 +1,5 @@
-import json
+import json, sys
+from tkinter import E
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -10,7 +11,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
-from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista
+from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista, get_global_vista
 
 from .forms import (EntityForm, ItemForm, ItemItemNoteFormset, LocationForm,
                     MmodelCategoryForm, MmodelForm)
@@ -161,6 +162,7 @@ class ItemSoftDelete(PermissionRequiredMixin, UpdateView):
 class ItemList(PermissionRequiredMixin, ListView):
     permission_required = 'libtekin.view_item'
     model = Item
+    paginate_by = 30
 
     def setup(self, request, *args, **kwargs):
 
@@ -240,6 +242,11 @@ class ItemList(PermissionRequiredMixin, ListView):
         ]:
             self.vista_settings['columns_available'].append(fieldname)
 
+        self.vista_defaults = {
+            'order_by': Item._meta.ordering,
+            'paginate_by':self.paginate_by
+        }
+
         return super().setup(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -254,19 +261,27 @@ class ItemList(PermissionRequiredMixin, ListView):
         }
 
         queryset = super().get_queryset()
+
         vistaobj={'context':{}, 'queryset':queryset}
+
         if 'delete_vista' in self.request.POST:
             delete_vista(self.request)
 
         if 'vista_query_submitted' in self.request.POST:
-            vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset())
+            vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
         elif 'retrieve_vista' in self.request.POST:
-            vistaobj = retrieve_vista(self.request, self.vista_settings, super().get_queryset())
+            vistaobj = retrieve_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
         else:
             try:
-                vistaobj =  get_latest_vista(self.request, self.vista_settings, super().get_queryset())
-            except Exception as e:
-                print(e)
+                vistaobj =  get_latest_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+            except Vista.DoesNotExist as e:
+                print(type(e), e, ' at ', sys.exc_info()[2].tb_lineno)
+                try:
+                    vistaobj =  get_global_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+                except Vista.DoesNotExist as e:
+                    print(type(e), e, ' at ', sys.exc_info()[2].tb_lineno)
+                    vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+
 
         for key in vistaobj['context']:
             self.vista_context[key] = vistaobj['context'][key]
@@ -275,23 +290,34 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         return queryset
 
+    def get_paginate_by(self, queryset):
+
+        if 'paginate_by' in self.vista_context and self.vista_context['paginate_by']:
+            return self.vista_context['paginate_by']
+
+        return super().get_paginate_by(self)
+
     def get_context_data(self, **kwargs):
+
         context_data = super().get_context_data(**kwargs)
+
         context_data['mmodels'] = Mmodel.objects.all()
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
         context_data['roles'] = Role.objects.all()
         context_data['locations'] = Location.objects.all()
+
         context_data['order_by_fields_available'] = []
-        context_data['ordering'] = Item._meta.ordering
         for fieldname in self.vista_settings['order_by_fields_available']:
-            if fieldname[0] == '-':
+            if fieldname > '' and fieldname[0] == '-':
                 context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':Item._meta.get_field(fieldname[1:]).verbose_name.title() + ' [Reverse]'})
             else:
                 context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title()})
+
         context_data['columns_available'] = [{ 'name':fieldname, 'label':Item._meta.get_field(fieldname).verbose_name.title() } for fieldname in self.vista_settings['columns_available']]
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all()
+
         if self.request.POST.get('vista__name'):
             context_data['vista__name'] = self.request.POST.get('vista__name')
 
@@ -303,9 +329,10 @@ class ItemList(PermissionRequiredMixin, ListView):
         for key in [
             'combined_text_search',
             'text_fields_chosen',
-            'order_by'
+            'order_by',
+            'paginate_by'
             ]:
-            if key in self.vista_context:
+            if key in self.vista_context and self.vista_context[key]:
                 context_data[key] = self.vista_context[key]
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
