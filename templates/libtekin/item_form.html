@@ -121,8 +121,7 @@
     addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
     addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
 
-    function getControlIds(modelName) {
-      console.log('getControlIds is called')
+    function getControlIdsForPopups(modelName) {
       controlIds={
         'Mmodel': ['id_mmodel'],
         'Location': ['id_location', 'id_home'],
