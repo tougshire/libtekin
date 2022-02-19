@@ -401,7 +401,7 @@ class ItemNote(models.Model):
     )
 
     def __str__(self):
-        return f'{self.when}: {self.text}' if self.when else self.text
+        return f'{self.when.isoformat()}: {self.text}' if self.when else self.text
 
     class Meta:
         ordering = ['-when', 'text']
