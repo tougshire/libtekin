@@ -1,6 +1,6 @@
 {% load static %}
 {% load url_utils %}
-{% load shared_stuff %}
+{% load tougshare %}
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -20,7 +20,10 @@
 </ul>
 {% endif %}
 {% block menu %}
-{% include 'suvapuli/menu.html' %}
+{% project_menu_template as promenu %}
+{% if promenu %}
+  {% include promenu %}
+{% endif %}
 {% endblock %}
 {% block content %}{% endblock %}
 {% block bottomscript %}{% endblock %}
