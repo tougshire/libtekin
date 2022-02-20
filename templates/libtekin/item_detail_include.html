@@ -19,9 +19,9 @@
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
     {% include './_detail_field.html' with label=item_labels.latest_inventory field=object.latest_inventory %}
 
-    <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleMajor">Show Major</a>
+    <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for itemnote in object.itemnote_set.all %}
-      <div class="relatedset relateditemnote{% if itemnote.is_major %} major{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
+      <div class="relatedset relateditemnote{% if itemnote.is_current %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
         <div class="fieldWrapper">
           <div class="control">
             <div class="label">
@@ -37,32 +37,32 @@
   </div>
 
   <script>
-    function toggleMajorNotes() {
+    function toggleCurrentNotes() {
       var itemNotes=document.getElementsByClassName('relateditemnote')
       var itemNotesShowing = document.getElementById('div_itemNotesShowing')
-      var toggleMajor = document.getElementById('a_toggleMajor')
-      if(toggleMajor.textContent=='Show All '){
+      var toggleCurrent = document.getElementById('a_toggleCurrent')
+      if(toggleCurrent.textContent=='Show All '){
         for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('major'))){
+          if(!(itemNote.classList.contains('current'))){
             itemNote.classList.remove('hidden')
           }
         }
-        toggleMajor.textContent='Show Major '
+        toggleCurrent.textContent='Show Current '
         itemNotesShowing.textContent='Showing All '
       } else {
         for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('major'))){
+          if(!(itemNote.classList.contains('current'))){
             console.log('adding hidden')
             itemNote.classList.add('hidden')
           }
         }
-        toggleMajor.textContent='Show All '
-        itemNotesShowing.textContent='Showing Major '
+        toggleCurrent.textContent='Show All '
+        itemNotesShowing.textContent='Showing Current '
       }
     }
-    toggleMajorNotes()
-    document.getElementById('a_toggleMajor').addEventListener('click', function(e) {
+    toggleCurrentNotes()
+    document.getElementById('a_toggleCurrent').addEventListener('click', function(e) {
       e.preventDefault()
-      toggleMajorNotes()
+      toggleCurrentNotes()
     });
   </script>

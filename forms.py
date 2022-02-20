@@ -54,7 +54,7 @@ class ItemNoteForm(ModelForm):
             'when',
             'text',
             'details',
-            'is_major',
+            'is_current',
         ]
         widgets = {
             'when':forms.DateInput( attrs={ "type":"date" } ),

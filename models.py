@@ -394,7 +394,7 @@ class ItemNote(models.Model):
         blank=True,
         help_text='The details of the note if the summary is not sufficient'
     )
-    is_major = models.BooleanField(
+    is_current = models.BooleanField(
         'is major or current status',
         default=False,
         help_text='If this note is diplayed by default in the item detail view.  If not, it will be displayed when "Show All" is selected'
