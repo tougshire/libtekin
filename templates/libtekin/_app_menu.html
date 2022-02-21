@@ -8,8 +8,21 @@
       </div>
     {% else %}
       <div class="menu-item">
-        <a href="{{ libtekin_url }}">Items</a>
+        <a href="{{ item_url }}">Items</a>
       </div>
     {% endif %}
   {% endif %}
+  {% if perms.libtekin.view_mmodel %}
+    {% url 'libtekin:mmodel-list' as mmodel_url %}
+    {% if mmodel_url == url_here %}
+      <div class="menu-item menu-here">
+        Models
+      </div>
+    {% else %}
+      <div class="menu-item">
+        <a href="{{ mmodel_url }}">Models</a>
+      </div>
+    {% endif %}
+  {% endif %}
+
 </div>

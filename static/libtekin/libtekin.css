@@ -14,7 +14,7 @@
     width:40%;
 }
 
-.menu-top {
+.menu-top, .app-menu {
     display: flex;
     justify-content: space-around;
     width: 100%;
@@ -154,6 +154,10 @@
 .menu {
     color: white;
     background-color:cornflowerblue;
+}
+
+.app-menu {
+    background-color:cadetblue
 }
 
 .menu a:link, .menu a:visited {
