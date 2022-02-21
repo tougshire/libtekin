@@ -1,11 +1,12 @@
 {% load static %}
 {% load url_utils %}
-{% load tougshare %}
+{% load touglates_tags %}
+
 <!DOCTYPE html>
 <html lang='en'>
 <head>
 <title>Library Technical Inventory</title>
-{% global_css_file as glocssfile %}
+{% project_css_file as glocssfile %}
 {% if glocssfile %}
   <link rel="stylesheet" href="{% static glocssfile %}">
 {% endif %}
@@ -20,9 +21,9 @@
 </ul>
 {% endif %}
 {% block menu %}
-{% project_menu_template as promenu %}
-{% if promenu %}
-  {% include promenu %}
+{% project_include_file as includefile %}
+{% if includefile %}
+  {% include includefile %}
 {% endif %}
 {% endblock %}
 {% block content %}{% endblock %}
