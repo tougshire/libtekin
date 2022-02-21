@@ -1,0 +1,15 @@
+
+<div class="menu app-menu">
+  {% if perms.libtekin.view_item %}
+    {% url 'libtekin:item-list' as item_url %}
+    {% if item_url == url_here %}
+      <div class="menu-item menu-here">
+        Items
+      </div>
+    {% else %}
+      <div class="menu-item">
+        <a href="{{ libtekin_url }}">Items</a>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
