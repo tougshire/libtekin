@@ -71,35 +71,35 @@
     content: "\00a0"
 }
 
-.viewform .viewformset {
+.vista .viewformset {
     margin-left:2em;
 }
 
-.viewform .field-wrapper {
+.vista .field-wrapper {
     margin-top:.5em;
 }
 
-.viewform .control {
+.vista .control {
     display:flex;
 }
 
-.viewform .label {
+.vista .label {
     width:15%;
 }
 
-.viewform .help_text {
+.vista .help_text {
     margin-left:15%;
 }
 
-.viewform .viewformset {
+.vista .viewformset {
     margin-left:2em;
 }
 
-.viewform .field-wrapper {
+.vista .field-wrapper {
     margin-top:.5em;
 }
 
-.viewform .control {
+.vista .control {
     display:flex;
 }
 .control .label {
