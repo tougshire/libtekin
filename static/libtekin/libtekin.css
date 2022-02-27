@@ -149,6 +149,7 @@
 
 .vista .controlset {
     grid-column: auto / span 1;
+    grid-row: auto;
     display:flex;
 }
 

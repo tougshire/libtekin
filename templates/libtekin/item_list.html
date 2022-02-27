@@ -2,10 +2,10 @@
 {% load static %}
 {% block content %}
   <button type="button" id='btn_showvista' class="show" data-showtext="Show the Sort Filter Form" data-hidetext="Hide the Sort Filter Form">Show Sort/Filter form</button>
-  <div id='div_vista' class="vista" >
+  <div id="div_vista">
     <form id="frm_vista" method="POST">
+      <div class="vista">
       {% csrf_token %}
-      <div class="field-wrapper">
         <div class="rowlabel">
           Sort By
         </div>
@@ -26,16 +26,12 @@
             {% endfor %}
           </select>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Quick Search
         </div>
         <div class="controlset">
           <input id="ctl_combined_text_search" name="combined_text_search" value="{{ combined_text_search }}">
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Model is
         </div>
@@ -55,8 +51,6 @@
             <input type="checkbox" name="filterop__mmodel" value="isnull" {% if 'isnull' in filterop__mmodel %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Category is  {{ filterfield__mmodel__category }}{% if filterfield__mmodel__category %}something{% else %}nothing{% endif %}
         </div>
@@ -76,8 +70,6 @@
             <input type="checkbox" name="filterop__mmodel__category" value="isnull" {% if 'isnull' in filterop__mmodel__category %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Role is
         </div>
@@ -97,8 +89,6 @@
             <input type="checkbox" name="filterop__role" value="isnull" {% if 'isnull' in filterop__role %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Location is
         </div>
@@ -118,8 +108,6 @@
             <input type="checkbox" name="filterop__location" value="isnull" {% if 'isnull' in filterop__location %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Home is
         </div>
@@ -139,8 +127,6 @@
             <input type="checkbox" name="filterop__home" value="isnull" {% if 'isnull' in filterop__home %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Condition is
         </div>
@@ -160,8 +146,6 @@
             <input type="checkbox" name="filterop__condition" value="isnull" {% if 'isnull' in filterop__condition %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Last Inventoried On or Before
         </div>
@@ -177,17 +161,13 @@
             <input type="checkbox" name="filterop__latest_inventory" value="isnull" {% if 'isnull' in filterop__latest_inventory %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Paginate By
         </div>
         <div class="controlset value">
           <input name="paginate_by" value="{{ paginate_by }}">
         </div>
-      </div>
 
-      <div class="field-wrapper">
         <div class="rowlabel">
           Show Fields
         </div>
@@ -198,18 +178,14 @@
             {% endfor %}
           </select>
         </div>
-      </div>
 
-      <div class="field-wrapper">
         <div class="rowlabel">
           Save Search
         </div>
         <div class="controlset">
           <input name="vista__name" value="">
         </div>
-      </div>
 
-      <div class="field-wrapper">
         <div class="rowlabel">
           &nbsp;
         </div>
@@ -219,27 +195,26 @@
         <div class="help_text">
           &nbsp;
         </div>
-      </div>
+     </div>
     </form>
 
+    <h3>Default View</h3>
     <form method="POST">
+      <div class="vista">
       {% csrf_token %}
-      <h3>Default View</h3>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Get Default
         </div>
         <div class="controlset">
-          <button type="submit" name="vista_query_submitted" value='True'>Submit</button>
+          <button type="submit" name="vista_query_submitted" value='True'>Get</button>
         </div>
       </div>
     </form>
 
-
+    <h3>Saved View</h3>
     <form method="POST">
+      <div class="vista">
       {% csrf_token %}
-      <h3>Saved View</h3>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Get Saved View
         </div>
@@ -251,8 +226,6 @@
             {% endfor %}
           </select>
         </div>
-      </div>
-      <div class="field-wrapper">
         <div class="rowlabel">
           Action
         </div>
