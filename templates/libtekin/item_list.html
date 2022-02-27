@@ -1,8 +1,8 @@
 {% extends './_base.html' %}
 {% load static %}
 {% block content %}
-  <button type="button" id='btn_showvista' class="show">Show Sort/Filter form</button>
-  <div id='div_vista' class="vista hidden" >
+  <button type="button" id='btn_showvista' class="show" data-showtext="Show the Sort Filter Form" data-hidetext="Hide the Sort Filter Form">Show Sort/Filter form</button>
+  <div id='div_vista' class="vista" >
     <form id="frm_vista" method="POST">
       {% csrf_token %}
       <div class="field-wrapper">
@@ -426,36 +426,22 @@
 
 
   <script>
-
-    function toggleSortFilterForm() {
-      btnShowvista = document.getElementById('btn_showvista')
-      var viewDiv = document.getElementById('div_vista')
-      viewDiv.classList.toggle('hidden')
-      if( viewDiv.classList.contains('hidden')) {
-        btnShowvista.textContent='Show Sort/Filter Form'
-      } else {
-        document.getElementById("ctl_combined_text_search").focus()
-        btnShowvista.textContent='Hide Sort/Filter Form'
-      }
-    }
-  </script>
-  <script>
     document.getElementById('btn_showvista').addEventListener('click', function(e){
       e.preventDefault
-      toggleSortFilterForm()
+      toggleVisibility(div_vista, 'btn_showvista')
     });
 
-  </script>
-  <script>
     document.addEventListener('keydown', function(e) {
       if(e.ctrlKey) {
         if(e.shiftKey) {
           if(e.which==70) {
             e.preventDefault();
-            toggleSortFilterForm()
+             toggleVisibility('div_vista', 'btn_showvista')
           }
         }
       }
     });
+    toggleVisibility('div_vista', 'btn_showvista', 0 )
+
   </script>
 {% endblock %}

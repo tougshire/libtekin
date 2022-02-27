@@ -5,6 +5,7 @@
 <html lang='en'>
 <head>
 <title>Library Technical Inventory</title>
+<script src="{% static 'touglates/touglates.js' %}"></script>
 <link rel="stylesheet" href="{% static 'libtekin/libtekin.css' %}">
 {% project_include_file 'main_css' as cssfile %}
 {% if cssfile %}<link rel="stylesheet" href="{% static cssfile %}">{% endif %}
@@ -25,6 +26,7 @@
 {% include './_app_menu.html' %}
 {% endblock %}
 {% block content %}{% endblock %}
-{% block bottomscript %}{% endblock %}
+{% block bottomscript %}
+{% endblock %}
 </body>
 </html>
