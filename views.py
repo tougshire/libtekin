@@ -4,16 +4,16 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormView
 from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista, get_global_vista
 
 from .forms import (EntityForm, ItemForm, ItemItemNoteFormset, LocationForm,
-                    MmodelCategoryForm, MmodelForm)
+                    MmodelCategoryForm, MmodelForm, ItemCopyForm)
 from .models import (Condition, Entity, History, Item, ItemNote, Location,
                      Mmodel, MmodelCategory, Role)
 
@@ -36,7 +36,7 @@ def update_history(form, modelname, object, user):
 
         history.save()
 
-def copy_item(request, pk):
+def xcopy_item(request, pk, qty=1):
     item = Item.objects.get(pk=pk)
     item.pk=None
     item.common_name = '[copy of] ' + item.common_name
@@ -138,6 +138,28 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
 
         return context_data
 
+class ItemCopy(DetailView, FormView):
+    permission_required = 'libtekin.add_item'
+    template_name='libtekin/item_confirm_copy.html'
+    form_class = ItemCopyForm
+    model = Item
+
+    def form_valid(self, form):
+
+        item = Item.objects.get(pk=self.kwargs.get('pk'))
+        qty = form.cleaned_data['qty']
+        print('m31a59', qty)
+        primary_id = item.primary_id
+        for n in range(0,qty):
+            print('m31b00')
+            item.pk=None
+            item.primary_id = '[copy of] ' + primary_id
+            setattr(item, item.primary_id_field, '[copy of] ' + primary_id)
+            item.save() # item is now a new item, the original item is untouched
+
+        return redirect(reverse_lazy('libtekin:item-list-by', kwargs={'fieldname':'primary_id', 'fieldvalue':primary_id} ))
+
+
 class ItemDelete(PermissionRequiredMixin, UpdateView):
     permission_required = 'libtekin.delete_item'
     model = Item
@@ -205,7 +227,8 @@ class ItemList(PermissionRequiredMixin, ListView):
             'role',
             'location',
             'home',
-            'latest_inventory'
+            'latest_inventory',
+            'primary_id',
         ]
 
         for fieldname in [
@@ -252,7 +275,11 @@ class ItemList(PermissionRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
+    def get_queryset(self, **kwargs):
+
+        print('tp m2sj26')
+        print(self.kwargs)
+        print(kwargs)
 
         self.vista_context = {
             'show_columns':[],
@@ -267,20 +294,24 @@ class ItemList(PermissionRequiredMixin, ListView):
         if 'delete_vista' in self.request.POST:
             delete_vista(self.request)
 
-        if 'vista_query_submitted' in self.request.POST:
-            vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
-        elif 'retrieve_vista' in self.request.POST:
-            vistaobj = retrieve_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+        if 'fieldname' in self.kwargs and 'fieldvalue' in self.kwargs:
+            if self.kwargs['fieldname'] in self.vista_settings['text_fields_available']:
+                vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), { 'filterfield__' + self.kwargs['fieldname']:self.kwargs['fieldvalue'], 'filterop__' + self.kwargs['fieldname']: 'contains' })
         else:
-            try:
-                vistaobj =  get_latest_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
-            except Vista.DoesNotExist as e:
-                print(type(e), e, ' at ', sys.exc_info()[2].tb_lineno)
+            if 'vista_query_submitted' in self.request.POST:
+                vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+            elif 'retrieve_vista' in self.request.POST:
+                vistaobj = retrieve_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+            else:
                 try:
-                    vistaobj =  get_global_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+                    vistaobj =  get_latest_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
                 except Vista.DoesNotExist as e:
                     print(type(e), e, ' at ', sys.exc_info()[2].tb_lineno)
-                    vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+                    try:
+                        vistaobj =  get_global_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
+                    except Vista.DoesNotExist as e:
+                        print(type(e), e, ' at ', sys.exc_info()[2].tb_lineno)
+                        vistaobj = make_vista(self.request, self.vista_settings, super().get_queryset(), self.vista_defaults)
 
 
         for key in vistaobj['context']:

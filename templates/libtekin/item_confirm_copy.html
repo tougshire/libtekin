@@ -1,0 +1,10 @@
+{% extends './_base.html' %}
+{% block content %}
+  {% include './item_detail_include.html' %}
+<form method="POST">
+{% csrf_token %}
+<div>
+Number of copies: <input name="qty">
+<button type="submit">Make Copies</button>
+</div>
+{% endblock %}
