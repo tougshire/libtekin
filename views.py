@@ -217,7 +217,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             'home__full_name',
             'location__short_name',
             'location__full_name',
-            'itemnote__text',
         ]
 
         self.vista_settings['filter_fields_available'] = [
