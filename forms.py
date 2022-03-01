@@ -40,6 +40,7 @@ class ItemForm(ModelForm):
             'latest_inventory',
             'location',
             'role',
+            'connected_to',
         ]
         widgets = {
             'mmodel': MmodelSelect,

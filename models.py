@@ -341,6 +341,13 @@ class Item(models.Model):
         on_delete=models.SET_NULL,
         help_text='The roles to which this item belongs'
     )
+    connected_to = models.ForeignKey(
+        "Item",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text='For peripherals and components, the device to which this item is connected. For example, if this item is a monitor, choose its computer.  If this is the computer, do not enter the monitor here'
+    )
     latest_inventory = models.DateField(
         'Latest Inventory Date',
         null=True,
