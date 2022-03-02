@@ -221,6 +221,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         ]
 
         self.vista_settings['filter_fields_available'] = [
+            'common_name',
             'mmodel',
             'mmodel__category',
             'condition',

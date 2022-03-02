@@ -5,7 +5,7 @@
   <div id="div_vista">
     <form id="frm_vista" method="POST">
       <div class="vista">
-      {% csrf_token %}
+        {% csrf_token %}
         <div class="rowlabel">
           Sort By
         </div>
@@ -26,6 +26,421 @@
             {% endfor %}
           </select>
         </div>
+        <div class="rowlabel">
+          Text Across Fields
+        </div>
+        <div class="controlset">
+          <input id="ctl_combined_text_search" name="combined_text_search" value="{{ combined_text_search }}">
+        </div>
+      </div>
+      <script>
+        var qty_searches = 5
+      </script>
+      {% for i in '01234' %}
+        <div id="div_fieldsearch_{{ i }}" class="vista fieldsearch"{% if not forloop.first %} style="display:none" {% endif %}>
+          <div class="rowlabel">
+            Field Search
+          </div>
+          <div class="controlset filterselectfield">
+            <select id="ctl_filterfield_{{ i }}">
+              <option value="">---</option>
+              <option value='primary_id'{% if filterfield__primary_id %} selected="SELECTED"{% endif %}>{{ item_labels.primary_id }}</option>
+              <option value='common_name'{% if filterfield__common_name %} selected="SELECTED"{% endif %}>{{ item_labels.common_name }}</option>
+              <option value='mmodel'{% if filterfield__mmodel %} selected="SELECTED"{% endif %}>{{ item_labels.mmodel }}</option>
+            </select>
+          </div>
+          <div id="div_filterfield__primary_id_{{ i }}" class="controlet filtervalue" style="display:none">
+            <input type="hidden" id="ctl_filterop__primary_id_{{ i }}" name="_filterop__primary_id" value="contains">
+            <input id="ctl_filterfield__primary_id_{{ i }}" name="_filterfield__primary_id" value="{{ filterfield__primary_id.0 }}">
+          </div>
+          <div id="div_filterfield__common_name_{{ i }}" class="controlet filtervalue" style="display:none">
+            <input type="hidden" id="ctl_filterop__common_name_{{ i }}" name="filterop__common_name" value="contains">
+            <input id="ctl_filterfield__common_name_{{ i }}" name="_filterfield__common_name" value="{{ filterfield__common_name.0 }}">
+          </div>
+          <div id="div_filterfield__mmodel_{{ i }}" class="controlet filtervalue" style="display:none">
+            <input type="hidden" id="ctl_filterop__mmodel_{{ i }}" name="filterop__mmodel" value="in">
+            <select multiple="MULTIPLE" id="ctl_filterfield__mmodel_{{ i }}" name="_filterfield__mmodel">
+              {% for mmodel in mmodels %}
+                <option value="{{ mmodel.pk }}"{% if filterfield__mmodel %}{% if mmodel.pk|lower in filterfield__mmodel %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      {% endfor %}
+
+      <script>
+        let fieldnames = {
+          'primary_id': {% if filterfield__primary_id %}{{ filterfield__primary_id|safe }}{% else %}[""]{% endif %},
+          'common_name': {% if filterfield__common_name %}{{ filterfield__common_name|safe }}{% else %}[""]{% endif %},
+          'mmodel': {% if filterfield__mmodel %}{{ filterfield__mmodel|safe }}{% else %}[""]{% endif %}
+        }
+
+        function showFilterField(select) {
+          let ctlNum = select.id.substring(16)
+          for(opt of select.options) {
+            if(opt.value){
+              document.getElementById('div_filterfield__' + opt.value + '_' + ctlNum ).style.display="none"
+              document.getElementById('ctl_filterfield__' + opt.value + '_' + ctlNum ).name="_filterfield__" + opt.value
+              document.getElementById('ctl_filterop__' + opt.value + '_' + ctlNum ).name="_filterop__" + opt.value
+            }
+          }
+          if(select.value) {
+            document.getElementById('div_filterfield__' + select.value  + '_' + ctlNum ).style.display="block"
+            document.getElementById('ctl_filterfield__' + select.value  + '_' + ctlNum ).name="filterfield__" + select.value
+            document.getElementById('ctl_filterop__' + select.value + '_' + ctlNum ).name="filterop__" + select.value
+          }
+        }
+
+        for( ctlNum=0; ctlNum < qty_searches; ctlNum++ ){
+          for( key of Object.keys(fieldnames)) {
+            if( fieldnames[key] ) {
+              document.getElementById('ctl_filterfield_' + ctlNum ).value = key
+              let control = document.getElementById('ctl_filterfield__' + key + '_' + ctlNum )
+              if(control.TAGNAME == "SELECT") {
+                for( value of fieldnames[key]) {
+                  for(option of control.options) {
+                    if(option.value= value) {
+                      option.selected="SELECTED"
+                    }
+                  }
+                }
+              } else {
+                document.getElementById('ctl_filterfield__' + key + '_' + ctlNum ).value = fieldnames[key][0]
+              }
+              delete fieldnames[key]
+              break
+            }
+          }
+          document.getElementById('ctl_filterfield_' + ctlNum).addEventListener('change', function(e) {
+            showFilterField(e.target)
+          })
+          showFilterField(document.getElementById('ctl_filterfield_' + ctlNum))
+          if( ctlNum < qty_searches - 1) {
+            let localCtlNum = ctlNum
+            document.getElementById('div_fieldsearch_' + ctlNum).addEventListener('click', function() {
+              document.getElementById('div_fieldsearch_' + ( localCtlNum + 1 )).style.removeProperty('display')
+            })
+          }
+        }
+      </script>
+
+      <div class="vista">
+        <div class="rowlabel">
+          Paginate By
+        </div>
+        <div class="controlset value">
+          <input name="paginate_by" value="{{ paginate_by }}">
+        </div>
+
+        <div class="rowlabel">
+          Show Fields
+        </div>
+        <div class="controlset value">
+          <select multiple="multiple" name="show_columns">
+            {% for field in showable_fields %}
+              <option value="{{ field.name }}"{% if field.name in show_columns %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="vista">
+        <div class="rowlabel">
+          Save Search
+        </div>
+        <div class="controlset">
+          <input name="vista__name" value="">
+        </div>
+
+        <div class="rowlabel">
+          &nbsp;
+        </div>
+        <div class="controlset">
+          <button type="submit" name="vista_query_submitted" value='True'>Search</button>
+        </div>
+        <div class="help_text">
+          &nbsp;
+        </div>
+      </div>
+    </form>
+
+    <h3>Default View</h3>
+    <form method="POST">
+      <div class="vista">
+        {% csrf_token %}
+        <div class="rowlabel">
+          Get Default
+        </div>
+        <div class="controlset">
+          <button type="submit" name="vista_query_submitted" value='True'>Default</button>
+        </div>
+      </div>
+    </form>
+
+
+    <h3>Saved View</h3>
+    <form method="POST">
+      <div class="vista">
+        {% csrf_token %}
+        <div class="rowlabel">
+          Get Saved View
+        </div>
+        <div class="controlset">
+          <select name="vista__name">
+            <option value=''>-----</option>
+            {% for vista in vistas%}
+              <option value="{{ vista.name }}">{{ vista.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="rowlabel">
+          Action
+        </div>
+        <div class="controlset">
+          <button type="submit" name="retrieve_vista" value="retrieve_vista">Get</button>
+          <button type="submit" name="delete_vista" value="delete">Delete</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <div class="list">
+    <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
+      <div class="row rowhead">
+        {% include './_list_head.html' with field='' %}
+        {% if 'common_name' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.common_name %}
+        {% endif %}
+        {% if 'mmodel' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.mmodel %}
+        {% endif %}
+        {% if 'primary_id' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.primary_id %}
+        {% endif %}
+        {% if 'serial_number' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.serial_number %}
+        {% endif %}
+        {% if 'service_number' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.service_number %}
+        {% endif %}
+        {% if 'asset_number' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.asset_number %}
+        {% endif %}
+        {% if 'barcode' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.barcode %}
+        {% endif %}
+        {% if 'network_name' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.network_name %}
+        {% endif %}
+        {% if 'phone_number' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.phone_number %}
+        {% endif %}
+        {% if 'essid' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.essid %}
+        {% endif %}
+        {% if 'role' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.role %}
+        {% endif %}
+        {% if 'connected_to' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.connected_to %}
+        {% endif %}
+        {% if 'condition' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.condition %}
+        {% endif %}
+        {% if 'home' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.home %}
+        {% endif %}
+        {% if 'location' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.location %}
+        {% endif %}
+        {% if 'assignee' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.assignee %}
+        {% endif %}
+        {% if 'borrower' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.borrower %}
+        {% endif %}
+        {% if 'owner' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.owner %}
+        {% endif %}
+        {% if 'latest_inventory' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.latest_inventory %}
+        {% endif %}
+
+
+      </div>
+
+      {% for item in object_list %}
+        <div class="row">
+          <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
+          {% if 'common_name' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.common_name %}
+          {% endif %}
+          {% if 'mmodel' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.mmodel %}
+          {% endif %}
+          {% if 'primary_id' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.primary_id %}
+          {% endif %}
+          {% if 'serial_number' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.serial_number %}
+          {% endif %}
+          {% if 'service_number' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.service_number %}
+          {% endif %}
+          {% if 'asset_number' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.asset_number %}
+          {% endif %}
+          {% if 'barcode' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.barcode %}
+          {% endif %}
+          {% if 'network_name' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.network_name %}
+          {% endif %}
+          {% if 'phone_number' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.phone_number %}
+          {% endif %}
+          {% if 'essid' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.essid %}
+          {% endif %}
+          {% if 'role' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.role %}
+          {% endif %}
+          {% if 'connected_to' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.connected_to %}
+          {% endif %}
+          {% if 'condition' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.condition %}
+          {% endif %}
+          {% if 'home' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.home.short_name %}
+          {% endif %}
+          {% if 'location' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.location.short_name %}
+          {% endif %}
+          {% if 'assignee' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.assignee.friendly_name %}
+          {% endif %}
+          {% if 'borrower' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.borrower.friendly_name %}
+          {% endif %}
+          {% if 'owner' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.owner.friendly_name %}
+          {% endif %}
+          {% if 'latest_inventory' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.latest_inventory %}
+          {% endif %}
+
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+  <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a id="a_first" href="?page=1">&laquo; first</a>
+            <a id="a_previous" href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a id="a_next" href="?page={{ page_obj.next_page_number }}">next</a>
+            <a id="a_last" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+
+{% endblock %}
+{% block bottomscript %}
+  {{ block.super }}
+
+  <script>
+
+    for( paginator of ['a_first', 'a_previous', 'a_next', 'a_last']) {
+      if(!(document.getElementById(paginator)==null) ) {
+        document.getElementById(paginator).addEventListener('click', function(e) {
+          e.preventDefault()
+          document.getElementById('frm_vista').action = e.target.href
+          document.getElementById('frm_vista').submit()
+        });
+      }
+    }
+  </script>
+
+
+  <script>
+    document.getElementById('btn_showvista').addEventListener('click', function(e){
+      e.preventDefault
+      toggleVisibility('div_vista', 'btn_showvista')
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if(e.ctrlKey) {
+        if(e.shiftKey) {
+          if(e.which==70) {
+            e.preventDefault();
+             toggleVisibility('div_vista', 'btn_showvista')
+          }
+        }
+      }
+    });
+    toggleVisibility('div_vista', 'btn_showvista', 0 )
+
+  </script>
+{% endblock %}
+
+
+
+{% comment %}
+          let ctlNum = 0;
+          let values = {
+            'primary_id': "{{ filterfield__primary_id }}",
+            'common_name': "{{ filterfield__common_name }}",
+            'mmodel': "{{ filterfield__mmodel }}"
+          }
+
+          for( key in Object.keys(values)) {
+            if( values[key] > "" ) {
+              document.getElementById('ctl_filterfield_' + key).value = key
+              ctlNum++
+              if(ctlNum == qty_searches) {
+                break
+              }
+            }
+          }
+        </script>
+
+
+        <script>
+          function showFilterField(select) {
+            let ctlNum = select.id.substring(16)
+            for(opt of select.options) {
+              if(opt.value){
+                document.getElementById('div_filterfield__' + opt.value + '_' + ctlNum ).style.display="none"
+                document.getElementById('ctl_filterfield__' + opt.value + '_' + ctlNum ).name="_filterfield__" + opt.value
+                document.getElementById('ctl_filterop__' + opt.value + '_' + ctlNum ).name="_filterop__" + opt.value
+              }
+            }
+            if(select.value) {
+              document.getElementById('div_filterfield__' + select.value  + '_' + ctlNum ).style.display="block"
+              document.getElementById('ctl_filterfield__' + select.value  + '_' + ctlNum ).name="filterfield__" + select.value
+              document.getElementById('ctl_filterop__' + select.value + '_' + ctlNum ).name="filterop__" + select.value
+            }
+          }
+          for(i=0; i < qty_searches; i++) {
+            document.getElementById('ctl_filterfield_' + i).addEventListener('change', function(e) {
+              showFilterField(e.target)
+            })
+            showFilterField(document.getElementById('ctl_filterfield_' + i))
+          }
+        </script>
+        {% endcomment %}
+
+<!-- old vista logic
         <div class="rowlabel">
           Quick Search
         </div>
@@ -184,263 +599,4 @@
             <input type="checkbox" name="filterop__latest_inventory" value="isnull" {% if 'isnull' in filterop__latest_inventory %}checked="CHECKED" {% endif %}>
           </div>
         </div>
-        <div class="rowlabel">
-          Paginate By
-        </div>
-        <div class="controlset value">
-          <input name="paginate_by" value="{{ paginate_by }}">
-        </div>
-
-        <div class="rowlabel">
-          Show Fields
-        </div>
-        <div class="controlset value">
-          <select multiple="multiple" name="show_columns">
-            {% for field in showable_fields %}
-              <option value="{{ field.name }}"{% if field.name in show_columns %} selected="SELECTED" {% endif %}>{{ field.label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="rowlabel">
-          Save Search
-        </div>
-        <div class="controlset">
-          <input name="vista__name" value="">
-        </div>
-
-        <div class="rowlabel">
-          &nbsp;
-        </div>
-        <div class="controlset">
-          <button type="submit" name="vista_query_submitted" value='True'>Submit</button>
-        </div>
-        <div class="help_text">
-          &nbsp;
-        </div>
-     </div>
-    </form>
-
-    <h3>Default View</h3>
-    <form method="POST">
-      <div class="vista">
-      {% csrf_token %}
-        <div class="rowlabel">
-          Get Default
-        </div>
-        <div class="controlset">
-          <button type="submit" name="vista_query_submitted" value='True'>Get</button>
-        </div>
-      </div>
-    </form>
-
-    <h3>Saved View</h3>
-    <form method="POST">
-      <div class="vista">
-      {% csrf_token %}
-        <div class="rowlabel">
-          Get Saved View
-        </div>
-        <div class="controlset">
-          <select name="vista__name">
-            <option value=''>-----</option>
-            {% for vista in vistas%}
-              <option value="{{ vista.name }}">{{ vista.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="rowlabel">
-          Action
-        </div>
-        <div class="controlset">
-          <button type="submit" name="retrieve_vista" value="retrieve_vista">Get</button>
-          <button type="submit" name="delete_vista" value="delete">Delete</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div class="list">
-    <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
-      <div class="row rowhead">
-        {% include './_list_head.html' with field='' %}
-        {% if 'common_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.common_name %}
-        {% endif %}
-        {% if 'mmodel' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.mmodel %}
-        {% endif %}
-        {% if 'primary_id' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.primary_id %}
-        {% endif %}
-        {% if 'serial_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.serial_number %}
-        {% endif %}
-        {% if 'service_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.service_number %}
-        {% endif %}
-        {% if 'asset_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.asset_number %}
-        {% endif %}
-        {% if 'barcode' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.barcode %}
-        {% endif %}
-        {% if 'network_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.network_name %}
-        {% endif %}
-        {% if 'phone_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.phone_number %}
-        {% endif %}
-        {% if 'essid' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.essid %}
-        {% endif %}
-        {% if 'role' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.role %}
-        {% endif %}
-        {% if 'connected_to' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.connected_to %}
-        {% endif %}
-        {% if 'condition' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.condition %}
-        {% endif %}
-        {% if 'home' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.home %}
-        {% endif %}
-        {% if 'location' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.location %}
-        {% endif %}
-        {% if 'assignee' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.assignee %}
-        {% endif %}
-        {% if 'borrower' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.borrower %}
-        {% endif %}
-        {% if 'owner' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.owner %}
-        {% endif %}
-        {% if 'latest_inventory' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.latest_inventory %}
-        {% endif %}
-
-
-      </div>
-
-      {% for item in object_list %}
-        <div class="row">
-          <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
-          {% if 'common_name' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.common_name %}
-          {% endif %}
-          {% if 'mmodel' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.mmodel %}
-          {% endif %}
-          {% if 'primary_id' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.primary_id %}
-          {% endif %}
-          {% if 'serial_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.serial_number %}
-          {% endif %}
-          {% if 'service_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.service_number %}
-          {% endif %}
-          {% if 'asset_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.asset_number %}
-          {% endif %}
-          {% if 'barcode' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.barcode %}
-          {% endif %}
-          {% if 'network_name' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.network_name %}
-          {% endif %}
-          {% if 'phone_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.phone_number %}
-          {% endif %}
-          {% if 'essid' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.essid %}
-          {% endif %}
-          {% if 'role' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.role %}
-          {% endif %}
-          {% if 'condition' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.condition %}
-          {% endif %}
-          {% if 'home' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.home.short_name %}
-          {% endif %}
-          {% if 'location' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.location.short_name %}
-          {% endif %}
-          {% if 'assignee' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.assignee.friendly_name %}
-          {% endif %}
-          {% if 'borrower' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.borrower.friendly_name %}
-          {% endif %}
-          {% if 'owner' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.owner.friendly_name %}
-          {% endif %}
-          {% if 'latest_inventory' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.latest_inventory %}
-          {% endif %}
-
-        </div>
-      {% endfor %}
-
-    </div>
-  </div>
-  <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a id="a_first" href="?page=1">&laquo; first</a>
-            <a id="a_previous" href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a id="a_next" href="?page={{ page_obj.next_page_number }}">next</a>
-            <a id="a_last" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-  </div>
-
-{% endblock %}
-{% block bottomscript %}
-  {{ block.super }}
-
-  <script>
-
-    for( paginator of ['a_first', 'a_previous', 'a_next', 'a_last']) {
-      if(!(document.getElementById(paginator)==null) ) {
-        document.getElementById(paginator).addEventListener('click', function(e) {
-          e.preventDefault()
-          document.getElementById('frm_vista').action = e.target.href
-          document.getElementById('frm_vista').submit()
-        });
-      }
-    }
-  </script>
-
-
-  <script>
-    document.getElementById('btn_showvista').addEventListener('click', function(e){
-      e.preventDefault
-      toggleVisibility('div_vista', 'btn_showvista')
-    });
-
-    document.addEventListener('keydown', function(e) {
-      if(e.ctrlKey) {
-        if(e.shiftKey) {
-          if(e.which==70) {
-            e.preventDefault();
-             toggleVisibility('div_vista', 'btn_showvista')
-          }
-        }
-      }
-    });
-    toggleVisibility('div_vista', 'btn_showvista', 0 )
-
-  </script>
-{% endblock %}
+      -->
