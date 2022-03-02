@@ -229,6 +229,8 @@ class ItemList(PermissionRequiredMixin, ListView):
             'home',
             'latest_inventory',
             'primary_id',
+            'connected_to__mmodel',
+            'connected_to',
         ]
 
         for fieldname in [

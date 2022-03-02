@@ -31,6 +31,7 @@ class ItemForm(ModelForm):
             'barcode',
             'phone_number',
             'essid',
+            'connected_to',
             'condition',
             'network_name',
             'assignee',
@@ -40,10 +41,10 @@ class ItemForm(ModelForm):
             'latest_inventory',
             'location',
             'role',
-            'connected_to',
         ]
         widgets = {
             'mmodel': MmodelSelect,
+            'connected_to': MmodelSelect,
             'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
         }
 

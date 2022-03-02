@@ -127,6 +127,29 @@
             <input type="checkbox" name="filterop__home" value="isnull" {% if 'isnull' in filterop__home %}checked="CHECKED" {% endif %}>
           </div>
         </div>
+
+        <div class="rowlabel">
+          Connected To Model is
+        </div>
+        <input type="hidden" name="filterop__connected_to__mmodel" value="in">
+        <div class="controlset value">
+          <select multiple name="filterfield__connected_to__mmodel">
+            {% for mmodel in mmodels %}
+              <option value="{{ mmodel.pk }}"{% if filterfield__connected_to__mmodel %}{% if mmodel.pk|lower in filterfield__connected_to__mmodel %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="controlset null">
+          <div class="label">
+            Is not connected
+          </div>
+          <div class="control">
+            <input type="checkbox" name="filterop__connected_to__mmodel" value="isnull" {% if 'isnull' in filterop__connected_to__mmodel %}checked="CHECKED" {% endif %}>
+          </div>
+        </div>
+
+
+
         <div class="rowlabel">
           Condition is
         </div>
@@ -273,6 +296,9 @@
         {% endif %}
         {% if 'role' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.role %}
+        {% endif %}
+        {% if 'connected_to' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=item_labels.connected_to %}
         {% endif %}
         {% if 'condition' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=item_labels.condition %}

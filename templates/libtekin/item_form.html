@@ -44,6 +44,9 @@
       <div id="div_phone_number">
         {% include './_form_field.html' with field=form.phone_number %}
       </div>
+      <div id="div_connected_to">
+        {% include './_form_field.html' with field=form.connected_to %}
+      </div>
       <div id="div_condition">
         {% include './_form_field.html' with field=form.condition %}
       </div>
@@ -200,6 +203,7 @@
 
   <script>
     addFilterInput("{{ form.mmodel.id_for_label }}")
+    addFilterInput("{{ form.connected_to.id_for_label }}")
   </script>
 
 {% endblock %}
