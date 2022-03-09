@@ -88,9 +88,11 @@
           Save Search
         </div>
         <div class="controlset">
-          <input name="vista__name" value="">
+          <input name="vista_name" value="">
         </div>
-
+        <div class="controlset">
+          <input type="checkbox" name="make_default" value="">
+        </div>
         <div class="rowlabel">
           &nbsp;
         </div>
@@ -106,12 +108,8 @@
 
       function showFilterField(select) {
         let ctlNum = select.id.substring(19)
-        console.log('tp m35g46 ', ctlNum)
         for(opt of select.options) {
-          console.log('tp m35g47', opt.value)
           if(opt.value){
-            console.log('tp m36k07', 'div_filter__' + opt.value + '__' + ctlNum )
-            console.log('tp m36k07', opt.value, ctlNum)
             document.getElementById('div_filter__' + opt.value + '__' + ctlNum ).style.display="none"
             document.getElementById('ctl_filter__op__' + opt.value + '__' + ctlNum ).removeAttribute('name')
             document.getElementById('ctl_filter__value__' + opt.value + '__' + ctlNum ).removeAttribute('name')
@@ -128,7 +126,6 @@
         }
       }
       for( ctlNum = 0; ctlNum < qty_searches; ctlNum++ ) {
-        console.log('tp m35b27 ', ctlNum)
         document.getElementById('ctl_filter__field__' + ctlNum).addEventListener('change', function(e) {
           showFilterField(e.target)
         })
@@ -151,7 +148,7 @@
           Get Default
         </div>
         <div class="controlset">
-          <button type="submit" name="vista_query_submitted" value='True'>Default</button>
+          <button type="submit" name="default_vista" value='True'>Default</button>
         </div>
       </div>
     </form>
@@ -165,7 +162,7 @@
           Get Saved View
         </div>
         <div class="controlset">
-          <select name="vista__name">
+          <select name="vista_name">
             <option value=''>-----</option>
             {% for vista in vistas%}
               <option value="{{ vista.name }}">{{ vista.name }}</option>

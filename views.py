@@ -1,4 +1,4 @@
-import json, sys
+import json, sys, urllib
 from django.http import QueryDict
 
 from django.contrib import messages
@@ -11,7 +11,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormView
 from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
-from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista, get_global_vista
+from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista, get_global_vista, default_vista
 
 from .forms import (EntityForm, ItemForm, ItemItemNoteFormset, LocationForm,
                     MmodelCategoryForm, MmodelForm, ItemCopyForm)
@@ -276,7 +276,10 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_defaults = {
             'order_by': Item._meta.ordering,
-            'paginate_by':self.paginate_by
+            'paginate_by':self.paginate_by,
+            'filter__fieldname__0': 'common_name',
+            'filter__op__0': 'contains',
+            'filter__value__0': 'res'
         }
 
         return super().setup(request, *args, **kwargs)
@@ -299,13 +302,28 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.request.user,
                 queryset,
                 self.request.POST,
-                self.request.POST.get('combined_text_search') if 'combined_text_search' in self.request.POST else '',
-                self.request.POST.getlist('combined_text_fields') if 'combined_text_fields' in self.request.POST else [],
-                self.request.POST.getlist('order_by') if 'order_by' in self.request.POST else [],
                 self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
                 self.request.POST.get('make_default') if ('make_default') in self.request.POST else False,
                 self.vista_settings
             )
+        elif 'retrieve_vista' in self.request.POST:
+            self.vistaobj = retrieve_vista(
+                self.request.user,
+                queryset,
+                'libtekin.item',
+                self.request.POST.get('vista_name'),
+                self.vista_settings
+
+            )
+        elif 'default_vista' in self.request.POST:
+            print('tp m38830', urllib.parse.urlencode(self.vista_defaults))
+            self.vistaobj = default_vista(
+                self.request.user,
+                queryset,
+                QueryDict(urllib.parse.urlencode(self.vista_defaults)),
+                self.vista_settings
+            )
+
 
         return self.vistaobj['queryset']
 
@@ -317,8 +335,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         return super().get_paginate_by(self)
 
     def get_context_data(self, **kwargs):
-
-        print('tp m36e04', self.vistaobj['querydict'])
 
         context_data = super().get_context_data(**kwargs)
 
@@ -339,10 +355,9 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all() # for choosing saved vistas
 
-        # if self.request.POST.get('vista__name'):
-        #     context_data['vista__name'] = self.request.POST.get('vista__name')
+        if self.request.POST.get('vista_name'):
+            context_data['vista_name'] = self.request.POST.get('vista_name')
 
-        print('tp m36j43', self.vistaobj['querydict'])
         vista_querydict = self.vistaobj['querydict']
 
         #putting the index before item name to make it easier for the template to iterate
@@ -352,19 +367,13 @@ class ItemList(PermissionRequiredMixin, ListView):
             cdfilter['fieldname'] = vista_querydict.get('filter__fieldname__' + str(indx)) if 'filter__fieldname__' + str(indx) in vista_querydict else ''
             cdfilter['op'] = vista_querydict.get('filter__op__' + str(indx) ) if 'filter__op__' + str(indx) in vista_querydict else ''
             cdfilter['value'] = vista_querydict.get('filter__value__' + str(indx)) if 'filter__value__' + str(indx) in vista_querydict else ''
-            print('tp m36k51', cdfilter['value'])
             if cdfilter['op'] in ['in']:
                 cdfilter['value'] = vista_querydict.getlist('filter__value__' + str(indx)) if 'filter__value__'  + str(indx) in vista_querydict else []
             context_data['filter'].append(cdfilter)
 
-        for key in [
-            'combined_text_search',
-            'text_fields_chosen',
-            'order_by',
-            'paginate_by'
-            ]:
-            if key in self.vistaobj['querydict'] and self.vistaobj['querydict'][key]:
-                context_data[key] = self.vistaobj['querydict'][key]
+        context_data['order_by'] = vista_querydict.getlist('order_by') if 'order_by' in vista_querydict else Item._meta.ordering
+
+        context_data['combined_text_search'] = vista_querydict.get('combined_text_search') if 'combined_text_search' in vista_querydict else ''
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
