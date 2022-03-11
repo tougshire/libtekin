@@ -1,20 +1,23 @@
-import json, sys, urllib
-from django.http import QueryDict
+import urllib
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import FieldError, ObjectDoesNotExist
+from django.http import QueryDict
 from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormView
+from django.views.generic.edit import (CreateView, DeleteView, FormView,
+                                       UpdateView)
 from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
-from tougshire_vistas.views import make_vista, retrieve_vista, get_latest_vista, delete_vista, get_global_vista, default_vista
+from tougshire_vistas.views import (default_vista, delete_vista,
+                                    get_global_vista, get_latest_vista,
+                                    make_vista, retrieve_vista)
 
-from .forms import (EntityForm, ItemForm, ItemItemNoteFormset, LocationForm,
-                    MmodelCategoryForm, MmodelForm, ItemCopyForm)
+from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemItemNoteFormset,
+                    LocationForm, MmodelCategoryForm, MmodelForm)
 from .models import (Condition, Entity, History, Item, ItemNote, Location,
                      Mmodel, MmodelCategory, Role)
 
@@ -36,13 +39,6 @@ def update_history(form, modelname, object, user):
         )
 
         history.save()
-
-def xcopy_item(request, pk, qty=1):
-    item = Item.objects.get(pk=pk)
-    item.pk=None
-    item.common_name = '[copy of] ' + item.common_name
-    item.save() # item is now a new item, the original item is untouched
-    return HttpResponseRedirect(reverse('libtekin:item-update', kwargs={'pk':item.pk}))
 
 class ItemCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'libtekin.add_item'
@@ -277,9 +273,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         self.vista_defaults = {
             'order_by': Item._meta.ordering,
             'paginate_by':self.paginate_by,
-            'filter__fieldname__0': 'common_name',
-            'filter__op__0': 'contains',
-            'filter__value__0': 'res'
         }
 
         return super().setup(request, *args, **kwargs)
@@ -291,7 +284,7 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         queryset = super().get_queryset()
 
-        self.vistaobj={'querydict':QueryDict(), 'queryset':queryset}
+        self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
 
         if 'delete_vista' in self.request.POST:
             delete_vista(self.request)
@@ -367,7 +360,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             cdfilter['fieldname'] = vista_querydict.get('filter__fieldname__' + str(indx)) if 'filter__fieldname__' + str(indx) in vista_querydict else ''
             cdfilter['op'] = vista_querydict.get('filter__op__' + str(indx) ) if 'filter__op__' + str(indx) in vista_querydict else ''
             cdfilter['value'] = vista_querydict.get('filter__value__' + str(indx)) if 'filter__value__' + str(indx) in vista_querydict else ''
-            if cdfilter['op'] in ['in']:
+            if cdfilter['op'] in ['in', 'range']:
                 cdfilter['value'] = vista_querydict.getlist('filter__value__' + str(indx)) if 'filter__value__'  + str(indx) in vista_querydict else []
             context_data['filter'].append(cdfilter)
 

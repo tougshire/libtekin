@@ -27,7 +27,7 @@
           </select>
         </div>
         <div class="rowlabel">
-          Search Across Text Fields
+          Quick Search
         </div>
         <div class="controlset">
           <input id="ctl_combined_text_search" name="combined_text_search" value="{{ combined_text_search }}">
@@ -46,17 +46,103 @@
               <option value="">---</option>
               <option value='primary_id'{% if filterset.fieldname == 'primary_id' %} selected="SELECTED"{% endif %}>{{ item_labels.primary_id }}</option>
               <option value='common_name'{% if filterset.fieldname == 'common_name' %} selected="SELECTED"{% endif %}>{{ item_labels.common_name }}</option>
-              {% comment %} <option value='mmodel'{% if filterset.fieldname == 'mmodel' %} selected="SELECTED"{% endif %}>{{ item_labels.mmodel }}</option>
-              <option value='role'{% if filterset.fieldname == 'role' %} selected="SELECTED"{% endif %}>Role</option> {% endcomment %}
+              <option value='mmodel'{% if filterset.fieldname == 'mmodel' %} selected="SELECTED"{% endif %}>{{ item_labels.mmodel }}</option>
+              <option value='mmodel__category'{% if filterset.fieldname == 'mmodel__category' %} selected="SELECTED"{% endif %}>Category</option>
+              <option value='role'{% if filterset.fieldname == 'role' %} selected="SELECTED"{% endif %}>{{ item_labels.role }}</option>
+              <option value='home'{% if filterset.fieldname == 'home' %} selected="SELECTED"{% endif %}>{{ item_labels.home }}</option>
+              <option value='location'{% if filterset.fieldname == 'location' %} selected="SELECTED"{% endif %}>{{ item_labels.location }}</option>
+              <option value='assigned_to'{% if filterset.fieldname == 'assigned_to' %} selected="SELECTED"{% endif %}>{{ item_labels.assigned_to }}</option>
+              <option value='connected_to'{% if filterset.fieldname == 'connected_to' %} selected="SELECTED"{% endif %}>{{ item_labels.connected_to }}</option>
+              <option value='connected_to__mmodel'{% if filterset.fieldname == 'connected_to__mmodel' %} selected="SELECTED"{% endif %}>Connected to Model</option>
+              <option value='latest_inventory'{% if filterset.fieldname == 'latest_inventory' %} selected="SELECTED"{% endif %}>{{ item_labels.latest_inventory }}</option>
+
             </select>
           </div>
           <div id="div_filter__primary_id__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
-            <input type="hidden" id="ctl_filter__op__primary_id__{{ forloop.counter0 }}" name="filter__op__{{ forloop.counter0 }}" value="contains">
+            <input type="hidden" id="ctl_filter__op__primary_id__{{ forloop.counter0 }}" value="contains">
             <input id="ctl_filter__value__primary_id__{{ forloop.counter0 }}" value="{{ filterset.value }}">
           </div>
           <div id="div_filter__common_name__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
-            <input type="hidden" id="ctl_filter__op__common_name__{{ forloop.counter0 }}" name="filter__op__{{ forloop.counter0 }}" value="contains">
+            <input type="hidden" id="ctl_filter__op__common_name__{{ forloop.counter0 }}" value="contains">
             <input id="ctl_filter__value__common_name__{{ forloop.counter0 }}" value="{{ filterset.value }}">
+          </div>
+          <div id="div_filter__mmodel__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__mmodel__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__mmodel__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for mmodel in mmodels %}
+                <option value="{{ mmodel.pk }}"{% if mmodel.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ mmodel }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__mmodel__category__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__mmodel__category__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__mmodel__category__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for mmodelcategory in mmodelcategories %}
+                <option value="{{ mmodelcategory.pk }}"{% if mmodelcategory.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ mmodelcategory }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__role__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__role__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__role__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for role in roles %}
+                <option value="{{ role.pk }}"{% if role.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ role }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__home__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__home__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__home__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for location in locations %}
+                <option value="{{ location.pk }}"{% if location.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ location }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__location__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__location__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__location__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for location in locations %}
+                <option value="{{ location.pk }}"{% if location.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ location }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__assigned_to__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__assigned_to__{{ forloop.counter0 }}" alue="in">
+            <select id="ctl_filter__value__assigned_to__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for entity in entitys %}
+                <option value="{{ entity.pk }}"{% if entity.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ assigned_to }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__latest_inventory__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__latest_inventory__{{ forloop.counter0 }}" value="range">
+            <script>console.log('tp m3ae13', "{{ filterset.value }}")</script>
+            <input type="date" id="ctl_filter__value__latest_inventory__{{ forloop.counter0 }}" data-siblings="1" value="{{ filterset.value.0 }}">
+            <input type="date" id="ctl_filter__value__latest_inventory__{{ forloop.counter0 }}__0" value="{{ filterset.value.1 }}">
+          </div>
+          <div id="div_filter__connected_to__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__connected_to__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__connected_to__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for item in items %}
+                <option value="{{ item.pk }}"{% if item.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ item }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="div_filter__connected_to__mmodel__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__connected_to__mmodel__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__connected_to__mmodel__{{ forloop.counter0 }}" multiple="MULTIPLE">
+              <option value="" >-----</option>
+              {% for mmodel in mmodels %}
+                <option value="{{ mmodel.pk }}"{% if mmodel.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ mmodel }}</option>
+              {% endfor %}
+            </select>
           </div>
 
 
@@ -108,11 +194,18 @@
 
       function showFilterField(select) {
         let ctlNum = select.id.substring(19)
+        let val_control
         for(opt of select.options) {
           if(opt.value){
             document.getElementById('div_filter__' + opt.value + '__' + ctlNum ).style.display="none"
             document.getElementById('ctl_filter__op__' + opt.value + '__' + ctlNum ).removeAttribute('name')
-            document.getElementById('ctl_filter__value__' + opt.value + '__' + ctlNum ).removeAttribute('name')
+            val_control = document.getElementById('ctl_filter__value__' + opt.value + '__' + ctlNum )
+            val_control.removeAttribute('name')
+            if( val_control.dataset.siblings ) {
+              for(i=0; i < (val_control.dataset.siblings); i++) {
+                document.getElementById('ctl_filter__value__' + opt.value + '__' + ctlNum + '__' + i ).removeAttribute('name')
+              }
+            }
           }
         }
         if(select.value) {
@@ -120,7 +213,13 @@
           select.name="filter__fieldname__" + ctlNum
           document.getElementById('div_filter__' + select.value  + '__' + ctlNum ).style.display="block"
           document.getElementById('ctl_filter__op__' + select.value + '__' + ctlNum ).name="filter__op__" + ctlNum
-          document.getElementById('ctl_filter__value__' + select.value  + '__' + ctlNum ).name="filter__value__" + ctlNum
+          val_control = document.getElementById('ctl_filter__value__' + select.value + '__' + ctlNum )
+          val_control.name="filter__value__" + ctlNum
+          if( val_control.dataset.siblings ) {
+            for(i=0; i < (val_control.dataset.siblings); i++) {
+              document.getElementById('ctl_filter__value__' + select.value + '__' + ctlNum + '__' + i ).name="filter__value__" + ctlNum
+            }
+          }
         } else {
           select.removeAttribute("name")
         }
@@ -368,211 +467,3 @@
 
   </script>
 {% endblock %}
-
-
-
-{% comment %}
-          let ctlNum = 0;
-          let values = {
-            'primary_id': "{{ filterfield__primary_id }}",
-            'common_name': "{{ filterfield__common_name }}",
-            'mmodel': "{{ filterfield__mmodel }}"
-          }
-
-          for( key in Object.keys(values)) {
-            if( values[key] > "" ) {
-              document.getElementById('ctl_filterfield_' + key).value = key
-              ctlNum++
-              if(ctlNum == qty_searches) {
-                break
-              }
-            }
-          }
-        </script>
-
-
-        <script>
-          function showFilterField(select) {
-            let ctlNum = select.id.substring(16)
-            for(opt of select.options) {
-              if(opt.value){
-                document.getElementById('div_filter__' + opt.value + '_' + ctlNum ).style.display="none"
-                document.getElementById('ctl_filterfield__' + opt.value + '_' + ctlNum ).name="_filterfield__" + opt.value
-                document.getElementById('ctl_filter__op__' + opt.value + '_' + ctlNum ).name="_filter__op__" + opt.value
-              }
-            }
-            if(select.value) {
-              document.getElementById('div_filter__' + select.value  + '_' + ctlNum ).style.display="block"
-              document.getElementById('ctl_filterfield__' + select.value  + '_' + ctlNum ).name="filterfield__" + select.value
-              document.getElementById('ctl_filter__op__' + select.value + '_' + ctlNum ).name="filter__op__" + select.value
-            }
-          }
-          for(i=0; i < qty_searches; i++) {
-            document.getElementById('ctl_filterfield_' + i).addEventListener('change', function(e) {
-              showFilterField(e.target)
-            })
-            showFilterField(document.getElementById('ctl_filterfield_' + i))
-          }
-        </script>
-        {% endcomment %}
-
-<!-- old vista logic
-        <div class="rowlabel">
-          Quick Search
-        </div>
-        <div class="controlset">
-          <input id="ctl_combined_text_search" name="combined_text_search" value="{{ combined_text_search }}">
-        </div>
-        <div class="rowlabel">
-          Model is
-        </div>
-        <input type="hidden" name="filter__op__mmodel" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__mmodel">
-            {% for mmodel in mmodels %}
-              <option value="{{ mmodel.pk }}"{% if filterfield__mmodel %}{% if mmodel.pk|lower in filterfield__mmodel %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no model
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__mmodel" value="isnull" {% if 'isnull' in filter__op__mmodel %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-        <div class="rowlabel">
-          Category is  {{ filterfield__mmodel__category }}{% if filterfield__mmodel__category %}something{% else %}nothing{% endif %}
-        </div>
-        <input type="hidden" name="filter__op__mmodel__category" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__mmodel__category">
-            {% for mmodelcategory in mmodelcategories %}
-              <option value="{{ mmodelcategory.pk }}"{% if filterfield__mmodel__category %}{% if mmodelcategory.pk|lower in filterfield__mmodel__category %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodelcategory }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no category
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__mmodel__category" value="isnull" {% if 'isnull' in filter__op__mmodel__category %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-        <div class="rowlabel">
-          Role is
-        </div>
-        <input type="hidden" name="filter__op__role" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__role">
-            {% for role in roles %}
-              <option value="{{ role.pk }}"{% if filterfield__role %}{% if role.pk|lower in filterfield__role %} selected="SELECTED" {% endif %}{% endif %}>{{ role }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no role
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__role" value="isnull" {% if 'isnull' in filter__op__role %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-        <div class="rowlabel">
-          Location is
-        </div>
-        <input type="hidden" name="filter__op__location" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__location">
-            {% for location in locations %}
-              <option value="{{ location.pk }}"{% if filterfield__location %}{% if location.pk|lower in filterfield__location %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no location
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__location" value="isnull" {% if 'isnull' in filter__op__location %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-        <div class="rowlabel">
-          Home is
-        </div>
-        <input type="hidden" name="filter__op__home" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__home">
-            {% for location in locations %}
-              <option value="{{ location.pk }}"{% if filterfield__home %}{% if location.pk|lower in filterfield__home %} selected="SELECTED" {% endif %}{% endif %}>{{ location }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no home
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__home" value="isnull" {% if 'isnull' in filter__op__home %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-
-        <div class="rowlabel">
-          Connected To Model is
-        </div>
-        <input type="hidden" name="filter__op__connected_to__mmodel" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__connected_to__mmodel">
-            {% for mmodel in mmodels %}
-              <option value="{{ mmodel.pk }}"{% if filterfield__connected_to__mmodel %}{% if mmodel.pk|lower in filterfield__connected_to__mmodel %} selected="SELECTED" {% endif %}{% endif %}>{{ mmodel }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Is not connected
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__connected_to__mmodel" value="isnull" {% if 'isnull' in filter__op__connected_to__mmodel %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-
-
-
-        <div class="rowlabel">
-          Condition is
-        </div>
-        <input type="hidden" name="filter__op__condition" value="in">
-        <div class="controlset value">
-          <select multiple name="filterfield__condition">
-            {% for condition in conditions %}
-              <option value="{{ condition.pk }}"{% if filterfield__condition %}{% if condition.pk|lower in filterfield__condition %} selected="SELECTED" {% endif %}{% endif %}>{{ condition }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="controlset null">
-          <div class="label">
-            Has no condition
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__condition" value="isnull" {% if 'isnull' in filter__op__condition %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-        <div class="rowlabel">
-          Last Inventoried On or Before
-        </div>
-        <input type="hidden" name="filter__op__latest_inventory" value="lte">
-        <div class="controlset value">
-          <input type="date" name="filterfield__latest_inventory" value="{{ filterfield__latest_inventory }}">
-        </div>
-        <div class="controlset value">
-          <div class="label">
-            Has no inventory date
-          </div>
-          <div class="control">
-            <input type="checkbox" name="filter__op__latest_inventory" value="isnull" {% if 'isnull' in filter__op__latest_inventory %}checked="CHECKED" {% endif %}>
-          </div>
-        </div>
-      -->
