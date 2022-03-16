@@ -12,9 +12,9 @@ urlpatterns = [
     path('item/<int:pk>/detail/', views.ItemDetail.as_view(), name='item-detail'),
     path('item/<int:pk>/delete/', views.ItemSoftDelete.as_view(), name='item-delete'),
     path('item/list/', views.ItemList.as_view(), name='item-list'),
-    path('item/list/by/<fieldname>/<fieldvalue>/', views.ItemList.as_view(), name='item-list-by'),
     path('item/<int:pk>/close/', views.ItemClose.as_view(), name="item-close"),
     path('item/<int:pk>/copy/', views.ItemCopy.as_view(), name='item-copy'),
+    path('item/<str:copied_from>/copied/', views.ItemList.as_view(), name='item-copied'),
     path('entity/', RedirectView.as_view(url=reverse_lazy('libtekin:entity-list'))),
     path('entity/create/', views.EntityCreate.as_view(), name='entity-create'),
     path('entity/<int:pk>/update/', views.EntityUpdate.as_view(), name='entity-update'),
@@ -43,4 +43,6 @@ urlpatterns = [
     path('mmodelcategory/list/', views.MmodelCategoryList.as_view(), name='mmodelcategory-list'),
     path('mmodelcategory/<int:pk>/close/', views.MmodelCategoryClose.as_view(), name="mmodelcategory-close"),
     path('mmodel/<int:pk>/primary_id_field/', views.get_primary_id_field, name="get_primary_id_field"),
+#    path('item/list/by/<fieldname>/<query>/', views.ItemList.as_view(), name='item-list-search'),
+
 ]

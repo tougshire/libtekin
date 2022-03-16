@@ -154,7 +154,10 @@ class ItemCopy(DetailView, FormView):
             setattr(item, item.primary_id_field, '[copy of] ' + primary_id)
             item.save() # item is now a new item, the original item is untouched
 
-        return redirect(reverse_lazy('libtekin:item-list-by', kwargs={'fieldname':'primary_id', 'fieldvalue':primary_id} ))
+        self.request.session['query']='filter__fieldname__0=primary_id&filter__op__0=contains&filter__value__0=[copy of] ' + primary_id
+
+        return redirect('libtekin:item-list')
+
 
 
 class ItemDelete(PermissionRequiredMixin, UpdateView):
@@ -243,7 +246,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             self.vista_settings['order_by_fields_available'].append(fieldname)
             self.vista_settings['order_by_fields_available'].append('-' + fieldname)
 
-
         for fieldname in [
             'common_name',
             'mmodel',
@@ -289,7 +291,19 @@ class ItemList(PermissionRequiredMixin, ListView):
         if 'delete_vista' in self.request.POST:
             delete_vista(self.request)
 
-        if 'vista_query_submitted' in self.request.POST:
+        if 'query' in self.request.session:
+            querydict = QueryDict(self.request.session.get('query'))
+            self.vistaobj = make_vista(
+                self.request.user,
+                queryset,
+                querydict,
+                '',
+                False,
+                self.vista_settings
+            )
+            del self.request.session['query']
+
+        elif 'vista_query_submitted' in self.request.POST:
 
             self.vistaobj = make_vista(
                 self.request.user,
@@ -309,14 +323,12 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             )
         elif 'default_vista' in self.request.POST:
-            print('tp m38830', urllib.parse.urlencode(self.vista_defaults))
             self.vistaobj = default_vista(
                 self.request.user,
                 queryset,
                 QueryDict(urllib.parse.urlencode(self.vista_defaults)),
                 self.vista_settings
             )
-
 
         return self.vistaobj['queryset']
 
@@ -352,6 +364,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             context_data['vista_name'] = self.request.POST.get('vista_name')
 
         vista_querydict = self.vistaobj['querydict']
+        print('tp m3b324', vista_querydict)
 
         #putting the index before item name to make it easier for the template to iterate
         context_data['filter'] = []
@@ -363,6 +376,8 @@ class ItemList(PermissionRequiredMixin, ListView):
             if cdfilter['op'] in ['in', 'range']:
                 cdfilter['value'] = vista_querydict.getlist('filter__value__' + str(indx)) if 'filter__value__'  + str(indx) in vista_querydict else []
             context_data['filter'].append(cdfilter)
+
+        print('tp m3bf26', context_data['filter'])
 
         context_data['order_by'] = vista_querydict.getlist('order_by') if 'order_by' in vista_querydict else Item._meta.ordering
 
