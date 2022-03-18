@@ -273,7 +273,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         }
 
         self.vista_defaults = {
-            'order_by': Item._meta.ordering,
+            'order_by': 'primary_id',
             'paginate_by':self.paginate_by,
         }
 
