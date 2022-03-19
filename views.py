@@ -231,6 +231,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'location',
             'home',
             'latest_inventory',
+            'assignee',
             'primary_id',
             'connected_to__mmodel',
             'connected_to',
@@ -360,6 +361,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['conditions'] = Condition.objects.all()
         context_data['roles'] = Role.objects.all()
         context_data['locations'] = Location.objects.all()
+        context_data['entities'] = Entity.objects.all()
 
         context_data['order_by_fields_available'] = []
         for fieldname in self.vista_settings['order_by_fields_available']:

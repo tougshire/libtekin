@@ -51,11 +51,10 @@
               <option value='role'{% if filterset.fieldname == 'role' %} selected="SELECTED"{% endif %}>{{ item_labels.role }}</option>
               <option value='home'{% if filterset.fieldname == 'home' %} selected="SELECTED"{% endif %}>{{ item_labels.home }}</option>
               <option value='location'{% if filterset.fieldname == 'location' %} selected="SELECTED"{% endif %}>{{ item_labels.location }}</option>
-              <option value='assigned_to'{% if filterset.fieldname == 'assigned_to' %} selected="SELECTED"{% endif %}>{{ item_labels.assigned_to }}</option>
+              <option value='assignee'{% if filterset.fieldname == 'assignee' %} selected="SELECTED"{% endif %}>{{ item_labels.assignee }}</option>
               <option value='connected_to'{% if filterset.fieldname == 'connected_to' %} selected="SELECTED"{% endif %}>{{ item_labels.connected_to }}</option>
               <option value='connected_to__mmodel'{% if filterset.fieldname == 'connected_to__mmodel' %} selected="SELECTED"{% endif %}>Connected to Model</option>
               <option value='latest_inventory'{% if filterset.fieldname == 'latest_inventory' %} selected="SELECTED"{% endif %}>{{ item_labels.latest_inventory }}</option>
-
             </select>
           </div>
           <div id="div_filter__primary_id__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
@@ -111,12 +110,12 @@
               {% endfor %}
             </select>
           </div>
-          <div id="div_filter__assigned_to__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
-            <input type="hidden" id="ctl_filter__op__assigned_to__{{ forloop.counter0 }}" alue="in">
-            <select id="ctl_filter__value__assigned_to__{{ forloop.counter0 }}" multiple="MULTIPLE">
+          <div id="div_filter__assignee__{{ forloop.counter0 }}" class="controlset filter__value" style="display:none">
+            <input type="hidden" id="ctl_filter__op__assignee__{{ forloop.counter0 }}" value="in">
+            <select id="ctl_filter__value__assignee__{{ forloop.counter0 }}" multiple="MULTIPLE">
               <option value="" >-----</option>
-              {% for entity in entitys %}
-                <option value="{{ entity.pk }}"{% if entity.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ assigned_to }}</option>
+              {% for entity in entities %}
+                <option value="{{ entity.pk }}"{% if entity.pk|lower in filterset.value %} selected="SELECTED"{% endif %}>{{ entity }}</option>
               {% endfor %}
             </select>
           </div>
