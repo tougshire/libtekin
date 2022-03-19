@@ -1,4 +1,5 @@
 import urllib
+from urllib.parse import urlencode
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -272,10 +273,20 @@ class ItemList(PermissionRequiredMixin, ListView):
             'latest_inventory':'date',
         }
 
-        self.vista_defaults = {
-            'order_by': 'primary_id',
+        self.vista_defaults = QueryDict(urlencode({
+            'order_by': ['primary_id', 'common_name'],
             'paginate_by':self.paginate_by,
-        }
+        }, doseq=True))
+        # self.vista_defaults = QueryDict('a=1',mutable=True)
+        # print('tp m3j643', self.vista_defaults)
+
+        # self.vista_defaults.update(
+        # {
+        #     'order_by': ['primary_id', 'common_name'],
+        #     'paginate_by':self.paginate_by,
+        # })
+
+        # print('tp m3j644', self.vista_defaults)
 
         return super().setup(request, *args, **kwargs)
 
@@ -323,10 +334,11 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             )
         elif 'default_vista' in self.request.POST:
+
             self.vistaobj = default_vista(
                 self.request.user,
                 queryset,
-                QueryDict(urllib.parse.urlencode(self.vista_defaults)),
+                self.vista_defaults,
                 self.vista_settings
             )
 
@@ -376,8 +388,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             if cdfilter['op'] in ['in', 'range']:
                 cdfilter['value'] = vista_querydict.getlist('filter__value__' + str(indx)) if 'filter__value__'  + str(indx) in vista_querydict else []
             context_data['filter'].append(cdfilter)
-
-        print('tp m3bf26', context_data['filter'])
 
         context_data['order_by'] = vista_querydict.getlist('order_by') if 'order_by' in vista_querydict else Item._meta.ordering
 
