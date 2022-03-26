@@ -227,6 +227,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'mmodel',
             'mmodel__category',
             'condition',
+            'status',
             'role',
             'location',
             'home',
@@ -259,6 +260,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'phone_number',
             'essid',
             'condition',
+            'status',
             'network_name',
             'assignee',
             'owner',
@@ -359,6 +361,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data['mmodels'] = Mmodel.objects.all()
         context_data['mmodelcategories'] = MmodelCategory.objects.all()
         context_data['conditions'] = Condition.objects.all()
+        context_data['status']=Item.STATUS_CHOICES
         context_data['roles'] = Role.objects.all()
         context_data['locations'] = Location.objects.all()
         context_data['entities'] = Entity.objects.all()

@@ -33,6 +33,7 @@ class ItemForm(ModelForm):
             'essid',
             'connected_to',
             'condition',
+            'status',
             'network_name',
             'assignee',
             'owner',
