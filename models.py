@@ -214,6 +214,15 @@ class ItemNotDeletedManager(models.Manager):
 
 class Item(models.Model):
 
+    STATUS_CHOICES = [
+        (-1, 'Removed from Inventory'),
+        (1, 'Not Yet Received'),
+        (2, 'Awaiting Removal'),
+        (3, 'Stored'),
+        (10, 'Ready'),
+        (11, 'In Use'),
+    ]
+
     common_name = models.CharField(
         'common name',
         max_length=75,
@@ -333,6 +342,12 @@ class Item(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         help_text='The condition of this item'
+    )
+    status = models.IntegerField(
+        'status',
+        default=0,
+        choices=STATUS_CHOICES,
+        help_text='The status of this item'
     )
     role = models.ForeignKey(
         Role,
