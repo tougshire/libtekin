@@ -214,13 +214,20 @@ class ItemNotDeletedManager(models.Manager):
 
 class Item(models.Model):
 
+    STATUS_IN_USE=11
+    STATUS_READY=10
+    STATUS_STORED=3
+    STATUS_AWAITING_REMOVAL=2
+    STATUS_NOT_RECEIVED=1
+    STATUS_REMOVED=0
+
     STATUS_CHOICES = [
-        (-1, 'Removed from Inventory'),
-        (1, 'Not Yet Received'),
-        (2, 'Awaiting Removal'),
-        (3, 'Stored'),
-        (10, 'Ready'),
-        (11, 'In Use'),
+        (STATUS_REMOVED, 'Removed from Inventory'),
+        (STATUS_NOT_RECEIVED, 'Not Yet Received'),
+        (STATUS_AWAITING_REMOVAL, 'Awaiting Removal'),
+        (STATUS_STORED, 'Stored'),
+        (STATUS_READY, 'Ready'),
+        (STATUS_IN_USE, 'In Use'),
     ]
 
     common_name = models.CharField(
@@ -345,7 +352,7 @@ class Item(models.Model):
     )
     status = models.IntegerField(
         'status',
-        default=0,
+        default=STATUS_IN_USE,
         choices=STATUS_CHOICES,
         help_text='The status of this item'
     )
