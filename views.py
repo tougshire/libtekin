@@ -190,13 +190,10 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_settings={
             'max_search_keys':10,
-            'text_fields_available':[],
-            'filter_fields_available':{},
-            'order_by_fields_available':[],
-            'columns_available':[]
+            'fields':[],
         }
 
-        self.vista_fields = {
+        self.vista_settings['fields'] = {
 
             'asset_number':{
                 'label':'Asset Number',
@@ -281,7 +278,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'type':'model',
                 'source':Condition.objects.all(),
                 'available_for':[
-                    'quicksearch',
                     'fieldsearch',
                     'order_by',
                     'columns',
@@ -407,7 +403,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'type':'model',
                 'source':MmodelCategory.objects.all(),
                 'available_for':[
-                    'quicksearch',
                     'fieldsearch',
                     'order_by',
                     'columns'
@@ -523,21 +518,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             }
         }
 
-        self.field_labels =  {  key:value['label']  for ( key, value ) in self.vista_fields.items() if 'label' in value  }
-
-        self.vista_settings['field_types'] =  {  key:value['type']  for ( key, value ) in self.vista_fields.items() if 'type' in value  }
-
-        self.vista_settings['text_fields_available'] = {  key  for ( key, value )  in self.vista_fields.items() if 'available_for' in value and 'quicksearch' in value['available_for']  }
-
-        self.vista_settings['filter_fields_available'] = {  key  for ( key, value )  in self.vista_fields.items() if 'available_for' in value and 'fieldsearch' in value['available_for']  }
-
-        self.vista_settings['order_by_fields_available'] = [  key  for ( key, value )  in self.vista_fields.items() if 'available_for' in value and 'order_by' in value['available_for']  ]
-
-        self.vista_settings['order_by_fields_available'] = self.vista_settings['order_by_fields_available'] + [  '-' + key  for ( key, value )  in self.vista_fields.items() if 'available_for' in value and 'order_by' in value['available_for']  ]
-
-        self.vista_settings['columns_available'] = {  key  for ( key, value )  in self.vista_fields.items() if 'available_for' in value and 'columns' in value['available_for']  }
-
-
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname', ['status']),
             ('filter__op', ['in']),
@@ -613,16 +593,20 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         context_data = super().get_context_data(**kwargs)
 
-        context_data['order_by_fields_available'] = []
-        for fieldname in self.vista_settings['order_by_fields_available']:
-            if fieldname > '' and fieldname[0] == '-':
-                context_data['order_by_fields_available'].append({ 'name':fieldname[1:], 'label':self.field_labels[fieldname[1:]] + ' [Reverse]'})
-            else:
-                context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':self.field_labels[fieldname]})
+        # context_data['order_by_fields_available'] = []
+        # for fieldname in self.vista_settings['order_by_fields_available']:
+        #     if fieldname > '' and fieldname[0] == '-':
+        #         context_data['order_by_fields_available'].append({ 'name':fieldname[1:], 'label':self.field_labels[fieldname[1:]] + ' [Reverse]'})
+        #     else:
+        #         context_data['order_by_fields_available'].append({ 'name':fieldname, 'label':self.field_labels[fieldname]})
 
-        context_data['columns_available'] = [{ 'name':key, 'label':value['label'] } for key, value in self.vista_fields.items() if 'columns' in value['available_for'] ]
+        # context_data['filter_fields_available'] = [{ 'name':fieldname, 'label':self.vista_settings['fields'][fieldname]['label'], 'options':{'type':self.vista_settings['fields'][fieldname]['type'] if 'type' in self.vista_settings['fields'][fieldname] else '', 'values':self.vista_settings['fields'][fieldname]['source'] if 'source' in self.vista_settings['fields'][fieldname] else ''} } for fieldname in self.vista_settings['filter_fields_available']]
 
-        context_data['filter_fields_available'] = [{ 'name':fieldname, 'label':self.vista_fields[fieldname]['label'], 'options':{'type':self.vista_fields[fieldname]['type'] if 'type' in self.vista_fields[fieldname] else '', 'values':self.vista_fields[fieldname]['source'] if 'source' in self.vista_fields[fieldname] else ''} } for fieldname in self.vista_settings['filter_fields_available']]
+        context_data['order_by_fields_available'] = [{ 'name':key, 'label':value['label'] } for key, value in self.vista_settings['fields'].items() if 'order_by' in value['available_for'] ]
+
+        context_data['filter_fields_available'] = [{ 'name':key, 'label':value['label'], 'options':{'type':self.vista_settings['fields'][key]['type'] if 'type' in self.vista_settings['fields'][key] else '', 'values':self.vista_settings['fields'][key]['source'] if 'source' in self.vista_settings['fields'][key] else '' } } for key, value in self.vista_settings['fields'].items() if 'fieldsearch' in value['available_for'] ]
+
+        context_data['columns_available'] = [{ 'name':key, 'label':value['label'] } for key, value in self.vista_settings['fields'].items() if 'columns' in value['available_for'] ]
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='sdcpeople.person').all() # for choosing saved vistas
 
