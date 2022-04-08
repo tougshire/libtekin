@@ -632,6 +632,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
+        context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all() # for choosing saved vistas
+
         # context_data = super().get_context_data(**kwargs)
 
         # context_data['mmodels'] = Mmodel.objects.all()
