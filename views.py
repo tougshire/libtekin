@@ -510,7 +510,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'type':'choice',
                 'source':Item.STATUS_CHOICES,
                 'available_for':[
-                    'quicksearch',
                     'fieldsearch',
                     'order_by',
                     'columns'
