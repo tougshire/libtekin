@@ -321,7 +321,7 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname', ['status']),
-            ('filter__op', ['in']),
+            ('filter__op', ['gt']),
             ('filter__value', [1]),
             ('order_by', ['priority', 'begin']),
             ('paginate_by',self.paginate_by),
@@ -342,6 +342,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             delete_vista(self.request)
 
         if 'query' in self.request.session:
+            print('tp 224bc49', 'query in self.request.session')
             querydict = QueryDict(self.request.session.get('query'))
             self.vistaobj = make_vista(
                 self.request.user,
@@ -354,6 +355,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             del self.request.session['query']
 
         elif 'vista_query_submitted' in self.request.POST:
+            print('tp 224bc50', 'vista_query_submitted')
 
             self.vistaobj = make_vista(
                 self.request.user,
@@ -364,6 +366,8 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_settings
             )
         elif 'retrieve_vista' in self.request.POST:
+            print('tp 224bc51', 'retrieve_vista')
+
             self.vistaobj = retrieve_vista(
                 self.request.user,
                 queryset,
@@ -372,7 +376,9 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_settings
 
             )
-        elif 'default_vista' in self.request.POST:
+#        elif 'default_vista' in self.request.POST:
+        else:
+            print('tp 224bc52', 'default_vista')
 
             self.vistaobj = default_vista(
                 self.request.user,
@@ -380,6 +386,10 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_defaults,
                 self.vista_settings
             )
+
+
+            print('tp 224bc53', 'else')
+
 
         return self.vistaobj['queryset']
 
@@ -401,6 +411,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         if self.request.POST.get('vista_name'):
             context_data['vista_name'] = self.request.POST.get('vista_name')
+
+        context_data['count'] = self.object_list.count()
 
         return context_data
 
