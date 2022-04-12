@@ -376,8 +376,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_settings
 
             )
-#        elif 'default_vista' in self.request.POST:
-        else:
+        elif 'default_vista' in self.request.POST:
             print('tp 224bc52', 'default_vista')
 
             self.vistaobj = default_vista(
@@ -386,7 +385,13 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_defaults,
                 self.vista_settings
             )
-
+        else:
+            self.vistaobj = get_latest_vista(
+                self.request.user,
+                queryset,
+                self.vista_defaults,
+                self.vista_settings
+            )
 
             print('tp 224bc53', 'else')
 
