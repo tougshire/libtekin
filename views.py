@@ -15,7 +15,7 @@ from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import (default_vista, delete_vista,
                                     get_global_vista, get_latest_vista,
-                                    make_vista, retrieve_vista, vista_context_data, vista_fields)
+                                    make_vista, retrieve_vista, vista_context_data, make_vista_fields)
 
 from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemItemNoteFormset,
                     LocationForm, MmodelCategoryForm, MmodelForm)
@@ -146,10 +146,8 @@ class ItemCopy(DetailView, FormView):
 
         item = Item.objects.get(pk=self.kwargs.get('pk'))
         qty = form.cleaned_data['qty']
-        print('m31a59', qty)
         primary_id = item.primary_id
         for n in range(0,qty):
-            print('m31b00')
             item.pk=None
             item.primary_id = '[copy of] ' + primary_id
             setattr(item, item.primary_id_field, '[copy of] ' + primary_id)
@@ -193,7 +191,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'fields':[],
         }
 
-        self.vista_settings['fields'] = vista_fields(Item, rels=True)
+        self.vista_settings['fields'] = make_vista_fields(Item, rels=True)
 
         self.vista_settings['fields']['assignee__friendly_name'] = {
             'label':'Assignee Friendly Name',
@@ -230,6 +228,21 @@ class ItemList(PermissionRequiredMixin, ListView):
             'available_for':[
                 'fieldsearch',
                 'columns'
+            ],
+            'operators':[
+                ('in', 'has')
+            ]
+        }
+        self.vista_settings['fields']['connection__mmodel'] = {
+            'label':'Has Connection Model',
+            'type':'model',
+            'queryset':Mmodel.objects.all(),
+            'available_for':[
+                'fieldsearch',
+                'columns'
+            ],
+            'operators':[
+                ('in', 'has')
             ]
         }
         self.vista_settings['fields']['home__full_name'] = {
@@ -253,6 +266,9 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'quicksearch',
                 'fieldsearch',
                 'columns'
+            ],
+            'operators':[
+                ('icontains', 'contains'),
             ]
         }
         self.vista_settings['fields']['location__full_name'] = {
@@ -278,6 +294,10 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'fieldsearch',
                 'order_by',
                 'columns',
+            ],
+            'operators':[
+                ('exact', 'is'),
+                ('in', 'in')
             ]
         }
         self.vista_settings['fields']['mmodel__category'] = {
@@ -288,6 +308,10 @@ class ItemList(PermissionRequiredMixin, ListView):
                 'fieldsearch',
                 'order_by',
                 'columns'
+            ],
+            'operators':[
+                ('exact', 'is'),
+                ('in', 'in')
             ]
         }
         self.vista_settings['fields']['mmodel__category__name'] = {
@@ -321,8 +345,8 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname', ['status']),
-            ('filter__op', ['gt']),
-            ('filter__value', [1]),
+            ('filter__in', ['gt']),
+            ('filter__value', [Item.STATUS_IN_USE, Item.STATUS_READY, Item.STATUS_STORED, Item.STATUS_AWAITING_REMOVAL, Item.STATUS_NOT_RECEIVED,]),
             ('order_by', ['priority', 'begin']),
             ('paginate_by',self.paginate_by),
         ],doseq=True) )
@@ -395,7 +419,6 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             print('tp 224bc53', 'else')
 
-
         return self.vistaobj['queryset']
 
     def get_paginate_by(self, queryset):
@@ -410,6 +433,9 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data = super().get_context_data(**kwargs)
 
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
+
+        print('tp 224h838', vista_data['filter_fields_available'][0])
+
         context_data = {**context_data, **vista_data}
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all() # for choosing saved vistas

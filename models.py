@@ -365,6 +365,8 @@ class Item(models.Model):
     )
     connected_to = models.ForeignKey(
         "Item",
+        verbose_name="connected to",
+        related_name="connection",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
