@@ -217,10 +217,10 @@ class ItemList(PermissionRequiredMixin, ListView):
 
 
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname', ['status']),
-            ('filter__in', ['gt']),
-            ('filter__value', [Item.STATUS_IN_USE, Item.STATUS_READY, Item.STATUS_STORED, Item.STATUS_AWAITING_REMOVAL, Item.STATUS_NOT_RECEIVED,]),
-            ('order_by', ['priority', 'begin']),
+            ('filter__fieldname__0', ['status']),
+            ('filter__op__0', ['in']),
+            ('filter__value__0', [Item.STATUS_IN_USE, Item.STATUS_READY, Item.STATUS_STORED, Item.STATUS_AWAITING_REMOVAL, Item.STATUS_NOT_RECEIVED,]),
+            ('order_by', ['primary_id', 'common_name']),
             ('paginate_by',self.paginate_by),
         ],doseq=True) )
 
