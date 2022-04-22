@@ -191,157 +191,177 @@ class ItemList(PermissionRequiredMixin, ListView):
             'fields':[],
         }
 
-        self.vista_settings['fields'] = make_vista_fields(Item, rels=True)
+        self.vista_settings['fields'] = make_vista_fields(Item, field_names=[
+            'primary_id',
+            'common_name',
+            'mmodel',
+            'network_name',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'essid',
+            'owner',
+            'assignee',
+            'borrower',
+            'home',
+            'location',
+            'status',
+            'connected_to__mmodel',
+            'connection__mmodel',
+            'latest_inventory',
+        ])
 
-        self.vista_settings['fields']['assignee__friendly_name'] = {
-            'label':'Assignee Friendly Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['assignee__full_name'] = {
-            'label':'Assignee Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['borrower__friendly_name'] = {
-            'label':'Borrower Friendly Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['borrower__full_name'] = {
-            'label':'Borrower Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['connected_to__mmodel'] = {
-            'label':'Connected To Model',
-            'type':'model',
-            'source':Mmodel.objects.all(),
-            'available_for':[
-                'fieldsearch',
-                'columns'
-            ],
-            'operators':[
-                ('in', 'has')
-            ]
-        }
-        self.vista_settings['fields']['connection__mmodel'] = {
-            'label':'Has Connection Model',
-            'type':'model',
-            'queryset':Mmodel.objects.all(),
-            'available_for':[
-                'fieldsearch',
-                'columns'
-            ],
-            'operators':[
-                ('in', 'has')
-            ]
-        }
-        self.vista_settings['fields']['home__full_name'] = {
-            'label':'Home Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['home__short_name'] = {
-            'label':'Home Short Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['itemnote__text'] = {
-            'label':'Note',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-                'fieldsearch',
-                'columns'
-            ],
-            'operators':[
-                ('icontains', 'contains'),
-            ]
-        }
-        self.vista_settings['fields']['location__full_name'] = {
-            'label':'Location Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
+        # self.vista_settings['fields']['assignee__friendly_name'] = {
+        #     'label':'Assignee Friendly Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['assignee__full_name'] = {
+        #     'label':'Assignee Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['borrower__friendly_name'] = {
+        #     'label':'Borrower Friendly Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['borrower__full_name'] = {
+        #     'label':'Borrower Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['connected_to__mmodel'] = {
+        #     'label':'Connected To Model',
+        #     'type':'model',
+        #     'source':Mmodel.objects.all(),
+        #     'available_for':[
+        #         'fieldsearch',
+        #         'columns'
+        #     ],
+        #     'operators':[
+        #         ('in', 'has')
+        #     ]
+        # }
+        # self.vista_settings['fields']['connection__mmodel'] = {
+        #     'label':'Has Connection Model',
+        #     'type':'model',
+        #     'queryset':Mmodel.objects.all(),
+        #     'available_for':[
+        #         'fieldsearch',
+        #         'columns'
+        #     ],
+        #     'operators':[
+        #         ('in', 'has')
+        #     ]
+        # }
+        # self.vista_settings['fields']['home__full_name'] = {
+        #     'label':'Home Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['home__short_name'] = {
+        #     'label':'Home Short Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['itemnote__text'] = {
+        #     'label':'Note',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #         'fieldsearch',
+        #         'columns'
+        #     ],
+        #     'operators':[
+        #         ('icontains', 'contains'),
+        #     ]
+        # }
+        # self.vista_settings['fields']['location__full_name'] = {
+        #     'label':'Location Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
 
-        }
-        self.vista_settings['fields']['location__short_name'] = {
-            'label':'Location Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['mmodel__brand'] = {
-            'label':'Brand',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-                'fieldsearch',
-                'order_by',
-                'columns',
-            ],
-            'operators':[
-                ('exact', 'is'),
-                ('in', 'in')
-            ]
-        }
-        self.vista_settings['fields']['mmodel__category'] = {
-            'label':'Category',
-            'type':'model',
-            'source':MmodelCategory.objects.all(),
-            'available_for':[
-                'fieldsearch',
-                'order_by',
-                'columns'
-            ],
-            'operators':[
-                ('exact', 'is'),
-                ('in', 'in')
-            ]
-        }
-        self.vista_settings['fields']['mmodel__category__name'] = {
-            'label':'Category Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['mmodel__model_name'] = {
-            'label':'Model Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['owner__friendly_name'] = {
-            'label':'Owner Friendly Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
-        self.vista_settings['fields']['owner__full_name'] = {
-            'label':'Owner Full Name',
-            'type':'char',
-            'available_for':[
-                'quicksearch',
-            ]
-        }
+        # }
+        # self.vista_settings['fields']['location__short_name'] = {
+        #     'label':'Location Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['mmodel__brand'] = {
+        #     'label':'Brand',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #         'fieldsearch',
+        #         'order_by',
+        #         'columns',
+        #     ],
+        #     'operators':[
+        #         ('exact', 'is'),
+        #         ('in', 'in')
+        #     ]
+        # }
+        # self.vista_settings['fields']['mmodel__category'] = {
+        #     'label':'Category',
+        #     'type':'model',
+        #     'source':MmodelCategory.objects.all(),
+        #     'available_for':[
+        #         'fieldsearch',
+        #         'order_by',
+        #         'columns'
+        #     ],
+        #     'operators':[
+        #         ('exact', 'is'),
+        #         ('in', 'in')
+        #     ]
+        # }
+        # self.vista_settings['fields']['mmodel__category__name'] = {
+        #     'label':'Category Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['mmodel__model_name'] = {
+        #     'label':'Model Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['owner__friendly_name'] = {
+        #     'label':'Owner Friendly Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
+        # self.vista_settings['fields']['owner__full_name'] = {
+        #     'label':'Owner Full Name',
+        #     'type':'char',
+        #     'available_for':[
+        #         'quicksearch',
+        #     ]
+        # }
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname', ['status']),
@@ -433,8 +453,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data = super().get_context_data(**kwargs)
 
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
-
-        print('tp 224h838', vista_data['filter_fields_available'][0])
 
         context_data = {**context_data, **vista_data}
 
