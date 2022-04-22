@@ -1,7 +1,7 @@
 {% extends './_base.html' %}
 {% load static %}
 {% block content %}
-
+<!-- {{ columns_available }} -->
 {% include 'tougshire_vistas/filter.html' %}
 
 <div class="list">
@@ -9,64 +9,61 @@
       <div class="row rowhead">
         {% include './_list_head.html' with field='' %}
         {% if 'common_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.common_name %}
+          {% include './_list_head.html' with field=labels.common_name %}
         {% endif %}
         {% if 'mmodel' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.mmodel %}
+          {% include './_list_head.html' with field=labels.mmodel %}
         {% endif %}
         {% if 'primary_id' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.primary_id %}
+          {% include './_list_head.html' with field=labels.primary_id %}
         {% endif %}
         {% if 'serial_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.serial_number %}
+          {% include './_list_head.html' with field=labels.serial_number %}
         {% endif %}
         {% if 'service_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.service_number %}
+          {% include './_list_head.html' with field=labels.service_number %}
         {% endif %}
         {% if 'asset_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.asset_number %}
+          {% include './_list_head.html' with field=labels.asset_number %}
         {% endif %}
         {% if 'barcode' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.barcode %}
+          {% include './_list_head.html' with field=labels.barcode %}
         {% endif %}
         {% if 'network_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.network_name %}
+          {% include './_list_head.html' with field=labels.network_name %}
         {% endif %}
         {% if 'phone_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.phone_number %}
+          {% include './_list_head.html' with field=labels.phone_number %}
         {% endif %}
         {% if 'essid' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.essid %}
+          {% include './_list_head.html' with field=labels.essid %}
         {% endif %}
         {% if 'role' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.role %}
+          {% include './_list_head.html' with field=labels.role %}
         {% endif %}
         {% if 'connected_to' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.connected_to %}
-        {% endif %}
-        {% if 'condition' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.condition %}
+          {% include './_list_head.html' with field=labels.connected_to %}
         {% endif %}
         {% if 'status' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.status %}
+          {% include './_list_head.html' with field=labels.status %}
         {% endif %}
         {% if 'home' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.home %}
+          {% include './_list_head.html' with field=labels.home %}
         {% endif %}
         {% if 'location' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.location %}
+          {% include './_list_head.html' with field=labels.location %}
         {% endif %}
         {% if 'assignee' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.assignee %}
+          {% include './_list_head.html' with field=labels.assignee %}
         {% endif %}
         {% if 'borrower' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.borrower %}
+          {% include './_list_head.html' with field=labels.borrower %}
         {% endif %}
         {% if 'owner' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.owner %}
+          {% include './_list_head.html' with field=labels.owner %}
         {% endif %}
         {% if 'latest_inventory' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=item_labels.latest_inventory %}
+          {% include './_list_head.html' with field=labels.latest_inventory %}
         {% endif %}
 
 
@@ -110,9 +107,6 @@
           {% endif %}
           {% if 'connected_to' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.connected_to %}
-          {% endif %}
-          {% if 'condition' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.condition %}
           {% endif %}
           {% if 'status' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.get_status_display %}
