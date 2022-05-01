@@ -1,3 +1,4 @@
+import sys
 import urllib
 from urllib.parse import urlencode
 
@@ -15,7 +16,8 @@ from django.views.generic.list import ListView
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import (default_vista, delete_vista,
                                     get_global_vista, get_latest_vista,
-                                    make_vista, retrieve_vista, vista_context_data, make_vista_fields)
+                                    make_vista, make_vista_fields,
+                                    retrieve_vista, vista_context_data)
 
 from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemItemNoteFormset,
                     LocationForm, MmodelCategoryForm, MmodelForm)
@@ -187,7 +189,7 @@ class ItemList(PermissionRequiredMixin, ListView):
     def setup(self, request, *args, **kwargs):
 
         self.vista_settings={
-            'max_search_keys':10,
+            'max_search_keys':5,
             'fields':[],
         }
 
@@ -214,7 +216,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             'connection__mmodel',
             'latest_inventory',
         ])
-
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status']),
