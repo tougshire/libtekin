@@ -13,7 +13,7 @@
     {% include './_detail_field.html' with label=item_labels.network_name field=object.network_name %}
     {% include './_detail_field.html' with label=item_labels.connected_to field=object.connected_to %}
     {% include './_detail_field.html' with label=item_labels.condition field=object.condition %}
-    {% include './_detail_field.html' with label=item_labels.status field=object.status %}
+    {% include './_detail_field.html' with label=item_labels.status field=object.get_status_display %}
     {% include './_detail_field.html' with label=item_labels.home field=object.home %}
     {% include './_detail_field.html' with label=item_labels.location field=object.location %}
     {% include './_detail_field.html' with label=item_labels.assignee field=object.assignee %}
