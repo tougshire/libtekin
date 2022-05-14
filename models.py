@@ -212,23 +212,35 @@ class ItemNotDeletedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
 
+class Status(models.Model):
+    name = models.CharField(
+        max_length=50,
+        help_text = 'The status of the load'
+    )
+    list_order = models.IntegerField(
+        'rank',
+        default=1000,
+        help_text='The order that this status should display in a list of statuses'
+    )
+    is_active = models.BooleanField(
+        'is active',
+        default = False,
+        help_text = 'If this status is for an active project (one that is not yet complete or canceled and should be displayed in the default list)'
+    )
+    is_default = models.BooleanField(
+        'is default',
+        default = False,
+        help_text = 'If this is the default status for new loads (Only one will used even if more than one is selected)'
+    )
+
+    class Meta:
+        ordering=('list_order', 'name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Item(models.Model):
-
-    STATUS_IN_USE=11
-    STATUS_READY=10
-    STATUS_STORED=3
-    STATUS_AWAITING_REMOVAL=2
-    STATUS_NOT_RECEIVED=1
-    STATUS_REMOVED=0
-
-    STATUS_CHOICES = [
-        (STATUS_REMOVED, 'Removed from Inventory'),
-        (STATUS_NOT_RECEIVED, 'Not Yet Received'),
-        (STATUS_AWAITING_REMOVAL, 'Awaiting Removal'),
-        (STATUS_STORED, 'Stored'),
-        (STATUS_READY, 'Ready'),
-        (STATUS_IN_USE, 'In Use'),
-    ]
 
     common_name = models.CharField(
         'common name',
@@ -350,11 +362,11 @@ class Item(models.Model):
         null=True,
         help_text='The condition of this item'
     )
-    status = models.IntegerField(
-        'status',
-        default=STATUS_IN_USE,
-        choices=STATUS_CHOICES,
-        help_text='The status of this item'
+    status = models.ForeignKey(
+        Status,
+        on_delete = models.SET_NULL,
+        null = True,
+        help_text = 'The status of this project'
     )
     role = models.ForeignKey(
         Role,

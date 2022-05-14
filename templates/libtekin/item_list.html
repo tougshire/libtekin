@@ -109,7 +109,7 @@
             {% include './_list_field.html' with field=item.connected_to %}
           {% endif %}
           {% if 'status' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.get_status_display %}
+            {% include './_list_field.html' with field=item.status %}
           {% endif %}
           {% if 'home' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.home.short_name %}
