@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Condition, Entity, EntityCategory, Item, ItemNote, Location, LocationCategory, Mmodel,
-                     MmodelCategory, History)
+                     MmodelCategory, History, Status)
 
 admin.site.register(Condition)
 admin.site.register(EntityCategory)
@@ -21,3 +21,7 @@ admin.site.register(Item, ItemAdmin)
 
 admin.site.register(History)
 
+class StatusAdmin(admin.ModelAdmin):
+    list_display=('name', 'is_active', 'is_default',)
+
+admin.site.register(Status, StatusAdmin)
