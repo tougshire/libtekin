@@ -217,7 +217,7 @@ class Status(models.Model):
         max_length=50,
         help_text = 'The status of the load'
     )
-    list_order = models.IntegerField(
+    list_position = models.IntegerField(
         'rank',
         default=1000,
         help_text='The order that this status should display in a list of statuses'
@@ -234,7 +234,7 @@ class Status(models.Model):
     )
 
     class Meta:
-        ordering=('list_order', 'name',)
+        ordering=('list_position', 'name',)
 
     def __str__(self):
         return self.name
