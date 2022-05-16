@@ -366,6 +366,7 @@ class Item(models.Model):
         Status,
         on_delete = models.SET_NULL,
         null = True,
+        default = Status.objects.filter(is_default=True).first(),
         help_text = 'The status of this project'
     )
     role = models.ForeignKey(
