@@ -215,6 +215,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'connected_to__mmodel',
             'connection__mmodel',
             'latest_inventory',
+            'status__is_active',
         ])
 
         self.vista_defaults = QueryDict(urlencode([
