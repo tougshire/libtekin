@@ -65,6 +65,9 @@
         {% if 'latest_inventory' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.latest_inventory %}
         {% endif %}
+        {% if 'inventory_date' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.inventory_date %}
+        {% endif %}
 
 
       </div>
@@ -125,6 +128,9 @@
           {% endif %}
           {% if 'owner' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.owner.friendly_name %}
+          {% endif %}
+          {% if 'latest_inventory' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.latest_inventory %}
           {% endif %}
           {% if 'latest_inventory' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.latest_inventory %}

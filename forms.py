@@ -40,6 +40,7 @@ class ItemForm(ModelForm):
             'borrower',
             'home',
             'latest_inventory',
+            'installation_date',
             'location',
             'role',
         ]
@@ -47,6 +48,8 @@ class ItemForm(ModelForm):
             'mmodel': MmodelSelect,
             'connected_to': MmodelSelect,
             'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
+            'installation_date':forms.DateInput( attrs={ "type":"date" } ),
+
         }
 
 class ItemNoteForm(ModelForm):
