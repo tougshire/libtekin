@@ -217,8 +217,11 @@ class ItemList(PermissionRequiredMixin, ListView):
             'latest_inventory',
             'installation_date',
             'status__is_active',
-            'itemnotes__is_current',
+            'itemnote__is_current',
         ])
+
+        self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
+
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
