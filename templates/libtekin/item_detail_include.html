@@ -20,7 +20,7 @@
     {% include './_detail_field.html' with label=item_labels.borrower field=object.borrower %}
     {% include './_detail_field.html' with label=item_labels.owner field=object.owner %}
     {% include './_detail_field.html' with label=item_labels.latest_inventory field=object.latest_inventory %}
-    {% include './_detail_field.html' with label=item_labels.inventory_date field=object.inventory_date %}
+    {% include './_detail_field.html' with label=item_labels.installation_date field=object.installation_date %}
 
     <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for itemnote in object.itemnote_set.all %}
