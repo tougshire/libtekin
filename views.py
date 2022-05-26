@@ -217,6 +217,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'latest_inventory',
             'installation_date',
             'status__is_active',
+            'itemnotes__is_current',
         ])
 
         self.vista_defaults = QueryDict(urlencode([
