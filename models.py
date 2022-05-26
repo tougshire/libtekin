@@ -6,6 +6,12 @@ from django.conf import settings
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
+def get_default_status():
+    try:
+        return Status.objects.filter(is_default=True).first().pk
+    except AttributeError:
+        return None
+
 class Condition(models.Model):
     name = models.CharField(
         'name',
@@ -366,7 +372,7 @@ class Item(models.Model):
         Status,
         on_delete = models.SET_NULL,
         null = True,
-        default = Status.objects.filter(is_default=True).first().pk,
+        default = get_default_status,
         help_text = 'The status of this project'
     )
     role = models.ForeignKey(
