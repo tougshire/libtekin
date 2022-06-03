@@ -12,6 +12,7 @@ urlpatterns = [
     path('item/<int:pk>/detail/', views.ItemDetail.as_view(), name='item-detail'),
     path('item/<int:pk>/delete/', views.ItemSoftDelete.as_view(), name='item-delete'),
     path('item/list/', views.ItemList.as_view(), name='item-list'),
+    path('item/csv/', views.ItemCSV.as_view(), name='item-csv'),
     path('item/<int:pk>/close/', views.ItemClose.as_view(), name="item-close"),
     path('item/<int:pk>/copy/', views.ItemCopy.as_view(), name='item-copy'),
     path('item/<str:copied_from>/copied/', views.ItemList.as_view(), name='item-copied'),

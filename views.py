@@ -186,6 +186,7 @@ class ItemList(PermissionRequiredMixin, ListView):
     model = Item
     paginate_by = 30
 
+
     def setup(self, request, *args, **kwargs):
 
         self.vista_settings={
@@ -320,6 +321,87 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         if self.request.POST.get('vista_name'):
             context_data['vista_name'] = self.request.POST.get('vista_name')
+
+        context_data['count'] = self.object_list.count()
+
+        return context_data
+
+
+class ItemCSV(PermissionRequiredMixin, ListView):
+    permission_required = 'libtekin.view_item'
+    model = Item
+    template_name = 'libtekin/item_csv.html'
+    content_type='text/csv'
+
+    def setup(self, request, *args, **kwargs):
+
+        self.vista_settings={
+            'max_search_keys':5,
+            'fields':[],
+        }
+
+        self.vista_settings['fields'] = make_vista_fields(Item, field_names=[
+            'primary_id',
+            'common_name',
+            'mmodel',
+            'network_name',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'role',
+            'connected_to',
+            'essid',
+            'owner',
+            'assignee',
+            'borrower',
+            'home',
+            'location',
+            'status',
+            'connected_to__mmodel',
+            'connection__mmodel',
+            'latest_inventory',
+            'installation_date',
+            'status__is_active',
+            'itemnote__is_current',
+        ])
+
+        self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
+
+
+        self.vista_defaults = QueryDict(urlencode([
+            ('filter__fieldname__0', ['status__is_active']),
+            ('filter__op__0', ['exact']),
+            ('filter__value__0', [True]),
+            ('order_by', ['primary_id', 'common_name']),
+            ('paginate_by',self.paginate_by),
+        ],doseq=True) )
+
+        return super().setup(request, *args, **kwargs)
+
+    def get_queryset(self, **kwargs):
+
+        queryset = super().get_queryset()
+
+        self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
+
+        self.vistaobj = get_latest_vista(
+            self.request.user,
+            queryset,
+            self.vista_defaults,
+            self.vista_settings
+        )
+
+        return self.vistaobj['queryset']
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+
+        vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
+
+        context_data = {**context_data, **vista_data}
 
         context_data['count'] = self.object_list.count()
 

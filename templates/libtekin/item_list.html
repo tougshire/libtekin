@@ -6,6 +6,7 @@
 
 <div class="list">
     <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
+    <div><a href="{% url 'libtekin:item-csv' %}">export</a></div>
       <div class="row rowhead">
         {% include './_list_head.html' with field='' %}
         {% if 'common_name' in show_columns or not show_columns %}
