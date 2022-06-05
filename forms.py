@@ -64,8 +64,8 @@ class ItemNoteForm(ModelForm):
         ]
         widgets = {
             'when':forms.DateInput( attrs={ "type":"date" } ),
-            'text':forms.TextInput( attrs={ "class":"len75"}),
-            'details':forms.Textarea( attrs={ "class":"len75"})
+            'text':forms.TextInput( attrs={ "class":"widthlong"}),
+            'details':forms.Textarea( attrs={ "class":"widthlong"})
         }
 
 class MmodelForm(ModelForm):
