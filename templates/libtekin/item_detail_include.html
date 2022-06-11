@@ -34,6 +34,16 @@
               {{ itemnote }}
             </div>
           </div>
+          {% if itemnote.details %}
+            <div class="control">
+              <div class="label">
+                &nbsp;Details:
+              </div>
+              <div class="field">
+                &nbsp;{{ itemnote.details }}
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endfor %}
