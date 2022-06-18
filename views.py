@@ -1,4 +1,5 @@
 import sys
+import csv
 import urllib
 from urllib.parse import urlencode
 
@@ -200,7 +201,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'mmodel',
             'network_name',
             'serial_number',
-            'service_number',
+            'phone_number',
             'asset_number',
             'barcode',
             'phone_number',
@@ -326,86 +327,65 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         return context_data
 
+class ItemCSV(ItemList):
 
-class ItemCSV(PermissionRequiredMixin, ListView):
-    permission_required = 'libtekin.view_item'
-    model = Item
-    template_name = 'libtekin/item_csv.html'
-    content_type='text/csv'
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
 
-    def setup(self, request, *args, **kwargs):
-
-        self.vista_settings={
-            'max_search_keys':5,
-            'fields':[],
-        }
-
-        self.vista_settings['fields'] = make_vista_fields(Item, field_names=[
-            'primary_id',
-            'common_name',
-            'mmodel',
-            'network_name',
-            'serial_number',
-            'service_number',
-            'asset_number',
-            'barcode',
-            'phone_number',
-            'role',
-            'connected_to',
-            'essid',
-            'owner',
-            'assignee',
-            'borrower',
-            'home',
-            'location',
-            'status',
-            'connected_to__mmodel',
-            'connection__mmodel',
-            'latest_inventory',
-            'installation_date',
-            'status__is_active',
-            'itemnote__is_current',
-        ])
-
-        self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
-
-
-        self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['status__is_active']),
-            ('filter__op__0', ['exact']),
-            ('filter__value__0', [True]),
-            ('order_by', ['primary_id', 'common_name']),
-            ('paginate_by',self.paginate_by),
-        ],doseq=True) )
-
-        return super().setup(request, *args, **kwargs)
-
-    def get_queryset(self, **kwargs):
-
-        queryset = super().get_queryset()
-
-        self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
-
-        self.vistaobj = get_latest_vista(
-            self.request.user,
-            queryset,
-            self.vista_defaults,
-            self.vista_settings
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="items.csv"'},
         )
 
-        return self.vistaobj['queryset']
-
-    def get_context_data(self, **kwargs):
-
-        context_data = super().get_context_data(**kwargs)
-
+        writer = csv.writer(response)
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
 
-        context_data = {**context_data, **vista_data}
+        for item in self.object_list:
+            row=[]
+            if not 'show_columns' in vista_data or 'common_name' in vista_data['show_columns']:
+                row.append(item.common_name)
+            if not 'show_columns' in vista_data or 'mmodel' in vista_data['show_columns']:
+                row.append(item.mmodel)
+            if not 'show_columns' in vista_data or 'primary_id' in vista_data['show_columns']:
+                row.append(item.primary_id)
+            if not 'show_columns' in vista_data or 'serial_number' in vista_data['show_columns']:
+                row.append(item.serial_number)
+            if not 'show_columns' in vista_data or 'phone_number' in vista_data['show_columns']:
+                row.append(item.phone_number)
+            if not 'show_columns' in vista_data or 'asset_number' in vista_data['show_columns']:
+                row.append(item.asset_number)
+            if not 'show_columns' in vista_data or 'barcode' in vista_data['show_columns']:
+                row.append(item.barcode)
+            if not 'show_columns' in vista_data or 'network_name' in vista_data['show_columns']:
+                row.append(item.network_name)
+            if not 'show_columns' in vista_data or 'phone_number' in vista_data['show_columns']:
+                row.append(item.phone_number)
+            if not 'show_columns' in vista_data or 'essid' in vista_data['show_columns']:
+                row.append(item.essid)
+            if not 'show_columns' in vista_data or 'role' in vista_data['show_columns']:
+                row.append(item.role)
+            if not 'show_columns' in vista_data or 'connected_to' in vista_data['show_columns']:
+                row.append(item.connected_to)
+            if not 'show_columns' in vista_data or 'status' in vista_data['show_columns']:
+                row.append(item.status)
+            if not 'show_columns' in vista_data or 'home' in vista_data['show_columns']:
+                row.append(item.home)
+            if not 'show_columns' in vista_data or 'location' in vista_data['show_columns']:
+                row.append(item.location)
+            if not 'show_columns' in vista_data or 'assignee' in vista_data['show_columns']:
+                row.append(item.assignee)
+            if not 'show_columns' in vista_data or 'borrower' in vista_data['show_columns']:
+                row.append(item.borrower)
+            if not 'show_columns' in vista_data or 'owner' in vista_data['show_columns']:
+                row.append(item.owner)
+            if not 'show_columns' in vista_data or 'latest_inventory' in vista_data['show_columns']:
+                row.append(item.latest_inventory)
+            if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
+                row.append(item.installation_date)
 
-        context_data['count'] = self.object_list.count()
+            writer.writerow(row)
 
-        return context_data
+        return response
 
 
 class ItemClose(PermissionRequiredMixin, DetailView):
