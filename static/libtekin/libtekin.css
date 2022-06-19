@@ -160,9 +160,9 @@
     display:flex;
 }
 
-div.field {
+/* div.field {
     width:80%;
-}
+} */
 input.widthshort {
     width:15%;
 }
