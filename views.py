@@ -331,6 +331,7 @@ class ItemCSV(ItemList):
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
+        context = self.get_context_data()
 
         response = HttpResponse(
             content_type='text/csv',
@@ -339,6 +340,51 @@ class ItemCSV(ItemList):
 
         writer = csv.writer(response)
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
+
+        row=[]
+
+        if not 'show_columns' in vista_data or 'common_name' in vista_data['show_columns']:
+            row.append(context["labels"]["common_name"])
+        if not 'show_columns' in vista_data or 'mmodel' in vista_data['show_columns']:
+            row.append(context["labels"]["mmodel"])
+        if not 'show_columns' in vista_data or 'primary_id' in vista_data['show_columns']:
+            row.append(context["labels"]["primary_id"])
+        if not 'show_columns' in vista_data or 'serial_number' in vista_data['show_columns']:
+            row.append(context["labels"]["serial_number"])
+        if not 'show_columns' in vista_data or 'phone_number' in vista_data['show_columns']:
+            row.append(context["labels"]["phone_number"])
+        if not 'show_columns' in vista_data or 'asset_number' in vista_data['show_columns']:
+            row.append(context["labels"]["asset_number"])
+        if not 'show_columns' in vista_data or 'barcode' in vista_data['show_columns']:
+            row.append(context["labels"]["barcode"])
+        if not 'show_columns' in vista_data or 'network_name' in vista_data['show_columns']:
+            row.append(context["labels"]["network_name"])
+        if not 'show_columns' in vista_data or 'phone_number' in vista_data['show_columns']:
+            row.append(context["labels"]["phone_number"])
+        if not 'show_columns' in vista_data or 'essid' in vista_data['show_columns']:
+            row.append(context["labels"]["essid"])
+        if not 'show_columns' in vista_data or 'role' in vista_data['show_columns']:
+            row.append(context["labels"]["role"])
+        if not 'show_columns' in vista_data or 'connected_to' in vista_data['show_columns']:
+            row.append(context["labels"]["connected_to"])
+        if not 'show_columns' in vista_data or 'status' in vista_data['show_columns']:
+            row.append(context["labels"]["status"])
+        if not 'show_columns' in vista_data or 'home' in vista_data['show_columns']:
+            row.append(context["labels"]["home"])
+        if not 'show_columns' in vista_data or 'location' in vista_data['show_columns']:
+            row.append(context["labels"]["location"])
+        if not 'show_columns' in vista_data or 'assignee' in vista_data['show_columns']:
+            row.append(context["labels"]["assignee"])
+        if not 'show_columns' in vista_data or 'borrower' in vista_data['show_columns']:
+            row.append(context["labels"]["borrower"])
+        if not 'show_columns' in vista_data or 'owner' in vista_data['show_columns']:
+            row.append(context["labels"]["owner"])
+        if not 'show_columns' in vista_data or 'latest_inventory' in vista_data['show_columns']:
+            row.append(context["labels"]["latest_inventory"])
+        if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
+            row.append(context["labels"]["installation_date"])
+
+        writer.writerow(row)
 
         for item in self.object_list:
             row=[]
