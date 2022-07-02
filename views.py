@@ -612,3 +612,9 @@ def get_primary_id_field( request, mmodel_id):
     except ObjectDoesNotExist:
         return None
 
+def count_primary_id( request, pk=0, primary_id="" ):
+    if(int(pk) > 0):
+        print("tp 2271431", primary_id)
+        return HttpResponse(Item.objects.filter(primary_id=primary_id).exclude(pk=pk).count())
+    else:
+        return HttpResponse(Item.objects.filter(primary_id=primary_id).count())

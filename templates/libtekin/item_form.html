@@ -5,7 +5,7 @@
   <h2>{{ object }}</h2>
   {{ form.errors }}
   <form method="POST">
-    <div class="form">
+    <div class="form" id="div_form">
       {% csrf_token %}
       {% for field in form.hidden_fields %}
         {{ field }}
@@ -19,6 +19,9 @@
       </div>
       <div id="div_role">
         {% include './_form_field.html' with field=form.role %}
+      </div>
+      <div id="div_div_primary_id_count">
+        {% include './_form_field.html' with field="<div id='div_primary_id_count' class='errors'></div>" %}
       </div>
       <div id="div_primary_id_field">
         {% include './_form_field.html' with field=form.primary_id_field %}
@@ -208,6 +211,33 @@
   <script>
     addFilterInput("{{ form.mmodel.id_for_label }}")
     addFilterInput("{{ form.connected_to.id_for_label }}")
+  </script>
+
+  <script>
+    document.getElementById("div_form").addEventListener("change", function(e) {
+      let primary_id_field_id = "id_" + document.getElementById("{{ form.primary_id_field.id_for_label }}").value
+      if(e.target.id == primary_id_field_id) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            if(this.responseText=="0") {
+              document.getElementById("div_primary_id_count").innerHTML = ""
+            } else if (this.responseText=="1") {
+              document.getElementById("div_primary_id_count").innerHTML = "There is 1 other item with this primary id"
+            } else {
+              document.getElementById("div_primary_id_count").innerHTML = "There are " + this.responseText + " other items with this primary id"
+            }
+          }
+        };
+
+        {% if form.instance.pk %}
+          xhttp.open("GET", "{% url 'libtekin:primary-id-count' form.instance.pk '___' %}".replace("___", e.target.value ));
+        {% else %}
+          xhttp.open("GET", "{% url 'libtekin:primary-id-count' '___' %}".replace("___", e.target.value ));
+        {% endif %}
+        xhttp.send();
+      };
+    });
   </script>
 
 {% endblock %}
