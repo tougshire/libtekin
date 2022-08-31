@@ -35,13 +35,16 @@
     margin-top:.5em;
 }
 
+.form .field {
+    width:80%;
+}
+
 .control {
-    display:flex;
+    width:100%;
 }
 
 .form .label {
     width:15%;
-    flex-grow:0;
 }
 
 .form .help_text {
