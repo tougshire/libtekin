@@ -1,7 +1,7 @@
 from django.core import exceptions
 from django.db import models
 from django.urls import reverse
-from datetime import date
+from datetime import date, datetime
 from django.conf import settings
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
@@ -439,6 +439,7 @@ class ItemNote(models.Model):
         'when',
         blank=True,
         null=True,
+        default=datetime.now,
         help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
     )
     text = models.CharField(
