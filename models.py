@@ -521,15 +521,3 @@ class History(models.Model):
             print (e)
 
         return f'{"mdy".format(self.when.strftime("%Y-%m-%d"))}: {self.modelname}: {self.objectid} [{self.fieldname}] changed to "{new_value_trunc}"'
-
-
-class ItemNote(models.Model):
-    item = models.ForeignKey(
-        Item,
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text='The item to which this note applies'
-    )
-
-    def __str__(self):
-        return self.name
