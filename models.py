@@ -439,7 +439,7 @@ class ItemNote(models.Model):
         'when',
         blank=True,
         null=True,
-        default=datetime.now,
+        default=date.today,
         help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
     )
     text = models.CharField(
