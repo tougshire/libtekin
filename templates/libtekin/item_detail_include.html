@@ -22,6 +22,7 @@
     {% include './_detail_field.html' with label=item_labels.latest_inventory field=object.latest_inventory %}
     {% include './_detail_field.html' with label=item_labels.installation_date field=object.installation_date %}
 
+    {% if not hide_notes %}
     <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for itemnote in object.itemnote_set.all %}
       <div class="relatedset relateditemnote{% if itemnote.is_current %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
@@ -47,6 +48,7 @@
         </div>
       </div>
     {% endfor %}
+    {% endif %}
   </div>
 
   <script>

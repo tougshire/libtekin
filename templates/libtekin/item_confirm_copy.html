@@ -1,10 +1,10 @@
 {% extends './_base.html' %}
 {% block content %}
-  {% include './item_detail_include.html' %}
+  {% include './item_detail_include.html' with hide_notes="true" %}
 <form method="POST">
 {% csrf_token %}
 <div>
-Number of copies: <input name="qty">
+Number of copies: <input name="qty"  value="1">
 <button type="submit">Make Copies</button>
 </div>
 {% endblock %}

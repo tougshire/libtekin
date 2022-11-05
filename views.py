@@ -145,6 +145,14 @@ class ItemCopy(DetailView, FormView):
     form_class = ItemCopyForm
     model = Item
 
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+        context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+
+        return context_data
+
     def form_valid(self, form):
 
         item = Item.objects.get(pk=self.kwargs.get('pk'))
