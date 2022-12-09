@@ -207,6 +207,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'primary_id',
             'common_name',
             'mmodel',
+            'mmodel__category',
             'network_name',
             'serial_number',
             'phone_number',
