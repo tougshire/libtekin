@@ -1,10 +1,14 @@
+from datetime import date, datetime
+
+from django.apps import apps
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
+from django.db.models import OuterRef, Subquery
+from django.db.models.functions import Concat
 from django.urls import reverse
-from datetime import date, datetime
-from django.conf import settings
-from django.apps import apps
-from django.contrib.contenttypes.models import ContentType
+
 
 def get_default_status():
     try:
@@ -214,9 +218,6 @@ class Role(models.Model):
     class Meta:
         ordering = ['sort_name', 'name']
 
-class ItemNotDeletedManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False)
 
 class Status(models.Model):
     name = models.CharField(
@@ -244,6 +245,24 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ItemNotDeletedManager(models.Manager):
+
+    def get_queryset(self):
+        
+        return super().get_queryset().filter(is_deleted=False). \
+            annotate(latest_update_text=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('text')[:1])). \
+            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1]))
+        
+
+class ItemAllManager(models.Manager):
+
+    def get_queryset(self):
+        
+        return super().get_queryset(). \
+            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
+            annotate(latest_update_text=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('text')[:1]))
 
 
 class Item(models.Model):
@@ -426,7 +445,7 @@ class Item(models.Model):
         ordering = ['primary_id']
 
     objects = ItemNotDeletedManager()
-    all_objects = models.Manager()
+    all_objects = ItemAllManager()
 
 class ItemNote(models.Model):
     item = models.ForeignKey(

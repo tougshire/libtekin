@@ -1,5 +1,5 @@
-import sys
 import csv
+import sys
 import urllib
 from urllib.parse import urlencode
 
@@ -14,6 +14,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django.views.generic.list import ListView
+
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import (default_vista, delete_vista,
                                     get_global_vista, get_latest_vista,
@@ -233,6 +234,9 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
 
+        self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
+        self.vista_settings['fields']['latest_update_text'] = {'type': 'TextField', 'label': 'Latest Major Update Text', 'available_for': ['columns']}
+
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
@@ -257,7 +261,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             delete_vista(self.request)
 
         if 'query' in self.request.session:
-            print('tp 224bc49', 'query in self.request.session')
             querydict = QueryDict(self.request.session.get('query'))
             self.vistaobj = make_vista(
                 self.request.user,
@@ -270,7 +273,6 @@ class ItemList(PermissionRequiredMixin, ListView):
             del self.request.session['query']
 
         elif 'vista_query_submitted' in self.request.POST:
-            print('tp 224bc50', 'vista_query_submitted')
 
             self.vistaobj = make_vista(
                 self.request.user,
@@ -281,7 +283,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_settings
             )
         elif 'retrieve_vista' in self.request.POST:
-            print('tp 224bc51', 'retrieve_vista')
 
             self.vistaobj = retrieve_vista(
                 self.request.user,
@@ -292,7 +293,6 @@ class ItemList(PermissionRequiredMixin, ListView):
 
             )
         elif 'default_vista' in self.request.POST:
-            print('tp 224bc52', 'default_vista')
 
             self.vistaobj = default_vista(
                 self.request.user,
@@ -308,7 +308,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.vista_settings
             )
 
-            print('tp 224bc53', 'else')
 
         return self.vistaobj['queryset']
 
@@ -392,6 +391,8 @@ class ItemCSV(ItemList):
             row.append(context["labels"]["latest_inventory"])
         if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
             row.append(context["labels"]["installation_date"])
+        if not 'show_columns' in vista_data or 'latest_update_text' in vista_data['show_columns']:
+            row.append(context["labels"]["latest_update_text"])
 
         writer.writerow(row)
 
@@ -437,6 +438,8 @@ class ItemCSV(ItemList):
                 row.append(item.latest_inventory)
             if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
                 row.append(item.installation_date)
+            if not 'show_columns' in vista_data or 'latest_update_text' in vista_data['show_columns']:
+                row.append(item.latest_update_text)
 
             writer.writerow(row)
 
