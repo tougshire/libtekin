@@ -469,8 +469,8 @@ class ItemNote(models.Model):
         default=date.today,
         help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
     )
-    text = models.CharField(
-        
+    maintext = models.CharField(
+        'description',
         max_length=125,
         blank=True,
         help_text='The text of the note.  Can be a subject line or introduction if more is included in details'
@@ -490,7 +490,7 @@ class ItemNote(models.Model):
         return f'{self.when.isoformat()}: {self.text}' if self.when else self.text
 
     class Meta:
-        ordering = ['-when', 'text']
+        ordering = ['-when',]
 
 class History(models.Model):
 

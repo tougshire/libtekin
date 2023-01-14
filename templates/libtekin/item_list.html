@@ -69,9 +69,6 @@
         {% if 'installation_date' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.installation_date %}
         {% endif %}
-        {% if 'latest_update_text' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.latest_update_text %}
-        {% endif %}
 
       </div>
 
@@ -137,9 +134,6 @@
           {% endif %}
           {% if 'installation_date' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.installation_date %}
-          {% endif %}
-          {% if 'latest_update_text' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.latest_update_text %}
           {% endif %}
 
         </div>

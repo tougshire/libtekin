@@ -235,7 +235,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
 
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
-        self.vista_settings['fields']['latest_update_text'] = {'type': 'TextField', 'label': 'Latest Major Update Text', 'available_for': ['columns']}
 
 
         self.vista_defaults = QueryDict(urlencode([
@@ -391,8 +390,6 @@ class ItemCSV(ItemList):
             row.append(context["labels"]["latest_inventory"])
         if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
             row.append(context["labels"]["installation_date"])
-        if not 'show_columns' in vista_data or 'latest_update_text' in vista_data['show_columns']:
-            row.append(context["labels"]["latest_update_text"])
 
         writer.writerow(row)
 
@@ -438,8 +435,6 @@ class ItemCSV(ItemList):
                 row.append(item.latest_inventory)
             if not 'show_columns' in vista_data or 'installation_date' in vista_data['show_columns']:
                 row.append(item.installation_date)
-            if not 'show_columns' in vista_data or 'latest_update_text' in vista_data['show_columns']:
-                row.append(item.latest_update_text)
 
             writer.writerow(row)
 

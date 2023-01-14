@@ -90,7 +90,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include './_form_field.html' with field=itemnoteform.when %}
-            {% include './_form_field.html' with field=itemnoteform.text %}
+            {% include './_form_field.html' with field=itemnoteform.maintext %}
             {% include './_form_field.html' with field=itemnoteform.details %}
             {% include './_form_field.html' with field=itemnoteform.is_current %}
             {% include './_form_field.html' with field=itemnoteform.DELETE %}
@@ -101,7 +101,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include './_form_field.html' with field=itemnoteform.when %}
-            {% include './_form_field.html' with field=itemnoteform.text %}
+            {% include './_form_field.html' with field=itemnoteform.maintext %}
             {% include './_form_field.html' with field=itemnoteform.details %}
             {% include './_form_field.html' with field=itemnoteform.is_current %}
             {% include './_form_field.html' with field=itemnoteform.DELETE %}
@@ -114,7 +114,7 @@
         </tr>
         {% for itemnote in object.itemnote_set.all %}
           <tr id="tr_itemnote_{{ itemnote.id }}">
-            <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.text }}</td><td>{{ itemnote.is_current }}</td>
+            <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.maintext }}</td><td>{{ itemnote.is_current }}</td>
           </tr>
         {% endfor %}
       </table>
