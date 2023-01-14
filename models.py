@@ -470,6 +470,7 @@ class ItemNote(models.Model):
         help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
     )
     text = models.CharField(
+        
         max_length=125,
         blank=True,
         help_text='The text of the note.  Can be a subject line or introduction if more is included in details'
@@ -477,7 +478,7 @@ class ItemNote(models.Model):
     details = models.TextField(
         'details',
         blank=True,
-        help_text='The details of the note if the summary is not sufficient'
+        help_text='The details of the note if the summary text is not sufficient'
     )
     is_current = models.BooleanField(
         'is major or current status',
