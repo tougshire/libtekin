@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
-from django.db.models import OuterRef, Subquery
+from django.db.models import Count, OuterRef, Q, Subquery
 from django.db.models.functions import Concat
 from django.urls import reverse
 
@@ -252,8 +252,8 @@ class ItemNotDeletedManager(models.Manager):
     def get_queryset(self):
         
         return super().get_queryset().filter(is_deleted=False). \
-            annotate(latest_update_text=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('text')[:1])). \
-            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1]))
+            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
+            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current=True)))
         
 
 class ItemAllManager(models.Manager):
@@ -262,7 +262,7 @@ class ItemAllManager(models.Manager):
         
         return super().get_queryset(). \
             annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
-            annotate(latest_update_text=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('text')[:1]))
+            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current=True)))
 
 
 class Item(models.Model):
@@ -437,6 +437,14 @@ class Item(models.Model):
 
     def get_absolute_url(self):
         return reverse('libtekin:item-detail', kwargs={'pk':self.pk})
+
+    def get_current_notes(self):
+        current_notes=[]
+        for note in self.itemnote_set.filter(is_current=True):
+            current_notes.append('{}: {}'.format(note.when.strftime('%Y-%m-%d'), note.text))
+
+        return current_notes
+        # return separator.join(current_notes)
 
     def __str__(self):
         return f'{self.common_name}'
