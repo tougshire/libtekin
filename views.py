@@ -233,7 +233,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         ])
 
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
-
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
 
 
