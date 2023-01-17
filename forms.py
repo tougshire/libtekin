@@ -52,6 +52,40 @@ class ItemForm(ModelForm):
 
         }
 
+class ItemNoteItemForm(ModelForm):
+    class Meta:
+        model = Item
+        fields = [
+            'common_name',
+            'mmodel',
+            'primary_id_field',
+            'serial_number',
+            'service_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'essid',
+            'connected_to',
+            'condition',
+            'status',
+            'network_name',
+            'assignee',
+            'owner',
+            'borrower',
+            'home',
+            'latest_inventory',
+            'installation_date',
+            'location',
+            'role',
+        ]
+        widgets = {
+            'mmodel': MmodelSelect,
+            'connected_to': MmodelSelect,
+            'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
+            'installation_date':forms.DateInput( attrs={ "type":"date" } ),
+
+        }
+
 class ItemNoteForm(ModelForm):
     class Meta:
         model = ItemNote

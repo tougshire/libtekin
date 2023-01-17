@@ -47,5 +47,12 @@ urlpatterns = [
     path('mmodelcategory/<int:pk>/close/', views.MmodelCategoryClose.as_view(), name="mmodelcategory-close"),
     path('mmodel/<int:pk>/primary_id_field/', views.get_primary_id_field, name="get_primary_id_field"),
 #    path('item/list/by/<fieldname>/<query>/', views.ItemList.as_view(), name='item-list-search'),
+    path('itemnote/', RedirectView.as_view(url=reverse_lazy('libtekin:itemnote-list'))),
+    path('itemnote/create/', views.ItemNoteCreate.as_view(), name='itemnote-create'),
+    path('itemnote/<int:pk>/update/', views.ItemNoteUpdate.as_view(), name='itemnote-update'),
+    path('itemnote/<int:pk>/detail/', views.ItemNoteDetail.as_view(), name='itemnote-detail'),
+    path('itemnote/<int:pk>/delete/', views.ItemNoteDelete.as_view(), name='itemnote-delete'),
+    path('itemnote/list/', views.ItemNoteList.as_view(), name='itemnote-list'),
+    path('itemnote/<int:pk>/close/', views.ItemNoteClose.as_view(), name="itemnote-close"),
 
 ]

@@ -21,7 +21,7 @@ from tougshire_vistas.views import (default_vista, delete_vista,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
-from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemItemNoteFormset,
+from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemNoteItemFormset, ItemItemNoteFormset,
                     LocationForm, MmodelCategoryForm, MmodelForm)
 from .models import (Condition, Entity, History, Item, ItemNote, Location,
                      Mmodel, MmodelCategory, Role)
@@ -624,3 +624,262 @@ def count_primary_id( request, pk=0, primary_id="" ):
         return HttpResponse(Item.objects.filter(primary_id=primary_id).exclude(pk=pk).count())
     else:
         return HttpResponse(Item.objects.filter(primary_id=primary_id).count())
+
+
+class ItemNoteCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'libtekin.add_itemnote'
+    model = ItemNote
+    form_class = ItemNoteForm
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context_data['items'] = ItemNoteItemFormset(self.request.POST)
+        else:
+            context_data['items'] = ItemNoteItemFormset()
+
+        return context_data
+
+    def form_valid(self, form):
+
+        response = super().form_valid(form)
+
+        update_history(form, 'ItemNote', form.instance, self.request.user)
+
+        self.object = form.save()
+
+        if self.request.POST:
+            items = ItemNoteItemFormset(self.request.POST, instance=self.object)
+        else:
+            items = ItemNoteItemFormset(instance=self.object)
+
+        if(items).is_valid():
+            items.save()
+        else:
+            return self.form_invalid(form)
+
+
+        return response
+
+    def get_success_url(self):
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
+            return reverse_lazy('libtekin:itemnote-close', kwargs={'pk': self.object.pk})
+        else:
+            return reverse_lazy('libtekin:itemnote-detail', kwargs={'pk': self.object.pk})
+
+
+class ItemNoteUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'libtekin.change_itemnote'
+    model = ItemNote
+    form_class = ItemNoteForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context_data['items'] = ItemNoteItemFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['items'] = ItemNoteItemFormset(instance=self.object)
+
+        return context_data
+
+    def form_valid(self, form):
+
+        update_history(form, 'ItemNote', form.instance, self.request.user)
+
+        response = super().form_valid(form)
+
+        self.object = form.save()
+
+        if self.request.POST:
+            items = ItemNoteItemFormset(self.request.POST, instance=self.object)
+        else:
+            items = ItemNoteItemFormset(instance=self.object)
+
+        if(items).is_valid():
+            items.save()
+        else:
+            return self.form_invalid(form)
+
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:itemnote-detail', kwargs={ 'pk':self.object.pk })
+
+
+class ItemNoteDetail(PermissionRequiredMixin, DetailView):
+    permission_required = 'libtekin.view_itemnote'
+    model = ItemNote
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+        context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+
+        return context_data
+
+
+class ItemNoteDelete(PermissionRequiredMixin, UpdateView):
+    permission_required = 'libtekin.delete_itemnote'
+    model = ItemNote
+    success_url = reverse_lazy('libtekin:itemnote-list')
+
+class ItemNoteSoftDelete(PermissionRequiredMixin, UpdateView):
+    permission_required = 'libtekin.delete_itemnote'
+    model = ItemNote
+    template_name = 'libtekin/itemnote_confirm_delete.html'
+    success_url = reverse_lazy('libtekin:itemnote-list')
+    fields = ['is_deleted']
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+        context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+
+        return context_data
+
+class ItemNoteList(PermissionRequiredMixin, ListView):
+    permission_required = 'libtekin.view_itemnote'
+    model = ItemNote
+    paginate_by = 30
+
+
+    def setup(self, request, *args, **kwargs):
+
+        self.vista_settings={
+            'max_search_keys':5,
+            'fields':[],
+        }
+
+        self.vista_settings['fields'] = make_vista_fields(ItemNote, field_names=[
+            'primary_id',
+            'common_name',
+            'mmodel',
+            'mmodel__category',
+            'network_name',
+            'serial_number',
+            'phone_number',
+            'asset_number',
+            'barcode',
+            'phone_number',
+            'role',
+            'connected_to',
+            'essid',
+            'owner',
+            'assignee',
+            'borrower',
+            'home',
+            'location',
+            'status',
+            'connected_to__mmodel',
+            'connection__mmodel',
+            'latest_inventory',
+            'installation_date',
+            'status__is_active',
+            'item__is_current',
+        ])
+
+        self.vista_settings['fields']['item__is_current']['label'] = "Has Current Notes"
+        self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
+
+
+        self.vista_defaults = QueryDict(urlencode([
+            ('filter__fieldname__0', ['status__is_active']),
+            ('filter__op__0', ['exact']),
+            ('filter__value__0', [True]),
+            ('order_by', ['primary_id', 'common_name']),
+            ('paginate_by',self.paginate_by),
+        ],doseq=True) )
+
+        return super().setup(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self, **kwargs):
+
+        queryset = super().get_queryset()
+
+        self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
+
+        if 'delete_vista' in self.request.POST:
+            delete_vista(self.request)
+
+        if 'query' in self.request.session:
+            querydict = QueryDict(self.request.session.get('query'))
+            self.vistaobj = make_vista(
+                self.request.user,
+                queryset,
+                querydict,
+                '',
+                False,
+                self.vista_settings
+            )
+            del self.request.session['query']
+
+        elif 'vista_query_submitted' in self.request.POST:
+
+            self.vistaobj = make_vista(
+                self.request.user,
+                queryset,
+                self.request.POST,
+                self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
+                self.request.POST.get('make_default') if ('make_default') in self.request.POST else False,
+                self.vista_settings
+            )
+        elif 'retrieve_vista' in self.request.POST:
+
+            self.vistaobj = retrieve_vista(
+                self.request.user,
+                queryset,
+                'libtekin.itemnote',
+                self.request.POST.get('vista_name'),
+                self.vista_settings
+
+            )
+        elif 'default_vista' in self.request.POST:
+
+            self.vistaobj = default_vista(
+                self.request.user,
+                queryset,
+                self.vista_defaults,
+                self.vista_settings
+            )
+        else:
+            self.vistaobj = get_latest_vista(
+                self.request.user,
+                queryset,
+                self.vista_defaults,
+                self.vista_settings
+            )
+
+
+        return self.vistaobj['queryset']
+
+    def get_paginate_by(self, queryset):
+
+        if 'paginate_by' in self.vistaobj['querydict'] and self.vistaobj['querydict']['paginate_by']:
+            return self.vistaobj['querydict']['paginate_by']
+
+        return super().get_paginate_by(self)
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+
+        vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
+
+        context_data = {**context_data, **vista_data}
+
+        context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.itemnote').all() # for choosing saved vistas
+
+        if self.request.POST.get('vista_name'):
+            context_data['vista_name'] = self.request.POST.get('vista_name')
+
+        context_data['count'] = self.object_list.count()
+
+        return context_data
