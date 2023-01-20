@@ -21,7 +21,7 @@ from tougshire_vistas.views import (default_vista, delete_vista,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
-from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemNoteItemFormset, ItemItemNoteFormset,
+from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemItemNoteFormset,
                     LocationForm, MmodelCategoryForm, MmodelForm)
 from .models import (Condition, Entity, History, Item, ItemNote, Location,
                      Mmodel, MmodelCategory, Role)
