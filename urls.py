@@ -53,6 +53,6 @@ urlpatterns = [
     path('itemnote/<int:pk>/detail/', views.ItemNoteDetail.as_view(), name='itemnote-detail'),
     path('itemnote/<int:pk>/delete/', views.ItemNoteDelete.as_view(), name='itemnote-delete'),
     path('itemnote/list/', views.ItemNoteList.as_view(), name='itemnote-list'),
-    path('itemnote/<int:pk>/close/', views.ItemNoteClose.as_view(), name="itemnote-close"),
+#    path('itemnote/<int:pk>/close/', views.ItemNoteClose.as_view(), name="itemnote-close"),
 
 ]
