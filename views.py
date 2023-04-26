@@ -21,7 +21,7 @@ from tougshire_vistas.views import (default_vista, delete_vista,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
-from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemItemNoteFormset,
+from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemItemNoteFormset, ItemNoteItemForm, 
                     LocationForm, MmodelCategoryForm, MmodelForm)
 from .models import (Condition, Entity, History, Item, ItemNote, Location,
                      Mmodel, MmodelCategory, Role)
@@ -230,11 +230,14 @@ class ItemList(PermissionRequiredMixin, ListView):
             'installation_date',
             'status__is_active',
             'itemnote__is_current',
+            'itemnote__maintext',
+            'assignee__full_name',
         ])
 
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
-
+        self.vista_settings['fields']['itemnote__maintext']['available_for'] = 'quicksearch'
+        self.vista_settings['fields']['assignee__full_name']['available_for'] = 'quicksearch'
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
@@ -631,16 +634,6 @@ class ItemNoteCreate(PermissionRequiredMixin, CreateView):
     model = ItemNote
     form_class = ItemNoteForm
 
-    def get_context_data(self, **kwargs):
-
-        context_data = super().get_context_data(**kwargs)
-
-        if self.request.POST:
-            context_data['items'] = ItemNoteItemFormset(self.request.POST)
-        else:
-            context_data['items'] = ItemNoteItemFormset()
-
-        return context_data
 
     def form_valid(self, form):
 
@@ -649,17 +642,6 @@ class ItemNoteCreate(PermissionRequiredMixin, CreateView):
         update_history(form, 'ItemNote', form.instance, self.request.user)
 
         self.object = form.save()
-
-        if self.request.POST:
-            items = ItemNoteItemFormset(self.request.POST, instance=self.object)
-        else:
-            items = ItemNoteItemFormset(instance=self.object)
-
-        if(items).is_valid():
-            items.save()
-        else:
-            return self.form_invalid(form)
-
 
         return response
 
@@ -675,16 +657,6 @@ class ItemNoteUpdate(PermissionRequiredMixin, UpdateView):
     model = ItemNote
     form_class = ItemNoteForm
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        if self.request.POST:
-            context_data['items'] = ItemNoteItemFormset(self.request.POST, instance=self.object)
-        else:
-            context_data['items'] = ItemNoteItemFormset(instance=self.object)
-
-        return context_data
-
     def form_valid(self, form):
 
         update_history(form, 'ItemNote', form.instance, self.request.user)
@@ -692,16 +664,6 @@ class ItemNoteUpdate(PermissionRequiredMixin, UpdateView):
         response = super().form_valid(form)
 
         self.object = form.save()
-
-        if self.request.POST:
-            items = ItemNoteItemFormset(self.request.POST, instance=self.object)
-        else:
-            items = ItemNoteItemFormset(instance=self.object)
-
-        if(items).is_valid():
-            items.save()
-        else:
-            return self.form_invalid(form)
 
         return response
 
