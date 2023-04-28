@@ -2,8 +2,8 @@
 
   <div class="detail">
     {% include './_detail_field.html' with label=itemnote_labels.item field=object.item %}
+    {% include './_detail_field.html' with label=itemnote_labels.is_current field=object.is_current %}
     {% include './_detail_field.html' with label=itemnote_labels.when field=object.when %}
     {% include './_detail_field.html' with label=itemnote_labels.maintext field=object.maintext %}
     {% include './_detail_field.html' with label=itemnote_labels.details field=object.details %}
-    {% include './_detail_field.html' with label=itemnote_labels.is_current field=object.is_current %}
 

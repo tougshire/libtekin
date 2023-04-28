@@ -718,11 +718,12 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
         }
 
         self.vista_settings['fields'] = make_vista_fields(ItemNote, field_names=[
+            'item',
+            'is_current',
+            'when',
             'maintext',
             'details',
-            'is_current',
-            'item',
-            'when',
+            'item__status__is_active',
         ])
 
         # self.vista_settings['fields']['item__is_current']['label'] = "Has Current Notes"
@@ -733,8 +734,12 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
             ('filter__fieldname__0', ['is_current']),
             ('filter__op__0', ['exact']),
             ('filter__value__0', [True]),
+            ('filter__fieldname__1', ['item__status__is_active']),
+            ('filter__op__1', ['exact']),
+            ('filter__value__1', [True]),
             ('order_by', ['when', 'item']),
             ('paginate_by',self.paginate_by),
+
         ],doseq=True) )
 
         return super().setup(request, *args, **kwargs)

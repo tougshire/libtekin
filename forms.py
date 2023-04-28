@@ -92,9 +92,9 @@ class ItemNoteForm(ModelForm):
         fields = [
             'item',
             'when',
+            'is_current',
             'maintext',
             'details',
-            'is_current',
         ]
         widgets = {
             'when':forms.DateInput( attrs={ "type":"date" } ),

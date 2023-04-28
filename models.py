@@ -393,7 +393,7 @@ class Item(models.Model):
         on_delete = models.SET_NULL,
         null = True,
         default = get_default_status,
-        help_text = 'The status of this project'
+        help_text = 'The status of this item'
     )
     role = models.ForeignKey(
         Role,

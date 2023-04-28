@@ -10,6 +10,9 @@
         {% if 'item' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.item %}
         {% endif %}
+        {% if 'is_current' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.is_current %}
+        {% endif %}
         {% if 'when' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.when %}
         {% endif %}
@@ -18,9 +21,6 @@
         {% endif %}
         {% if 'details' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.details %}
-        {% endif %}
-        {% if 'is_current' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.is_current %}
         {% endif %}
 
       </div>
@@ -31,6 +31,9 @@
           {% if 'item' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.item %}
           {% endif %}
+          {% if 'is_current' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=itemnote.is_current %}
+          {% endif %}
           {% if 'when' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.when %}
           {% endif %}
@@ -39,9 +42,6 @@
           {% endif %}
           {% if 'details' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.details %}
-          {% endif %}
-          {% if 'is_current' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.is_current %}
           {% endif %}
 
         </div>
