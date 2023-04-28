@@ -75,6 +75,7 @@
       {% for item in object_list %}
         <div class="row">
           <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
+          <div class="listfield"><a href="{% url 'libtekin:item-update' item.pk %}">edit</a></div>
           {% if 'common_name' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.common_name %}
           {% endif %}

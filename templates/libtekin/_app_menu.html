@@ -24,5 +24,17 @@
       </div>
     {% endif %}
   {% endif %}
+  {% if perms.libtekin.view_itemnote %}
+    {% url 'libtekin:itemnote-list' as itemnote_url %}
+    {% if itemnote_url == url_here %}
+      <div class="menu-item menu-here">
+        Item Notes
+      </div>
+    {% else %}
+      <div class="menu-item">
+        <a href="{{ itemnote_url }}">Item Notes</a>
+      </div>
+    {% endif %}
+  {% endif %}
 
 </div>

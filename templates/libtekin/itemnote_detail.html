@@ -1,0 +1,15 @@
+{% extends './_base.html' %}
+{% block content %}
+
+  {% include './itemnote_detail_include.html' %}
+
+  <div class="menu menu-bottom">
+    {% if perms.libtekin.change_item %}
+      <div class="menu-item">
+      <a href="{% url 'libtekin:item-detail' object.item.pk %}">Go to Item</a>
+      </div>
+  
+    {% endif %}
+  </div>
+{% endblock %}
+

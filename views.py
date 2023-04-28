@@ -3,6 +3,7 @@ import sys
 import urllib
 from urllib.parse import urlencode
 
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import FieldError, ObjectDoesNotExist
@@ -230,14 +231,13 @@ class ItemList(PermissionRequiredMixin, ListView):
             'installation_date',
             'status__is_active',
             'itemnote__is_current',
-            'itemnote__maintext',
             'assignee__full_name',
         ])
 
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
-        self.vista_settings['fields']['itemnote__maintext']['available_for'] = 'quicksearch'
-        self.vista_settings['fields']['assignee__full_name']['available_for'] = 'quicksearch'
+        self.vista_settings['fields']['assignee__full_name']['available_for'] = ['quicksearch', 'order_by']
+        
 
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
@@ -718,42 +718,22 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
         }
 
         self.vista_settings['fields'] = make_vista_fields(ItemNote, field_names=[
-            'primary_id',
-            'common_name',
-            'mmodel',
-            'mmodel__category',
-            'network_name',
-            'serial_number',
-            'phone_number',
-            'asset_number',
-            'barcode',
-            'phone_number',
-            'role',
-            'connected_to',
-            'essid',
-            'owner',
-            'assignee',
-            'borrower',
-            'home',
-            'location',
-            'status',
-            'connected_to__mmodel',
-            'connection__mmodel',
-            'latest_inventory',
-            'installation_date',
-            'status__is_active',
-            'item__is_current',
+            'maintext',
+            'details',
+            'is_current',
+            'item',
+            'when',
         ])
 
-        self.vista_settings['fields']['item__is_current']['label'] = "Has Current Notes"
-        self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
+        # self.vista_settings['fields']['item__is_current']['label'] = "Has Current Notes"
+        # self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
 
 
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['status__is_active']),
+            ('filter__fieldname__0', ['is_current']),
             ('filter__op__0', ['exact']),
             ('filter__value__0', [True]),
-            ('order_by', ['primary_id', 'common_name']),
+            ('order_by', ['when', 'item']),
             ('paginate_by',self.paginate_by),
         ],doseq=True) )
 

@@ -254,7 +254,8 @@ class ItemNotDeletedManager(models.Manager):
         return super().get_queryset().filter(is_deleted=False). \
             annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
             annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current=True)))
-        
+
+
 
 class ItemAllManager(models.Manager):
 
@@ -454,6 +455,12 @@ class Item(models.Model):
 
     objects = ItemNotDeletedManager()
     all_objects = ItemAllManager()
+
+class ItemNoteCurrentManager(models.Manager):
+
+    def get_queryset(self):
+        
+        return super().get_queryset().filter(is_current=True)
 
 class ItemNote(models.Model):
     item = models.ForeignKey(
