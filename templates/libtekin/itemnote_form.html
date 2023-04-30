@@ -46,7 +46,9 @@
       document.getElementById('input_opener').value = window.opener.location.href
     }
   </script>
-
+<script>
+      addFilterInput("{{ form.item.id_for_label }}")
+</script>
 <script>
 
     addRelatedPopupButton( 'id_itemnotecategory', 'ItemNoteCategory', '{% url "libtekin:itemnotecategory-create" %}')

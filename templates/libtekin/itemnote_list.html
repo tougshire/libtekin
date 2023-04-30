@@ -5,7 +5,8 @@
 {% include 'tougshire_vistas/filter.html' %}
 
 <div class="list">
-      <div class="row rowhead">
+  <div><a href="{% url 'libtekin:itemnote-create' %}">create</a></div>
+    <div class="row rowhead">
         {% include './_list_head.html' with field='' %}
         {% if 'item' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.item %}

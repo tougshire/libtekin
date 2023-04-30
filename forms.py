@@ -2,6 +2,22 @@ from django.forms import ModelForm, inlineformset_factory, Select
 from .models import Entity, Item, ItemNote, ItemNoteCategory, Location, Mmodel, MmodelCategory
 from django import forms
 
+class MmodelSelect(Select):
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
+        if value:
+            option['attrs']['data-primary_id_field'] = value.instance.primary_id_field
+        return option
+
+class ItemSelect(Select):
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
+        if value:
+            #data-textforfilter provides additional fields that can be used for filtering
+            option['attrs']['data-textforfilter'] = value.instance.mmodel
+        return option
+
+
 class EntityForm(ModelForm):
     class Meta:
         model = Entity
@@ -10,13 +26,6 @@ class EntityForm(ModelForm):
             'full_name',
             'category',
         ]
-
-class MmodelSelect(Select):
-    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
-        option = super().create_option(name, value, label, selected, index, subindex, attrs)
-        if value:
-            option['attrs']['data-primary_id_field'] = value.instance.primary_id_field
-        return option
 
 class ItemForm(ModelForm):
     class Meta:
@@ -65,6 +74,7 @@ class ItemNoteForm(ModelForm):
             'details',
         ]
         widgets = {
+            'item':ItemSelect(),
             'when':forms.DateInput( attrs={ "type":"date" } ),
             'maintext':forms.TextInput( attrs={ "class":"widthlong"}),
             'details':forms.Textarea( attrs={ "class":"widthlong"})
