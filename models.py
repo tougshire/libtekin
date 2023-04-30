@@ -251,20 +251,15 @@ class ItemNotDeletedManager(models.Manager):
 
     def get_queryset(self):
         
-        return super().get_queryset().filter(is_deleted=False). \
-            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current_status=True).order_by('-when').values('when')[:1])). \
-            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current_status=True)))
-
+        return super().get_queryset().filter(is_deleted=False)
+  
 
 
 class ItemAllManager(models.Manager):
 
     def get_queryset(self):
         
-        return super().get_queryset(). \
-            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current_status=True).order_by('-when').values('when')[:1])). \
-            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current_status=True)))
-
+        return super().get_queryset()
 
 class Item(models.Model):
 
@@ -439,9 +434,9 @@ class Item(models.Model):
     def get_absolute_url(self):
         return reverse('libtekin:item-detail', kwargs={'pk':self.pk})
 
-    def get_current_notes(self):
+    def get_current__status_notes(self):
         current_notes=[]
-        for note in self.itemnote_set.filter(is_current_status=True):
+        for note in self.itemnote_set.filter(is_current=True).filter(is_status=True):
             current_notes.append('{}: {}'.format(note.when.strftime('%Y-%m-%d'), note.text))
 
         return current_notes
@@ -505,10 +500,15 @@ class ItemNote(models.Model):
         blank=True,
         help_text='For temporary situations, comments regarding the end of the situation (ex: "memory card replaced")'
     )
-    is_current_status = models.BooleanField(
-        'is major or current status',
+    is_status = models.BooleanField(
+        'is status update',
         default=False,
         help_text='If this note is diplayed by default in the item detail view. That display is also determined by the dates.  If not displayed by default, notes will be displayed when "Show All" is selected'
+    )
+    is_current = models.BooleanField(
+        'is current',
+        default=False,
+        help_text='If this note displays currently correct information'
     )
 
     def __str__(self):

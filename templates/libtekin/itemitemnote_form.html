@@ -24,8 +24,12 @@
         {% include './_form_field.html' with field=form.details %}
       </div>
       <div id="div_item">
-        {% include './_form_field.html' with field=form.is_current_status %}
+        {% include './_form_field.html' with field=form.is_status %}
       </div>
+      <div id="div_item">
+        {% include './_form_field.html' with field=form.is_current %}
+      </div>
+
       <button type="submit">Submit</button>
     </div>
   </form>

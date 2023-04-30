@@ -230,15 +230,11 @@ class ItemList(PermissionRequiredMixin, ListView):
             'latest_inventory',
             'installation_date',
             'status__is_active',
-            'itemnote__is_current_status',
-            'itemnote__itemnotecategory',
         ])
 
-        self.vista_settings['fields']['itemnote__is_current_status']['label'] = "Has Current Notes"
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
         self.vista_settings['fields']['assignee__full_name']['available_for'] = ['quicksearch', 'order_by']
         
-
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
             ('filter__op__0', ['exact']),
@@ -718,7 +714,8 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
         self.vista_settings['fields'] = make_vista_fields(ItemNote, field_names=[
             'item',
-            'is_current_status',
+            'is_status',
+            'is_current',
             'when',
             'itemnotecategory',
             'maintext',
@@ -728,12 +725,15 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
 
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['is_current_status']),
+            ('filter__fieldname__0', ['is_status']),
             ('filter__op__0', ['exact']),
             ('filter__value__0', [True]),
-            ('filter__fieldname__1', ['item__status__is_active']),
+            ('filter__fieldname__1', ['is_current']),
             ('filter__op__1', ['exact']),
             ('filter__value__1', [True]),
+            ('filter__fieldname__2', ['item__status__is_active']),
+            ('filter__op__2', ['exact']),
+            ('filter__value__2', [True]),
             ('order_by', ['when', 'item']),
             ('paginate_by',self.paginate_by),
 

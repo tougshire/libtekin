@@ -16,9 +16,13 @@
       <div id="div_item">
         {% include './_form_field.html' with field=form.item %}
       </div>
-      <div id="div_is_current_status">
-        {% include './_form_field.html' with field=form.is_current_status %}
+      <div id="div_is_status">
+        {% include './_form_field.html' with field=form.is_status %}
       </div>
+      <div id="div_is_current">
+        {% include './_form_field.html' with field=form.is_current %}
+      </div>
+
       <div id="div_when">
         {% include './_form_field.html' with field=form.when %}
       </div>
