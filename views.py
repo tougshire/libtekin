@@ -900,6 +900,6 @@ class ItemNoteCategoryList(PermissionRequiredMixin, ListView):
 class ItemNoteCategoryClose(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_itemnotecategory'
     model = ItemNoteCategory
-                                                                template_name = 'libtekin/itemnotecategory_closer.html'
+    template_name = 'libtekin/itemnotecategory_closer.html'
 
 
