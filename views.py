@@ -320,6 +320,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         context_data = super().get_context_data(**kwargs)
 
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
+        vista_data['labels']['Item'] = 'item'
 
         context_data = {**context_data, **vista_data}
 
@@ -801,7 +802,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
                 self.vista_settings
             )
 
-
         return self.vistaobj['queryset']
 
     def get_paginate_by(self, queryset):
@@ -820,6 +820,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
         context_data = {**context_data, **vista_data}
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.itemnote').all() # for choosing saved vistas
+
 
         if self.request.POST.get('vista_name'):
             context_data['vista_name'] = self.request.POST.get('vista_name')
