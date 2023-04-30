@@ -14,7 +14,7 @@ class ItemSelect(Select):
         option = super().create_option(name, value, label, selected, index, subindex, attrs)
         if value:
             #data-textforfilter provides additional fields that can be used for filtering
-            option['attrs']['data-textforfilter'] = value.instance.mmodel
+            option['attrs']['data-textforfilter'] = '{} {}'.format(value.instance.mmodel, value.instance.primary_id) 
         return option
 
 
