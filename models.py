@@ -252,8 +252,8 @@ class ItemNotDeletedManager(models.Manager):
     def get_queryset(self):
         
         return super().get_queryset().filter(is_deleted=False). \
-            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
-            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current=True)))
+            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current_status=True).order_by('-when').values('when')[:1])). \
+            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current_status=True)))
 
 
 
@@ -262,8 +262,8 @@ class ItemAllManager(models.Manager):
     def get_queryset(self):
         
         return super().get_queryset(). \
-            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current=True).order_by('-when').values('when')[:1])). \
-            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current=True)))
+            annotate(latest_update_when=Subquery(ItemNote.objects.filter(item=OuterRef('pk')).filter(is_current_status=True).order_by('-when').values('when')[:1])). \
+            annotate(qty_current_notes=Count('itemnote', filter=Q(itemnote__is_current_status=True)))
 
 
 class Item(models.Model):
@@ -441,7 +441,7 @@ class Item(models.Model):
 
     def get_current_notes(self):
         current_notes=[]
-        for note in self.itemnote_set.filter(is_current=True):
+        for note in self.itemnote_set.filter(is_current_status=True):
             current_notes.append('{}: {}'.format(note.when.strftime('%Y-%m-%d'), note.text))
 
         return current_notes
@@ -492,17 +492,23 @@ class ItemNote(models.Model):
         'description',
         max_length=125,
         blank=True,
-        help_text='The text of the note.  Can be a subject line or introduction if more is included in details'
+        help_text='The text of the note.  Optional if a category is chosen and no other details are necessary.'
     )
     details = models.TextField(
         'details',
         blank=True,
-        help_text='The details of the note if the summary text is not sufficient'
+        help_text='The details of the note if the description text is not sufficient'
     )
-    is_current = models.BooleanField(
+    endtext = models.CharField(
+        'end comment',
+        max_length=125,
+        blank=True,
+        help_text='For temporary situations, comments regarding the end of the situation (ex: "memory card replaced")'
+    )
+    is_current_status = models.BooleanField(
         'is major or current status',
         default=False,
-        help_text='If this note is diplayed by default in the item detail view.  If not, it will be displayed when "Show All" is selected'
+        help_text='If this note is diplayed by default in the item detail view. That display is also determined by the dates.  If not displayed by default, notes will be displayed when "Show All" is selected'
     )
 
     def __str__(self):

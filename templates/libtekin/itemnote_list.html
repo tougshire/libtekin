@@ -11,8 +11,8 @@
         {% if 'item' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.item %}
         {% endif %}
-        {% if 'is_current' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.is_current %}
+        {% if 'is_current_status' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.is_current_status %}
         {% endif %}
         {% if 'when' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.when %}
@@ -32,11 +32,12 @@
       {% for itemnote in object_list %}
         <div class="row">
           <div class="listfield"><a href="{% url 'libtekin:itemnote-detail' itemnote.pk %}">view</a></div>
+          <div class="listfield"><a href="{% url 'libtekin:itemnote-update' itemnote.pk %}">edit</a></div>
           {% if 'item' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.item %}
           {% endif %}
-          {% if 'is_current' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.is_current %}
+          {% if 'is_current_status' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=itemnote.is_current_status %}
           {% endif %}
           {% if 'when' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.when %}

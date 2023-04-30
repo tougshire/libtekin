@@ -68,7 +68,7 @@ class ItemNoteForm(ModelForm):
         fields = [
             'item',
             'when',
-            'is_current',
+            'is_current_status',
             'itemnotecategory',
             'maintext',
             'details',
