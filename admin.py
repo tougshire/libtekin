@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (Condition, Entity, EntityCategory, Item, ItemNote, Location, LocationCategory, Mmodel,
+from .models import (Condition, Entity, EntityCategory, Item, ItemNote, ItemNoteCategory, Location, LocationCategory, Mmodel,
                      MmodelCategory, History, Status)
 
 admin.site.register(Condition)
@@ -11,6 +11,7 @@ admin.site.register(Location)
 admin.site.register(LocationCategory)
 admin.site.register(MmodelCategory)
 admin.site.register(Mmodel)
+admin.site.register(ItemNoteCategory)
 
 class ItemAdmin(admin.ModelAdmin):
     def get_queryset(self, request):

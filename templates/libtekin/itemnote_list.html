@@ -16,6 +16,9 @@
         {% if 'when' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.when %}
         {% endif %}
+        {% if 'itemnotecategory' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.itemnotecategory %}
+        {% endif %}
         {% if 'maintext' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.maintext %}
         {% endif %}
@@ -36,6 +39,9 @@
           {% endif %}
           {% if 'when' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.when %}
+          {% endif %}
+          {% if 'itemnotecategory' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=itemnote.itemnotecategory %}
           {% endif %}
           {% if 'maintext' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.maintext %}

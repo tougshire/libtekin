@@ -1,0 +1,65 @@
+{% extends './_form.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>{{ object }}</h2>
+  {{ form.errors }}
+  <form method="POST">
+    <input type="hidden" name='opener' id="input_opener">
+
+    <div class="form" id="div_form">
+      {% csrf_token %}
+      {% for field in form.hidden_fields %}
+        {{ field }}
+      {% endfor %}
+
+      <div id="div_item">
+        {% include './_form_field.html' with field=form.item %}
+      </div>
+      <div id="div_is_current">
+        {% include './_form_field.html' with field=form.is_current %}
+      </div>
+      <div id="div_when">
+        {% include './_form_field.html' with field=form.when %}
+      </div>
+      <div id="div_itemnotecategory">
+        {% include './_form_field.html' with field=form.itemnotecategory %}
+      </div>
+      <div id="div_maintext">
+        {% include './_form_field.html' with field=form.maintext %}
+      </div>
+      <div id="div_details">
+        {% include './_form_field.html' with field=form.details %}
+      </div>
+
+      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
+
+
+    </div>
+
+  </form>
+{% endblock %}
+{% block bottomscript %}
+  {{ block.super }}
+  <script>
+    if(window.opener) {
+      document.getElementById('input_opener').value = window.opener.location.href
+    }
+  </script>
+
+<script>
+
+    addRelatedPopupButton( 'id_itemnotecategory', 'ItemNoteCategory', '{% url "libtekin:itemnotecategory-create" %}')
+
+    function getControlIdsForPopups(modelName) {
+      controlIds={
+        'ItemNoteCategory': ['id_itemnotecategory',],
+      }
+      return controlIds[modelName]
+    }
+
+  </script>
+
+
+{% endblock %}
+

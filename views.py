@@ -22,9 +22,9 @@ from tougshire_vistas.views import (default_vista, delete_vista,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
-from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteForm, ItemItemNoteFormset, ItemNoteItemForm, 
+from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteCategoryForm, ItemNoteForm, ItemItemNoteFormset,  
                     LocationForm, MmodelCategoryForm, MmodelForm)
-from .models import (Condition, Entity, History, Item, ItemNote, Location,
+from .models import (Condition, Entity, History, Item, ItemNote, ItemNoteCategory, Location,
                      Mmodel, MmodelCategory, Role)
 
 
@@ -197,7 +197,6 @@ class ItemList(PermissionRequiredMixin, ListView):
     model = Item
     paginate_by = 30
 
-
     def setup(self, request, *args, **kwargs):
 
         self.vista_settings={
@@ -221,6 +220,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'essid',
             'owner',
             'assignee',
+            'assignee__full_name',
             'borrower',
             'home',
             'location',
@@ -231,7 +231,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'installation_date',
             'status__is_active',
             'itemnote__is_current',
-            'assignee__full_name',
+            'itemnote__itemnotecategory',
         ])
 
         self.vista_settings['fields']['itemnote__is_current']['label'] = "Has Current Notes"
@@ -634,7 +634,6 @@ class ItemNoteCreate(PermissionRequiredMixin, CreateView):
     model = ItemNote
     form_class = ItemNoteForm
 
-
     def form_valid(self, form):
 
         response = super().form_valid(form)
@@ -721,6 +720,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
             'item',
             'is_current',
             'when',
+            'itemnotecategory',
             'maintext',
             'details',
             'item__status__is_active',
@@ -830,3 +830,76 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
         context_data['count'] = self.object_list.count()
 
         return context_data
+
+
+################
+
+class ItemNoteCategoryCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'libtekin.add_itemnotecategory'
+    model = ItemNoteCategory
+    form_class = ItemNoteCategoryForm
+
+    def form_valid(self, form):
+
+        response = super().form_valid(form)
+
+        update_history(form, 'ItemNoteCategory', form.instance, self.request.user)
+
+        self.object = form.save()
+
+        return response
+
+    def get_success_url(self):
+        if 'opener' in self.request.POST and self.request.POST['opener'] > '':
+            return reverse_lazy('libtekin:itemnotecategory-close', kwargs={'pk': self.object.pk})
+        else:
+            return reverse_lazy('libtekin:itemnotecategory-detail', kwargs={'pk': self.object.pk})
+
+
+class ItemNoteCategoryUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'libtekin.change_itemnotecategory'
+    model = ItemNoteCategory
+    form_class = ItemNoteCategoryForm
+
+    def form_valid(self, form):
+
+        update_history(form, 'ItemNoteCategory', form.instance, self.request.user)
+
+        response = super().form_valid(form)
+
+        self.object = form.save()
+
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('libtekin:itemnotecategory-detail', kwargs={ 'pk':self.object.pk })
+
+
+class ItemNoteCategoryDetail(PermissionRequiredMixin, DetailView):
+    permission_required = 'libtekin.view_itemnotecategory'
+    model = ItemNoteCategory
+
+    def get_context_data(self, **kwargs):
+
+        context_data = super().get_context_data(**kwargs)
+        context_data['itemnotecategory_labels'] = { field.name: field.verbose_name.title() for field in ItemNoteCategory._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+        context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
+
+        return context_data
+
+
+class ItemNoteCategoryDelete(PermissionRequiredMixin, UpdateView):
+    permission_required = 'libtekin.delete_itemnotecategory'
+    model = ItemNoteCategory
+    success_url = reverse_lazy('libtekin:itemnotecategory-list')
+
+class ItemNoteCategoryList(PermissionRequiredMixin, ListView):
+    permission_required = 'libtekin.view_itemnotecategory'
+    model = ItemNoteCategory
+
+class ItemNoteCategoryClose(PermissionRequiredMixin, DetailView):
+    permission_required = 'libtekin.view_itemnotecategory'
+    model = ItemNoteCategory
+                                                                template_name = 'libtekin/itemnotecategory_closer.html'
+
+

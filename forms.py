@@ -1,5 +1,5 @@
 from django.forms import ModelForm, inlineformset_factory, Select
-from .models import Entity, Item, ItemNote, Location, Mmodel, MmodelCategory
+from .models import Entity, Item, ItemNote, ItemNoteCategory, Location, Mmodel, MmodelCategory
 from django import forms
 
 class EntityForm(ModelForm):
@@ -52,39 +52,6 @@ class ItemForm(ModelForm):
 
         }
 
-class ItemNoteItemForm(ModelForm):
-    class Meta:
-        model = Item
-        fields = [
-            'common_name',
-            'mmodel',
-            'primary_id_field',
-            'serial_number',
-            'service_number',
-            'asset_number',
-            'barcode',
-            'phone_number',
-            'essid',
-            'connected_to',
-            'condition',
-            'status',
-            'network_name',
-            'assignee',
-            'owner',
-            'borrower',
-            'home',
-            'latest_inventory',
-            'installation_date',
-            'location',
-            'role',
-        ]
-        widgets = {
-            'mmodel': MmodelSelect,
-            'connected_to': MmodelSelect,
-            'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
-            'installation_date':forms.DateInput( attrs={ "type":"date" } ),
-
-        }
 
 class ItemNoteForm(ModelForm):
     class Meta:
@@ -93,6 +60,7 @@ class ItemNoteForm(ModelForm):
             'item',
             'when',
             'is_current',
+            'itemnotecategory',
             'maintext',
             'details',
         ]
@@ -101,6 +69,13 @@ class ItemNoteForm(ModelForm):
             'maintext':forms.TextInput( attrs={ "class":"widthlong"}),
             'details':forms.Textarea( attrs={ "class":"widthlong"})
         }
+
+class ItemNoteCategoryForm(ModelForm):
+    class Meta:
+        model = ItemNoteCategory
+        fields = [
+            'name',
+        ]
 
 class MmodelForm(ModelForm):
     class Meta:

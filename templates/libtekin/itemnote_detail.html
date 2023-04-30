@@ -4,12 +4,18 @@
   {% include './itemnote_detail_include.html' %}
 
   <div class="menu menu-bottom">
-    {% if perms.libtekin.change_item %}
+    {% if perms.libtekin.change_itemnote %}
       <div class="menu-item">
-      <a href="{% url 'libtekin:item-detail' object.item.pk %}">Go to Item</a>
+        <a href="{% url 'libtekin:itemnote-update' object.pk %}">Edit</a>
       </div>
   
     {% endif %}
+    
+      <div class="menu-item">
+        <a href="{% url 'libtekin:item-detail' object.item.pk %}">Go to Item</a>
+      </div>
+  
+    
   </div>
 {% endblock %}
 

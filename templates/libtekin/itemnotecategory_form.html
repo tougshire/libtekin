@@ -1,0 +1,31 @@
+{% extends './_form.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>{{ object }}</h2>
+  {{ form.errors }}
+  <form method="POST">
+    <div class="form" id="div_form">
+      {% csrf_token %}
+      <input type="hidden" id="input_opener" name="opener">
+
+      {% for field in form.hidden_fields %}
+        {{ field }}
+      {% endfor %}
+
+      <div id="div_item">
+        {% include './_form_field.html' with field=form.name %}
+      </div>
+
+      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
+
+
+    </div>
+
+  </form>
+{% endblock %}
+{% block bottomscript %}
+  {{ block.super }}
+  <script src=""
+{% endblock %}
+

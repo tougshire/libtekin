@@ -456,11 +456,15 @@ class Item(models.Model):
     objects = ItemNotDeletedManager()
     all_objects = ItemAllManager()
 
-class ItemNoteCurrentManager(models.Manager):
+class ItemNoteCategory(models.Model):
+    name = models.CharField(
+        'Name',
+        max_length=50,
+        help_text = 'The category name'
+    ) 
 
-    def get_queryset(self):
-        
-        return super().get_queryset().filter(is_current=True)
+    def __str__(self):
+        return self.name
 
 class ItemNote(models.Model):
     item = models.ForeignKey(
@@ -475,6 +479,14 @@ class ItemNote(models.Model):
         null=True,
         default=date.today,
         help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
+    )
+    itemnotecategory = models.ForeignKey(
+        ItemNoteCategory,
+        verbose_name='Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="The optional category for this note"
     )
     maintext = models.CharField(
         'description',

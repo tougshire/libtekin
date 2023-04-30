@@ -54,5 +54,11 @@ urlpatterns = [
     path('itemnote/<int:pk>/delete/', views.ItemNoteDelete.as_view(), name='itemnote-delete'),
     path('itemnote/list/', views.ItemNoteList.as_view(), name='itemnote-list'),
 #    path('itemnote/<int:pk>/close/', views.ItemNoteClose.as_view(), name="itemnote-close"),
+    path('itemnotecategory/create/', views.ItemNoteCategoryCreate.as_view(), name='itemnotecategory-create'),
+    path('itemnotecategory/<int:pk>/update/', views.ItemNoteCategoryUpdate.as_view(), name='itemnotecategory-update'),
+    path('itemnotecategory/<int:pk>/detail/', views.ItemNoteCategoryDetail.as_view(), name='itemnotecategory-detail'),
+    path('itemnotecategory/<int:pk>/delete/', views.ItemNoteCategoryDelete.as_view(), name='itemnotecategory-delete'),
+    path('itemnotecategory/list/', views.ItemNoteCategoryList.as_view(), name='itemnotecategory-list'),
+    path('itemnotecategory/<int:pk>/close/', views.ItemNoteCategoryClose.as_view(), name="itemnotecategory-close"),
 
 ]
