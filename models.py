@@ -507,7 +507,7 @@ class ItemNote(models.Model):
     )
     is_current = models.BooleanField(
         'is current',
-        default=False,
+        default=True,
         help_text='If this note displays currently correct information'
     )
 
