@@ -705,7 +705,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
     model = ItemNote
     paginate_by = 30
 
-
     def setup(self, request, *args, **kwargs):
 
         self.vista_settings={
@@ -722,6 +721,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
             'maintext',
             'details',
             'item__status__is_active',
+            'item__primary_id',
         ])
 
 
