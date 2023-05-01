@@ -680,7 +680,7 @@ class ItemNoteDetail(PermissionRequiredMixin, DetailView):
         return context_data
 
 
-class ItemNoteDelete(PermissionRequiredMixin, UpdateView):
+class ItemNoteDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'libtekin.delete_itemnote'
     model = ItemNote
     success_url = reverse_lazy('libtekin:itemnote-list')

@@ -36,8 +36,17 @@
         {% include './_form_field.html' with field=form.details %}
       </div>
 
-      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
-
+      <div class="menu menu-bottom">
+        <div class="menu-item">
+          <button type="submit">Submit</button>
+        </div>  
+        {% if perms.libtekin.delete_itemnote %}
+        <div class="menu-item">
+          <a href="{% url 'libtekin:itemnote-delete' object.pk %}">Delete</a>
+        </div>
+      {% endif %}
+  
+      </div>
 
     </div>
 
