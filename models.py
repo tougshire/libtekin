@@ -473,7 +473,7 @@ class ItemNote(models.Model):
         blank=True,
         null=True,
         default=date.today,
-        help_text="Can be blank for notes that don't represent events.  If filled, consider the effective date of the information rather than the date the note was made"
+        help_text="The effective date of the information in the note ( rather than the date the note was made )"
     )
     itemnotecategory = models.ForeignKey(
         ItemNoteCategory,
@@ -508,7 +508,7 @@ class ItemNote(models.Model):
     is_current = models.BooleanField(
         'is current',
         default=True,
-        help_text='If this note displays current and reportable information. Uncheck for on-off notes like "Updated Windows", for low importance notes like "Formerly human resources laptop", and for statuses like "Failing Hard Drive" when resolved or longer valid'
+        help_text='If this note displays current and reportable information. Uncheck for one-off notes like "Updated Windows", for low importance notes like "Formerly human resources laptop", and for statuses like "Failing Hard Drive" when resolved or longer valid'
     )
 
     def __str__(self):
