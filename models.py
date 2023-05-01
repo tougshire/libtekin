@@ -503,12 +503,12 @@ class ItemNote(models.Model):
     is_status = models.BooleanField(
         'is status update',
         default=False,
-        help_text='If this note is diplayed by default in the item detail view. That display is also determined by the dates.  If not displayed by default, notes will be displayed when "Show All" is selected'
+        help_text='If this note represents a situational status ex: "At Shop for Repair", "On Loan to Event Committee"'
     )
     is_current = models.BooleanField(
         'is current',
         default=True,
-        help_text='If this note displays currently correct information'
+        help_text='If this note displays current and reportable information. Uncheck for on-off notes like "Updated Windows", for low importance notes like "Formerly human resources laptop", and for statuses like "Failing Hard Drive" when resolved or longer valid'
     )
 
     def __str__(self):
