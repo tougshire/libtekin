@@ -7,7 +7,7 @@
       </div>
     {% else %}
       <div class="menu-item">
-        <a href="{{ item_url }}">Items</a>
+        <a href="{% url 'libtekin:item-list' %}">Items</a>
       </div>
     {% endif %}
   {% endif %}
@@ -18,7 +18,7 @@
       </div>
     {% else %}
       <div class="menu-item">
-        <a href="{{ mmodel_url }}">Models</a>
+        <a href="{% url 'libtekin:mmodel-list' %}">Models</a>
       </div>
     {% endif %}
   {% endif %}
@@ -29,7 +29,7 @@
       </div>
     {% else %}
       <div class="menu-item">
-        <a href="{{ itemnote_url }}">Item Notes</a>
+        <a href="{% url 'libtekin:itemnote-list' %}">Item Notes</a>
       </div>
     {% endif %}
   {% endif %}
