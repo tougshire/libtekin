@@ -1,8 +1,7 @@
-
 <div class="menu app-menu">
+
   {% if perms.libtekin.view_item %}
-    {% url 'libtekin:item-list' as item_url %}
-    {% if item_url == url_here %}
+    {% if object_class_name == 'item' %}
       <div class="menu-item menu-here">
         Items
       </div>
@@ -13,8 +12,7 @@
     {% endif %}
   {% endif %}
   {% if perms.libtekin.view_mmodel %}
-    {% url 'libtekin:mmodel-list' as mmodel_url %}
-    {% if mmodel_url == url_here %}
+    {% if object_class_name == 'mmodel' %}
       <div class="menu-item menu-here">
         Models
       </div>
@@ -25,8 +23,7 @@
     {% endif %}
   {% endif %}
   {% if perms.libtekin.view_itemnote %}
-    {% url 'libtekin:itemnote-list' as itemnote_url %}
-    {% if itemnote_url == url_here %}
+    {% if object_class_name == 'itemnote' %}
       <div class="menu-item menu-here">
         Item Notes
       </div>

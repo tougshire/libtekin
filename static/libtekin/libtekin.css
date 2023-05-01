@@ -119,6 +119,11 @@
     background-color:cornflowerblue;
 }
 
+.menu-here {
+    border:1px solid black;
+    font-weight: bold;
+
+}
 .app-menu {
     background-color:cadetblue
 }
