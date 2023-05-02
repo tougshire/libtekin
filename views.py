@@ -738,7 +738,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
 
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['level.number']),
+            ('filter__fieldname__0', ['level__number']),
             ('filter__op__0', ['gt']),
             ('filter__value__0', [0]),
             ('filter__fieldname__1', ['is_current']),
