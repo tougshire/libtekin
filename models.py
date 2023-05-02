@@ -512,8 +512,21 @@ class ItemNote(models.Model):
     )
 
     def __str__(self):
-        return f'{self.when.isoformat()}: {self.maintext}' if self.when else self.maintext
+        
+        str = ''
+        if self.when:
+            str = str + self.when.isoformat() + ': '
+        if self.itemnotecategory:
+            str = str + self. itemnotecategory.name + ': '
+        if self.maintext:
+            str = str + self.maintext + ': '
+        if len(str) > 2:
+            str = str[0:-2]
+        if len(str) > 50:
+            str = str[0:45 + ' ...']
 
+        return str
+    
     class Meta:
         ordering = ['-when',]
 

@@ -26,26 +26,7 @@
     <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
     {% for itemnote in object.itemnote_set.all %}
       <div class="relatedset relateditemnote{% if itemnote.is_current %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
-        <div class="fieldWrapper">
-          <div class="control">
-            <div class="label">
-              Note:
-            </div>
-            <div class="field">
-              {{ itemnote }}
-            </div>
-          </div>
-          {% if itemnote.details %}
-            <div class="control">
-              <div class="label">
-                &nbsp;Details:
-              </div>
-              <div class="field">
-                &nbsp;{{ itemnote.details }}
-              </div>
-            </div>
-          {% endif %}
-        </div>
+        {% include 'touglates/list_fields.html' with field_1_label='Note:' field_1=itemnote.when field_2=itemnote.itemnotecategory field_3=itemnote.maintext %}
       </div>
     {% endfor %}
     {% endif %}
