@@ -25,7 +25,7 @@ from tougshire_vistas.views import (default_vista, delete_vista,
 
 from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteCategoryForm, ItemNoteForm, ItemItemNoteFormset,  
                     LocationForm, MmodelCategoryForm, MmodelForm    )
-from .models import (Condition, Entity, History, Item, ItemNote, ItemNoteCategory, Location,
+from .models import (Condition, Entity, History, Item, ItemNote, ItemNoteCategory, ItemNoteLevel, Location,
                      Mmodel, MmodelCategory, Role)
 
 
@@ -734,13 +734,16 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
             'details',
             'item__status__is_active',
             'item__primary_id',
+            'level',
         ])
 
 
+
+            
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['level__number']),
-            ('filter__op__0', ['gt']),
-            ('filter__value__0', [0]),
+            ('filter__fieldname__0', ['level']),
+            ('filter__op__0', ['in']),
+            ('filter__value__0', [ level.pk for level in ItemNoteLevel.objects.filter(number__gt=0)]),
             ('filter__fieldname__1', ['is_current']),
             ('filter__op__1', ['exact']),
             ('filter__value__1', [True]),
