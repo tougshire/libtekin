@@ -1,7 +1,7 @@
 <div class="menu app-menu">
 
   {% if perms.libtekin.view_item %}
-    {% if 'item' in request.resolver_match.url_name %}
+    {% if 'item-' in request.resolver_match.url_name %}
       <div class="menu-item menu-here">
         <a href="{% url 'libtekin:item-list' %}">Items</a>
       </div>
