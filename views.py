@@ -24,10 +24,9 @@ from tougshire_vistas.views import (default_vista, delete_vista,
                                     retrieve_vista, vista_context_data)
 
 from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteCategoryForm, ItemNoteForm, ItemItemNoteFormset,  
-                    LocationForm, MmodelCategoryForm, MmodelForm)
+                    LocationForm, MmodelCategoryForm, MmodelForm    )
 from .models import (Condition, Entity, History, Item, ItemNote, ItemNoteCategory, Location,
                      Mmodel, MmodelCategory, Role)
-
 
 
 def update_history(form, modelname, object, user):
@@ -56,8 +55,6 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'item'
 
         if self.request.POST:
             context_data['itemnotes'] = ItemItemNoteFormset(self.request.POST)
@@ -103,8 +100,6 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
 
         context_data = super().get_context_data(**kwargs)
 
-        context_data['object_class_name'] = 'item'
-
         if self.request.POST:
             context_data['itemnotes'] = ItemItemNoteFormset(self.request.POST, instance=self.object)
         else:
@@ -144,8 +139,6 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
 
         context_data = super().get_context_data(**kwargs)
 
-        context_data['object_class_name'] = 'item'
-
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
@@ -160,9 +153,6 @@ class ItemCopy(DetailView, FormView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'item'
-
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
@@ -201,8 +191,6 @@ class ItemSoftDelete(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'item'
 
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
@@ -335,8 +323,6 @@ class ItemList(PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'item'
 
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
         vista_data['labels']['Item'] = 'item'
@@ -494,8 +480,6 @@ class MmodelDetail(PermissionRequiredMixin, DetailView):
 
         context_data = super().get_context_data(**kwargs)
 
-        context_data['object_class_name'] = 'mmodel'
-
         context_data['mmodel_labels'] = { field.name: field.verbose_name.title() for field in Mmodel._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
 
         return context_data
@@ -513,8 +497,6 @@ class MmodelList(PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'mmodel'
 
         context_data['mmodel_labels'] = { field.name: field.verbose_name.title() for field in Mmodel._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         return context_data
@@ -674,13 +656,6 @@ class ItemNoteCreate(PermissionRequiredMixin, CreateView):
         else:
             return reverse_lazy('libtekin:itemnote-detail', kwargs={'pk': self.object.pk})
 
-    def get_context_data(self, **kwargs):
-
-        context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'itemnote'
-
-        return context_data
 
 
 class ItemNoteUpdate(PermissionRequiredMixin, UpdateView):
@@ -701,14 +676,6 @@ class ItemNoteUpdate(PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('libtekin:itemnote-detail', kwargs={ 'pk':self.object.pk })
 
-    def get_context_data(self, **kwargs):
-
-        context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'itemnote'
-
-        return context_data
-
 
 class ItemNoteDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'libtekin.view_itemnote'
@@ -717,8 +684,6 @@ class ItemNoteDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'itemnote'
 
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
@@ -741,8 +706,6 @@ class ItemNoteSoftDelete(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'itemnote'
 
         context_data['itemnote_labels'] = { field.name: field.verbose_name.title() for field in ItemNote._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
@@ -864,8 +827,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
         context_data = super().get_context_data(**kwargs)
 
-        context_data['object_class_name'] = 'itemnote'
-
         vista_data = vista_context_data(self.vista_settings, self.vistaobj['querydict'])
 
         context_data = {**context_data, **vista_data}
@@ -931,8 +892,6 @@ class ItemNoteCategoryDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-
-        context_data['object_class_name'] = 'itemnotecategory'
 
         context_data['itemnotecategory_labels'] = { field.name: field.verbose_name.title() for field in ItemNoteCategory._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }
         context_data['item_labels'] = { field.name: field.verbose_name.title() for field in Item._meta.get_fields() if type(field).__name__[-3:] != 'Rel' }

@@ -10,12 +10,12 @@
 {% if cssfile %}<link rel="stylesheet" href="{% static cssfile %}">{% endif %}
 </head>
 <body>
-  {% if messages %}
-<ul class="messages">
+{% if messages %}
+  <ul class="messages">
     {% for message in messages %}
     <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
     {% endfor %}
-</ul>
+  </ul>
 {% endif %}
 {% block menu %}
 {% project_include_file 'main_menu' as includefile %}

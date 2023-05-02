@@ -1,31 +1,37 @@
 <div class="menu app-menu">
 
   {% if perms.libtekin.view_item %}
-    {% if object_class_name == 'item' %}
+    {% if 'item' in request.resolver_match.url_name %}
       <div class="menu-item menu-here">
-    {% else %}
-      <div class="menu-item">
-    {% endif %}
         <a href="{% url 'libtekin:item-list' %}">Items</a>
       </div>
-  {% endif %}
-  {% if perms.libtekin.view_mmodel %}
-    {% if object_class_name == 'mmodel' %}
-      <div class="menu-item menu-here">
     {% else %}
       <div class="menu-item">
+        <a href="{% url 'libtekin:item-list' %}">Items</a>
+      </div>
     {% endif %}
+  {% endif %}
+{% if perms.libtekin.view_mmodel %}
+  {% if 'mmodel' in request.resolver_match.url_name %}
+  <div class="menu-item menu-here">
         <a href="{% url 'libtekin:mmodel-list' %}">Models</a>
       </div>
-  {% endif %}
-  {% if perms.libtekin.view_itemnote %}
-    {% if object_class_name == 'itemnote' %}
-      <div class="menu-item menu-here">
     {% else %}
       <div class="menu-item">
+        <a href="{% url 'libtekin:mmodel-list' %}">Models</a>
+      </div>
+      {% endif %}
     {% endif %}
+  {% if perms.libtekin.view_itemnote %}
+    {% if 'itemnote' in request.resolver_match.url_name %}
+      <div class="menu-item menu-here">
         <a href="{% url 'libtekin:itemnote-list' %}">Item Notes</a>
       </div>
+    {% else %}
+      <div class="menu-item">
+        <a href="{% url 'libtekin:itemnote-list' %}">Item Notes</a>
+      </div>
+    {% endif %}
   {% endif %}
 
 </div>
