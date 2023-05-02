@@ -726,7 +726,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
         self.vista_settings['fields'] = make_vista_fields(ItemNote, field_names=[
             'item',
-            'is_status',
+            'level',
             'is_current',
             'when',
             'itemnotecategory',
@@ -738,9 +738,9 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
 
         self.vista_defaults = QueryDict(urlencode([
-            ('filter__fieldname__0', ['is_status']),
-            ('filter__op__0', ['exact']),
-            ('filter__value__0', [True]),
+            ('filter__fieldname__0', ['level.number']),
+            ('filter__op__0', ['gt']),
+            ('filter__value__0', [0]),
             ('filter__fieldname__1', ['is_current']),
             ('filter__op__1', ['exact']),
             ('filter__value__1', [True]),

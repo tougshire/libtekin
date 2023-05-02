@@ -16,6 +16,12 @@ def get_default_status():
     except AttributeError:
         return None
 
+def get_default_level():
+    try:
+        return ItemNoteLevel.objects.filter(number=0).first().pk
+    except AttributeError:
+        return None
+
 class Condition(models.Model):
     name = models.CharField(
         'name',
@@ -222,7 +228,7 @@ class Role(models.Model):
 class Status(models.Model):
     name = models.CharField(
         max_length=50,
-        help_text = 'The status of the load'
+        help_text = 'The status of the item'
     )
     list_position = models.IntegerField(
         'rank',
@@ -232,12 +238,12 @@ class Status(models.Model):
     is_active = models.BooleanField(
         'is active',
         default = False,
-        help_text = 'If this status is for an active project (one that is not yet complete or canceled and should be displayed in the default list)'
+        help_text = 'If this status is for an active item)'
     )
     is_default = models.BooleanField(
         'is default',
         default = False,
-        help_text = 'If this is the default status for new loads (Only one will used even if more than one is selected)'
+        help_text = 'If this is the default status for new items (Only one will used even if more than one is selected)'
     )
 
     class Meta:
@@ -245,6 +251,7 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 class ItemNotDeletedManager(models.Manager):
@@ -436,7 +443,7 @@ class Item(models.Model):
 
     def get_current__status_notes(self):
         current_notes=[]
-        for note in self.itemnote_set.filter(is_current=True).filter(is_status=True):
+        for note in self.itemnote_set.filter(is_current=True):
             current_notes.append('{}: {}'.format(note.when.strftime('%Y-%m-%d'), note.text))
 
         return current_notes
@@ -450,6 +457,24 @@ class Item(models.Model):
 
     objects = ItemNotDeletedManager()
     all_objects = ItemAllManager()
+
+class ItemNoteLevel(models.Model):
+    name = models.CharField(
+        max_length=50,
+        help_text = 'The name of the level'
+    )
+    number = models.IntegerField(
+        'numeric value',
+        default=0,
+        help_text='The value of the level, with 0 being info only and a higher number, such as 5 being critical'
+    )
+
+    class Meta:
+        ordering=('number', 'name',)
+
+    def __str__(self):
+        return '{}: {}'.format(self.number, self.name)
+
 
 class ItemNoteCategory(models.Model):
     name = models.CharField(
@@ -500,10 +525,12 @@ class ItemNote(models.Model):
         blank=True,
         help_text='For temporary situations, comments regarding the end of the situation (ex: "memory card replaced")'
     )
-    is_status = models.BooleanField(
-        'is status update',
-        default=False,
-        help_text='If this note represents a situational status ex: "At Shop for Repair", "On Loan to Event Committee"'
+    level = models.ForeignKey(
+        ItemNoteLevel,
+        default=get_default_level,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='The level of this note'        
     )
     is_current = models.BooleanField(
         'is current',
@@ -516,14 +543,16 @@ class ItemNote(models.Model):
         str = ''
         if self.when:
             str = str + self.when.isoformat() + ': '
+        if self.level:
+            str = str + self.level.name + ': '
         if self.itemnotecategory:
-            str = str + self. itemnotecategory.name + ': '
+            str = str + self.itemnotecategory.name + ': '
         if self.maintext:
             str = str + self.maintext + ': '
         if len(str) > 2:
             str = str[0:-2]
         if len(str) > 50:
-            str = str[0:45 + ' ...']
+            str = str[0:45] + ' ...'
 
         return str
     

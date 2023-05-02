@@ -11,8 +11,8 @@
         {% if 'item' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.item %}
         {% endif %}
-        {% if 'is_status' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.is_status %}
+        {% if 'level' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.level %}
         {% endif %}
         {% if 'is_current' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.is_current %}
@@ -40,8 +40,8 @@
           {% if 'item' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.item %}
           {% endif %}
-          {% if 'is_status' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.is_status %}
+          {% if 'level' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=itemnote.level %}
           {% endif %}
           {% if 'is_current' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.is_current %}
