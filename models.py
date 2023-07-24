@@ -533,7 +533,7 @@ class ItemNote(models.Model):
         help_text='The level of this note'        
     )
     is_current = models.BooleanField(
-        'is current',
+        'display as status',
         default=True,
         help_text='If this note displays current and reportable information. Uncheck for one-off notes like "Updated Windows", for low importance notes like "Formerly human resources laptop", and for statuses like "Failing Hard Drive" when resolved or longer valid'
     )
