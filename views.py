@@ -328,6 +328,7 @@ class ItemList(PermissionRequiredMixin, ListView):
         vista_data['labels']['Item'] = 'item'
 
         context_data = {**context_data, **vista_data}
+        context_data['vista_default'] = dict(self.vista_defaults)
 
         context_data['vistas'] = Vista.objects.filter(user=self.request.user, model_name='libtekin.item').all() # for choosing saved vistas
 
