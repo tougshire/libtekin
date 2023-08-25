@@ -19,7 +19,7 @@ from django.views.generic.list import ListView
 
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import (default_vista, delete_vista,
-                                    get_global_vista, get_latest_vista,
+                                    get_latest_vista,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
@@ -269,7 +269,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 queryset,
                 querydict,
                 '',
-                False,
                 self.vista_settings
             )
             del self.request.session['query']
@@ -281,7 +280,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 queryset,
                 self.request.POST,
                 self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
-                self.request.POST.get('make_default') if ('make_default') in self.request.POST else False,
                 self.vista_settings
             )
         elif 'retrieve_vista' in self.request.POST:
@@ -293,14 +291,6 @@ class ItemList(PermissionRequiredMixin, ListView):
                 self.request.POST.get('vista_name'),
                 self.vista_settings
 
-            )
-        elif 'default_vista' in self.request.POST:
-
-            self.vistaobj = default_vista(
-                self.request.user,
-                queryset,
-                self.vista_defaults,
-                self.vista_settings
             )
         else:
             self.vistaobj = get_latest_vista(
@@ -777,7 +767,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
                 queryset,
                 querydict,
                 '',
-                False,
                 self.vista_settings
             )
             del self.request.session['query']
@@ -789,7 +778,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
                 queryset,
                 self.request.POST,
                 self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
-                self.request.POST.get('make_default') if ('make_default') in self.request.POST else False,
                 self.vista_settings
             )
         elif 'retrieve_vista' in self.request.POST:
@@ -801,14 +789,6 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
                 self.request.POST.get('vista_name'),
                 self.vista_settings
 
-            )
-        elif 'default_vista' in self.request.POST:
-
-            self.vistaobj = default_vista(
-                self.request.user,
-                queryset,
-                self.vista_defaults,
-                self.vista_settings
             )
         else:
             self.vistaobj = get_latest_vista(
