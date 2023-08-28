@@ -105,7 +105,8 @@
   <script>
     document.getElementById('btn_showvista').addEventListener('click', function(e){
       e.preventDefault
-      toggleVisibility('div_vista', 'btn_showvista')
+      toggleVisibility('div_vistaadvanced', 'btn_showvista')
+      toggleVisibility('div_vistasaved')
     });
 
     document.addEventListener('keydown', function(e) {
@@ -113,12 +114,13 @@
         if(e.shiftKey) {
           if(e.which==70) {
             e.preventDefault();
-             toggleVisibility('div_vista', 'btn_showvista')
+             toggleVisibility('div_vistaadvanced', 'btn_showvista')
+             toggleVisibility('div_vistasaved')
           }
         }
       }
     });
-    toggleVisibility('div_vista', 'btn_showvista', 0 )
-
+    toggleVisibility('div_vistaadvanced', 'btn_showvista', 0 )
+    toggleVisibility('div_vistasaved','', 0)
   </script>
 {% endblock %}
