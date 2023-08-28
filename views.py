@@ -1,5 +1,7 @@
 import csv
 import sys
+import logging
+
 from typing import Any, Dict
 import urllib
 from urllib.parse import urlencode
@@ -27,6 +29,7 @@ from .forms import (EntityForm, ItemCopyForm, ItemForm, ItemNoteCategoryForm, It
                     LocationForm, MmodelCategoryForm, MmodelForm    )
 from .models import (Condition, Entity, History, Item, ItemNote, ItemNoteCategory, ItemNoteLevel, Location,
                      Mmodel, MmodelCategory, Role)
+logger = logging.getLogger(__name__)
 
 
 def update_history(form, modelname, object, user):
@@ -254,7 +257,6 @@ class ItemList(PermissionRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self, **kwargs):
-
         queryset = super().get_queryset()
 
         self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
