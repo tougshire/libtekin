@@ -217,6 +217,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'common_name',
             'mmodel',
             'mmodel__category',
+            'mmodel__model_name',
             'network_name',
             'serial_number',
             'phone_number',
@@ -242,6 +243,7 @@ class ItemList(PermissionRequiredMixin, ListView):
 
         self.vista_settings['fields']['latest_update_date'] = {'type': 'DateField', 'label': 'Latest Major Update Date', 'available_for': ['order_by']}
         self.vista_settings['fields']['assignee__full_name']['available_for'] = ['quicksearch', 'order_by']
+        self.vista_settings['fields']['mmodel__model_name']['available_for'] = ['quicksearch']
         
         self.vista_defaults = QueryDict(urlencode([
             ('filter__fieldname__0', ['status__is_active']),
