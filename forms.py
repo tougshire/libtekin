@@ -1,6 +1,7 @@
 from django.forms import ModelForm, inlineformset_factory, Select
 from .models import Entity, Item, ItemNote, ItemNoteCategory, Location, Mmodel, MmodelCategory
 from django import forms
+from touglates.widgets import TouglateDateInput
 
 class MmodelSelect(Select):
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
@@ -56,7 +57,7 @@ class ItemForm(ModelForm):
         widgets = {
             'mmodel': MmodelSelect,
             'connected_to': MmodelSelect,
-            'latest_inventory':forms.DateInput( attrs={ "type":"date" } ),
+            'latest_inventory':TouglateDateInput( attrs={ "type":"date" } ),
             'installation_date':forms.DateInput( attrs={ "type":"date" } ),
 
         }
