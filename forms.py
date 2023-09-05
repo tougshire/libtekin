@@ -57,7 +57,7 @@ class ItemForm(ModelForm):
         widgets = {
             'mmodel': MmodelSelect,
             'connected_to': MmodelSelect,
-            'latest_inventory':TouglateDateInput( attrs={ "type":"date" } ),
+            'latest_inventory':TouglateDateInput(),
             'installation_date':forms.DateInput( attrs={ "type":"date" } ),
 
         }
