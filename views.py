@@ -221,6 +221,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             'network_name',
             'serial_number',
             'phone_number',
+            'essid',
             'asset_number',
             'barcode',
             'phone_number',
