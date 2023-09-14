@@ -21,7 +21,7 @@ from django.views.generic.list import ListView
 
 from tougshire_vistas.models import Vista
 from tougshire_vistas.views import (default_vista, delete_vista,
-                                    get_latest_vista,
+                                    get_latest_vista, get_vista_queryset,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
 
@@ -260,53 +260,12 @@ class ItemList(PermissionRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self, **kwargs):
+
         queryset = super().get_queryset()
 
         self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
 
-        if 'delete_vista' in self.request.POST:
-            delete_vista(self.request)
-
-        if 'query' in self.request.session:
-            querydict = QueryDict(self.request.session.get('query'))
-            self.vistaobj = make_vista(
-                self.request.user,
-                queryset,
-                querydict,
-                '',
-                self.vista_settings
-            )
-            del self.request.session['query']
-
-        elif 'vista_query_submitted' in self.request.POST:
-
-            self.vistaobj = make_vista(
-                self.request.user,
-                queryset,
-                self.request.POST,
-                self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
-                self.vista_settings
-            )
-        elif 'retrieve_vista' in self.request.POST:
-
-            self.vistaobj = retrieve_vista(
-                self.request.user,
-                queryset,
-                'libtekin.item',
-                self.request.POST.get('vista_name'),
-                self.vista_settings
-
-            )
-        else:
-            self.vistaobj = get_latest_vista(
-                self.request.user,
-                queryset,
-                self.vista_defaults,
-                self.vista_settings
-            )
-
-
-        return self.vistaobj['queryset']
+        return get_vista_queryset( self )
 
     def get_paginate_by(self, queryset):
 
@@ -762,48 +721,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
 
         self.vistaobj = {'querydict':QueryDict(), 'queryset':queryset}
 
-        if 'delete_vista' in self.request.POST:
-            delete_vista(self.request)
-
-        if 'query' in self.request.session:
-            querydict = QueryDict(self.request.session.get('query'))
-            self.vistaobj = make_vista(
-                self.request.user,
-                queryset,
-                querydict,
-                '',
-                self.vista_settings
-            )
-            del self.request.session['query']
-
-        elif 'vista_query_submitted' in self.request.POST:
-
-            self.vistaobj = make_vista(
-                self.request.user,
-                queryset,
-                self.request.POST,
-                self.request.POST.get('vista_name') if 'vista_name' in self.request.POST else '',
-                self.vista_settings
-            )
-        elif 'retrieve_vista' in self.request.POST:
-
-            self.vistaobj = retrieve_vista(
-                self.request.user,
-                queryset,
-                'libtekin.itemnote',
-                self.request.POST.get('vista_name'),
-                self.vista_settings
-
-            )
-        else:
-            self.vistaobj = get_latest_vista(
-                self.request.user,
-                queryset,
-                self.vista_defaults,
-                self.vista_settings
-            )
-
-        return self.vistaobj['queryset']
+        return get_vista_queryset( self )
 
     def get_paginate_by(self, queryset):
 
