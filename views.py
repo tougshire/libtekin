@@ -252,7 +252,7 @@ class ItemList(PermissionRequiredMixin, ListView):
             ('filter__value__0', [True]),
             ('order_by', ['primary_id', 'common_name']),
             ('paginate_by',self.paginate_by),
-        ],doseq=True) )
+        ],doseq=True), mutable=True )
 
         return super().setup(request, *args, **kwargs)
 
@@ -708,7 +708,7 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
             ('order_by', ['when', 'item']),
             ('paginate_by',self.paginate_by),
 
-        ],doseq=True) )
+        ],doseq=True), mutable=True )
 
         return super().setup(request, *args, **kwargs)
 
