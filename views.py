@@ -20,7 +20,7 @@ from django.views.generic.edit import (CreateView, DeleteView, FormView,
 from django.views.generic.list import ListView
 
 from tougshire_vistas.models import Vista
-from tougshire_vistas.views import (default_vista, delete_vista,
+from tougshire_vistas.views import (delete_vista,
                                     get_latest_vista, get_vista_queryset,
                                     make_vista, make_vista_fields,
                                     retrieve_vista, vista_context_data)
