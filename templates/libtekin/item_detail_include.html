@@ -23,9 +23,9 @@
     {% include './_detail_field.html' with label=item_labels.installation_date field=object.installation_date %}
 
     {% if not hide_notes %}
-    <h3>Notes</h3><span id="div_itemNotesShowing">Showing All </span><a href="#" id="a_toggleCurrent">Show Current</a>
+    <h3>Notes</h3><span id="div_itemNotes">Showing All </span><a href="#" id="a_toggleNotes">Show Flagged</a>
     {% for itemnote in object.itemnote_set.all %}
-      <div class="relatedset relateditemnote{% if itemnote.is_current %} current{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
+      <div class="relatedset relateditemnote level{{ itemNote.itemnotelevel }} {% if itemnote.flagged %} flagged{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
         {% include 'touglates/list_fields.html' with field_1_label='Note:' field_1=itemnote.when field_2=itemnote.itemnotecategory field_3=itemnote.maintext %}
       </div>
     {% endfor %}
@@ -33,32 +33,32 @@
   </div>
 
   <script>
-    function toggleCurrentNotes() {
+    function toggleNotes() {
       var itemNotes=document.getElementsByClassName('relateditemnote')
-      var itemNotesShowing = document.getElementById('div_itemNotesShowing')
-      var toggleCurrent = document.getElementById('a_toggleCurrent')
-      if(toggleCurrent.textContent=='Show All '){
+      var itemNotesShowing = document.getElementById('div_itemNotes')
+      var toggleNotes = document.getElementById('a_toggleNotes')
+      if(toggleNotes.textContent=='Show All '){
         for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('current'))){
+          if(!(itemNote.classList.contains('flagged'))){
             itemNote.classList.remove('hidden')
           }
         }
-        toggleCurrent.textContent='Show Current '
+        toggleNotes.textContent='Show Flagged '
         itemNotesShowing.textContent='Showing All '
       } else {
         for(itemNote of itemNotes) {
-          if(!(itemNote.classList.contains('current'))){
+          if(!(itemNote.classList.contains('flagged'))){
             console.log('adding hidden')
             itemNote.classList.add('hidden')
           }
         }
-        toggleCurrent.textContent='Show All '
-        itemNotesShowing.textContent='Showing Current Status'
+        toggleNotes.textContent='Show All '
+        itemNotesShowing.textContent='Showing Flagged'
       }
     }
-    toggleCurrentNotes()
-    document.getElementById('a_toggleCurrent').addEventListener('click', function(e) {
+    toggleNotes()
+    document.getElementById('a_toggleNotes').addEventListener('click', function(e) {
       e.preventDefault()
-      toggleCurrentNotes()
+      toggleNotes()
     });
   </script>

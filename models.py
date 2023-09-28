@@ -451,11 +451,6 @@ class ItemNoteLevel(models.Model):
         default=0,
         help_text="The value of the level, with 0 being info only and a higher number, such as 5 being critical",
     )
-    view_by_default = models.IntegerField(
-        "view by default",
-        default=0,
-        help_text="If notes of this level should show up by default in an item detail view",
-    )
 
     class Meta:
         ordering = (
@@ -519,6 +514,12 @@ class ItemNote(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         help_text="The level of this note",
+    )
+    flagged = models.IntegerField(
+        "flagged",
+        default=0,
+        choices=((1, "Yes"), (0, "No")),
+        help_text="If this note is flagged for viewing by default in an item detail view",
     )
 
     def __str__(self):
