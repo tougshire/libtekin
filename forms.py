@@ -90,6 +90,7 @@ class ItemNoteForm(ModelForm):
             "item",
             "when",
             "level",
+            "flagged",
             "itemnotecategory",
             "maintext",
             "details",
