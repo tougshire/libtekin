@@ -14,8 +14,8 @@
         {% if 'level' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.level %}
         {% endif %}
-        {% if 'is_current' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.is_current %}
+        {% if 'flagged' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.flagged %}
         {% endif %}
 
         {% if 'when' in show_columns or not show_columns %}
@@ -43,8 +43,8 @@
           {% if 'level' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=itemnote.level %}
           {% endif %}
-          {% if 'is_current' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.is_current %}
+          {% if 'flagged' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=itemnote.flagged %}
           {% endif %}
 
           {% if 'when' in show_columns or not show_columns %}
@@ -102,25 +102,5 @@
   </script>
 
 
-  <script>
-    document.getElementById('btn_showvista').addEventListener('click', function(e){
-      e.preventDefault
-      toggleVisibility('div_vistaadvanced', 'btn_showvista')
-      toggleVisibility('div_vistasaved')
-    });
 
-    document.addEventListener('keydown', function(e) {
-      if(e.ctrlKey) {
-        if(e.shiftKey) {
-          if(e.which==70) {
-            e.preventDefault();
-             toggleVisibility('div_vistaadvanced', 'btn_showvista')
-             toggleVisibility('div_vistasaved')
-          }
-        }
-      }
-    });
-    toggleVisibility('div_vistaadvanced', 'btn_showvista', 0 )
-    toggleVisibility('div_vistasaved','', 0)
-  </script>
 {% endblock %}

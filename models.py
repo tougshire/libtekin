@@ -426,7 +426,7 @@ class Item(models.Model):
 
     def get_current__status_notes(self):
         current_notes = []
-        for note in self.itemnote_set.filter(is_current=True):
+        for note in self.itemnote_set.filter(flagged_gt=0):
             current_notes.append(
                 "{}: {}".format(note.when.strftime("%Y-%m-%d"), note.text)
             )

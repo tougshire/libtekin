@@ -94,7 +94,7 @@
             {% include './_form_field.html' with field=itemnoteform.maintext %}
             {% include './_form_field.html' with field=itemnoteform.details %}
             {% include './_form_field.html' with field=itemnoteform.level %}
-            {% include './_form_field.html' with field=itemnoteform.is_current %}
+            {% include './_form_field.html' with field=itemnoteform.flagged %}
             {% include './_form_field.html' with field=itemnoteform.DELETE %}
           </div>
         {% else %}
@@ -107,7 +107,7 @@
             {% include './_form_field.html' with field=itemnoteform.maintext %}
             {% include './_form_field.html' with field=itemnoteform.details %}
             {% include './_form_field.html' with field=itemnoteform.level %}
-            {% include './_form_field.html' with field=itemnoteform.is_current %}
+            {% include './_form_field.html' with field=itemnoteform.flagged %}
             {% include './_form_field.html' with field=itemnoteform.DELETE %}
           </div>
         {% endif %}
@@ -118,7 +118,7 @@
         </tr>
         {% for itemnote in object.itemnote_set.all %}
           <tr id="tr_itemnote_{{ itemnote.id }}">
-            <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.level }}</td><td>{{ itemnote.is_current|yesno:"Current,Not Current" }}</td><td>{{ itemnote.itemnotecategory }}</td><td>{{ itemnote.maintext }}</td>
+            <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.level }}</td><td>{{ itemnote.flagged|yesno:"Flagged,&nbsp" }}</td><td>{{ itemnote.itemnotecategory|default_if_none:"" }}</td><td>{{ itemnote.maintext }}</td>
           </tr>
         {% endfor %}
       </table>
