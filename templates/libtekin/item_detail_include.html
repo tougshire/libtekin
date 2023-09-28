@@ -26,7 +26,7 @@
     <h3>Notes</h3><span id="div_itemNotes">Showing All </span><a href="#" id="a_toggleNotes">Show Flagged</a>
     {% for itemnote in object.itemnote_set.all %}
       <div class="relatedset relateditemnote level{{ itemNote.itemnotelevel }} {% if itemnote.flagged %} flagged{% endif %}" id="div_itemnote-{{ forloop.counter0 }}">
-        {% include 'touglates/list_fields.html' with field_1_label='Note:' field_1=itemnote.when field_2=itemnote.itemnotecategory field_3=itemnote.maintext %}
+        {% include 'touglates/list_fields.html' with field_1_label='Note:' field_1=itemnote.when field_2=itemnote.itemnotecategory|default_if_none:'' field_3=itemnote.maintext %}
       </div>
     {% endfor %}
     {% endif %}
