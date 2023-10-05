@@ -122,6 +122,82 @@
           </tr>
         {% endfor %}
       </table>
+      <!-- begin primary -->
+      <h3>Primary Holders</h3>
+
+      {{ itemassignees.management_form }}
+      {% for assigneeform in itemassignees.forms %}
+        {% if assigneeform.id.value > 0 %}
+          <div id="div_assigneeform_{{ assigneeform.id.value }}" class="assigneeformsetform"  >
+            {% for hiddenfield in assigneeform.hidden_fields %}
+              {{ hiddenfield }}
+            {% endfor %}
+            {% include './_form_field.html' with field=assigneeform.when %}
+            {% include './_form_field.html' with field=assigneeform.entity %}
+            {% include './_form_field.html' with field=assigneeform.DELETE %}
+          </div>
+        {% else %}
+          <div class="assigneeformsetform assigneenewform" >
+            {% for hiddenfield in assigneeform.hidden_fields %}
+              {{ hiddenfield }}
+            {% endfor %}
+            {% include './_form_field.html' with field=assigneeform.when %}
+            {% include './_form_field.html' with field=assigneeform.entity %}
+            {% include './_form_field.html' with field=assigneeform.DELETE %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <table>
+        <tr>
+          <td><button type="button" id="button_addassignee">Add</button></td><td span="*"></td>
+        </tr>
+        {% for assignee in object.assignee_set.all %}
+          <tr id="tr_assignee_{{ assignee.id }}">
+            <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee.level }}</td><td>{{ assignee.flagged|yesno:"Flagged,&nbsp" }}</td><td>{{ assignee.assigneecategory|default_if_none:"" }}</td><td>{{ assignee.maintext }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+
+      <!-- end primary -->
+      <!-- begin borrower -->
+      <h3>itemBorrowers</h3>
+
+      {{ itemborrowers.management_form }}
+      {% for borrowerform in fitemborrowers.forms %}
+        {% if borrowerform.id.value > 0 %}
+          <div id="div_borrowerform_{{ borrowerform.id.value }}" class="borrowerformsetform"  >
+            {% for hiddenfield in borrowerform.hidden_fields %}
+              {{ hiddenfield }}
+            {% endfor %}
+            {% include './_form_field.html' with field=borrowerform.when %}
+            {% include './_form_field.html' with field=borrowerform.entity %}
+            {% include './_form_field.html' with field=borrowerform.DELETE %}
+          </div>
+        {% else %}
+          <div class="borrowerformsetform borrowernewform" >
+            {% for hiddenfield in borrowerform.hidden_fields %}
+              {{ hiddenfield }}
+            {% endfor %}
+            {% include './_form_field.html' with field=borrowerform.when %}
+            {% include './_form_field.html' with field=borrowerform.entity %}
+            {% include './_form_field.html' with field=borrowerform.DELETE %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <table>
+        <tr>
+          <td><button type="button" id="button_addborrower">Add</button></td><td span="*"></td>
+        </tr>
+        {% for borrower in object.borrower_set.all %}
+          <tr id="tr_borrower_{{ borrower.id }}">
+            <td><button type="button" id="button_editborrower_{{ borrower.id }}" data-formid="div_borrowerform_{{ borrower.id }}" data-displayid="tr_borrower_{{ borrower.id }}" class="borrower_edit_button">edit</button></td><td>{{ borrower.when }}</td><td>{{ borrower.level }}</td><td>{{ borrower.flagged|yesno:"Flagged,&nbsp" }}</td><td>{{ borrower.borrowercategory|default_if_none:"" }}</td><td>{{ borrower.maintext }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+
+      <!-- end borrower -->
+
+
 
       {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
 
@@ -178,11 +254,6 @@
 
   </script>
   <script>
-    function enableFormsetForm(formid, displayid) {
-      let form = document.getElementById(formid)
-      document.getElementById(formid).style.display="block"
-      document.getElementById(displayid).style.display="none"
-    }
     let itemnoteEditButtons = document.getElementsByClassName('itemnote_edit_button')
     for( itemnoteEditButton of itemnoteEditButtons){
       itemnoteEditButton.addEventListener('click', function(e){
@@ -190,15 +261,19 @@
         enableFormsetForm(e.target.dataset.formid, e.target.dataset.displayid)
       })
     }
-    function enableAddFormsetForm(formclass) {
-      let newforms = document.getElementsByClassName(formclass)
-      if( newforms.length > 0) {
-        let newform = newforms[0]
-        newform.style.display="block"
-        newform.classList.remove(formclass)
-      } else {
-        alert('please save before adding more')
-      }
+    let borrowerEditButtons = document.getElementsByClassName('borrower_edit_button')
+    for( borrowerEditButton of borrowerEditButtons){
+      borrowerEditButton.addEventListener('click', function(e){
+        e.preventDefault()
+        enableFormsetForm(e.target.dataset.formid, e.target.dataset.displayid)
+      })
+    }
+    let assigneeEditButtons = document.getElementsByClassName('assignee_edit_button')
+    for( assigneeEditButton of assigneeEditButtons){
+      assigneeEditButton.addEventListener('click', function(e){
+        e.preventDefault()
+        enableFormsetForm(e.target.dataset.formid, e.target.dataset.displayid)
+      })
     }
 
     document.getElementById('button_additemnote').addEventListener('click', function(e){
@@ -208,6 +283,22 @@
     let itemnoteforms = document.getElementsByClassName("itemnoteformsetform")
     for( itemnoteform of itemnoteforms ){
       itemnoteform.style.display="none"
+    }
+    document.getElementById('button_addborrower').addEventListener('click', function(e){
+      e.preventDefault()
+      enableAddFormsetForm('borrowernewform')
+    })
+    let borrowerforms = document.getElementsByClassName("borrowerformsetform")
+    for( borrowerform of borrowerforms ){
+      borrowerform.style.display="none"
+    }
+    document.getElementById('button_addassignee').addEventListener('click', function(e){
+      e.preventDefault()
+      enableAddFormsetForm('assigneenewform')
+    })
+    let assigneeforms = document.getElementsByClassName("assigneeformsetform")
+    for( assigneeform of assigneeforms ){
+      assigneeform.style.display="none"
     }
 
   </script>

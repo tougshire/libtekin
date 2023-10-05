@@ -30,6 +30,20 @@
       </div>
     {% endfor %}
     {% endif %}
+    <h3>Assignees</h3>
+    {% for itemassignee in object.itemassignee_set.all %}
+      <div class="relatedset relatedassignee" id="div_itemassignee-{{ forloop.counter0 }}">
+        {% include 'touglates/list_fields.html' with field_1_label='Assignee:' field_1=itemassignee.when field_2=itemassignee.entity.full_name|default_if_none:'' %}
+      </div>
+    {% endfor %}
+
+    <h3>Borrowers</h3>
+    {% for itemborrower in object.itemborrower_set.all %}
+      <div class="relatedset relateditemborrower" id="div_itemborrower-{{ forloop.counter0 }}">
+        {% include 'touglates/list_fields.html' with field_1_label='Borrower:' field_1=itemborrower.when field_2=itemborrower.entity.full_name|default_if_none:'' %}
+      </div>
+    {% endfor %}
+
   </div>
 
   <script>

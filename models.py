@@ -444,6 +444,61 @@ class Item(models.Model):
     all_objects = ItemAllManager()
 
 
+class ItemAssignee(models.Model):
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="The item to which assignment applies",
+    )
+    entity = models.ForeignKey(
+        Entity,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="The person or group to whom the item was assigned",
+    )
+    when = models.DateField(
+        "when",
+        blank=True,
+        null=True,
+        default=date.today,
+        help_text="The effective date of the assignment",
+    )
+
+    class Meta:
+        ordering = [
+            "-when",
+        ]
+
+
+class ItemBorrower(models.Model):
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="The item to which this loan applies",
+    )
+    entity = models.ForeignKey(
+        Entity,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text="The person or group to whom the item was lent.  This can be set to None to indicate that the previous borrower returned it.",
+    )
+    when = models.DateField(
+        "when",
+        blank=True,
+        null=True,
+        default=date.today,
+        help_text="The effective date of the loan",
+    )
+
+    class Meta:
+        ordering = [
+            "-when",
+        ]
+
+
 class ItemNoteLevel(models.Model):
     name = models.CharField(max_length=50, help_text="The name of the level")
     number = models.IntegerField(

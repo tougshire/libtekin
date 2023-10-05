@@ -31,11 +31,13 @@ from tougshire_vistas.views import (
 
 from .forms import (
     EntityForm,
+    ItemBorrowerFormset,
     ItemCopyForm,
     ItemForm,
     ItemNoteCategoryForm,
     ItemNoteForm,
     ItemItemNoteFormset,
+    ItemAssigneeFormset,
     LocationForm,
     MmodelCategoryForm,
     MmodelForm,
@@ -84,10 +86,17 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if self.request.POST:
-            context_data["itemnotes"] = ItemItemNoteFormset(self.request.POST)
-        else:
-            context_data["itemnotes"] = ItemItemNoteFormset()
+        formsetclasses = {
+            "itemnotes": ItemItemNoteFormset,
+            "itemborrowers": ItemBorrowerFormset,
+            "itemAssignees": ItemAssigneeFormset,
+        }
+
+        for formsetkey, formsetclass in formsetclasses.items():
+            if self.request.POST:
+                context_data[formsetkey] = formsetclass(self.request.POST)
+            else:
+                context_data[formsetkey] = formsetclass()
 
         return context_data
 
@@ -98,17 +107,32 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         self.object = form.save()
 
-        if self.request.POST:
-            itemnotes = ItemItemNoteFormset(self.request.POST, instance=self.object)
-        else:
-            itemnotes = ItemItemNoteFormset(instance=self.object)
+        formsetclasses = {
+            "itemnotes": ItemItemNoteFormset,
+            "itemborrowers": ItemBorrowerFormset,
+            "itemAssignees": ItemAssigneeFormset,
+        }
+        formsetvar = {}
+        formsets_valid = True
+        for formsetkey, formsetclass in formsetclasses.items():
+            if self.request.POST:
+                formsetvar[formsetkey] = formsetclass(
+                    self.request.POST, instance=self.object
+                )
+            else:
+                formsetvar[formsetkey] = formsetclass(instance=self.object)
 
-        if (itemnotes).is_valid():
-            itemnotes.save()
+            if (formsetvar[formsetkey]).is_valid():
+                formsetvar[formsetkey].save()
+            else:
+                for error in formsetvar[formsetkey].errors:
+                    form.add_error(None, error)
+                formsets_valid = False
+
+        if formsets_valid:
+            return response
         else:
             return self.form_invalid(form)
-
-        return response
 
     def get_success_url(self):
         if "opener" in self.request.POST and self.request.POST["opener"] > "":
@@ -125,33 +149,55 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if self.request.POST:
-            context_data["itemnotes"] = ItemItemNoteFormset(
-                self.request.POST, instance=self.object
-            )
-        else:
-            context_data["itemnotes"] = ItemItemNoteFormset(instance=self.object)
+        formsetclasses = {
+            "itemnotes": ItemItemNoteFormset,
+            "itemborrowers": ItemBorrowerFormset,
+            "itemAssignees": ItemAssigneeFormset,
+        }
+
+        for formsetkey, formsetclass in formsetclasses.items():
+            if self.request.POST:
+                context_data[formsetkey] = formsetclass(
+                    self.request.POST, instance=self.object
+                )
+            else:
+                context_data[formsetkey] = formsetclass(instance=self.object)
 
         return context_data
 
     def form_valid(self, form):
-        update_history(form, "Item", form.instance, self.request.user)
-
         response = super().form_valid(form)
+
+        update_history(form, "Item", form.instance, self.request.user)
 
         self.object = form.save()
 
-        if self.request.POST:
-            itemnotes = ItemItemNoteFormset(self.request.POST, instance=self.object)
-        else:
-            itemnotes = ItemItemNoteFormset(instance=self.object)
+        formsetclasses = {
+            "itemnotes": ItemItemNoteFormset,
+            "itemborrowers": ItemBorrowerFormset,
+            "itemAssignees": ItemAssigneeFormset,
+        }
+        formsetvar = {}
+        formsets_valid = True
+        for formsetkey, formsetclass in formsetclasses.items():
+            if self.request.POST:
+                formsetvar[formsetkey] = formsetclass(
+                    self.request.POST, instance=self.object
+                )
+            else:
+                formsetvar[formsetkey] = formsetclass(instance=self.object)
 
-        if (itemnotes).is_valid():
-            itemnotes.save()
+            if (formsetvar[formsetkey]).is_valid():
+                formsetvar[formsetkey].save()
+            else:
+                for error in formsetvar[formsetkey].errors:
+                    form.add_error(None, error)
+                formsets_valid = False
+
+        if formsets_valid:
+            return response
         else:
             return self.form_invalid(form)
-
-        return response
 
     def get_success_url(self):
         return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})

@@ -2,8 +2,10 @@ from django.forms import ModelForm, inlineformset_factory, Select
 from .models import (
     Entity,
     Item,
+    ItemBorrower,
     ItemNote,
     ItemNoteCategory,
+    ItemAssignee,
     Location,
     Mmodel,
     MmodelCategory,
@@ -83,6 +85,26 @@ class ItemForm(ModelForm):
         }
 
 
+class ItemBorrowerForm(ModelForm):
+    class Meta:
+        model = ItemBorrower
+        fields = [
+            "item",
+            "entity",
+            "when",
+        ]
+
+
+class ItemAssigneeForm(ModelForm):
+    class Meta:
+        model = ItemAssignee
+        fields = [
+            "item",
+            "entity",
+            "when",
+        ]
+
+
 class ItemNoteForm(ModelForm):
     class Meta:
         model = ItemNote
@@ -136,3 +158,9 @@ class ItemCopyForm(forms.Form):
 
 
 ItemItemNoteFormset = inlineformset_factory(Item, ItemNote, form=ItemNoteForm, extra=10)
+ItemBorrowerFormset = inlineformset_factory(
+    Item, ItemBorrower, form=ItemBorrowerForm, extra=10
+)
+ItemAssigneeFormset = inlineformset_factory(
+    Item, ItemAssignee, form=ItemAssigneeForm, extra=10
+)
