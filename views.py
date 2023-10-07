@@ -89,7 +89,7 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         formsetclasses = {
             "itemnotes": ItemItemNoteFormset,
             "itemborrowers": ItemBorrowerFormset,
-            "itemAssignees": ItemAssigneeFormset,
+            "itemassignees": ItemAssigneeFormset,
         }
 
         for formsetkey, formsetclass in formsetclasses.items():
@@ -105,7 +105,7 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
 
         update_history(form, "Item", form.instance, self.request.user)
 
-        self.object = form.save()
+        self.object = form.save(commit=False)
 
         formsetclasses = {
             "itemnotes": ItemItemNoteFormset,
@@ -122,17 +122,28 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
             else:
                 formsetvar[formsetkey] = formsetclass(instance=self.object)
 
-            if (formsetvar[formsetkey]).is_valid():
-                formsetvar[formsetkey].save()
-            else:
-                for error in formsetvar[formsetkey].errors:
-                    form.add_error(None, error)
+            if not (formsetvar[formsetkey]).is_valid():
+                print("tp23a6k55", formsetkey)
+                print(
+                    "tp23a6k56", formsetvar[formsetkey], formsetvar[formsetkey].errors
+                )
+
+                for err in formsetvar[formsetkey].errors:
+                    print("tp23a6k57", err)
+                    form.add_error(None, err)
+                    for formsetform in formsetvar[formsetkey].forms:
+                        print("tp23a6k58")
+                        for err in formsetform.errors:
+                            print("tp23a6k59", err)
+                            form.add_error(None, err)
                 formsets_valid = False
 
-        if formsets_valid:
-            return response
-        else:
+        if not formsets_valid:
+            print("tp23a6l00")
+
             return self.form_invalid(form)
+
+        return response
 
     def get_success_url(self):
         if "opener" in self.request.POST and self.request.POST["opener"] > "":
@@ -152,7 +163,7 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
         formsetclasses = {
             "itemnotes": ItemItemNoteFormset,
             "itemborrowers": ItemBorrowerFormset,
-            "itemAssignees": ItemAssigneeFormset,
+            "itemassignees": ItemAssigneeFormset,
         }
 
         for formsetkey, formsetclass in formsetclasses.items():
@@ -190,8 +201,6 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             if (formsetvar[formsetkey]).is_valid():
                 formsetvar[formsetkey].save()
             else:
-                for error in formsetvar[formsetkey].errors:
-                    form.add_error(None, error)
                 formsets_valid = False
 
         if formsets_valid:
@@ -325,7 +334,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                 "essid",
                 "owner",
                 "assignee",
-                "assignee__full_name",
+                "itemassignee__entity",
                 "borrower",
                 "home",
                 "location",
@@ -337,16 +346,14 @@ class ItemList(PermissionRequiredMixin, ListView):
                 "status__is_active",
             ],
         )
+        self.vista_settings["fields"]["assignee"]["label"] = "Current Assignee"
+        self.vista_settings["fields"]["itemassignee__entity"]["label"] = "Assignees"
 
         self.vista_settings["fields"]["latest_update_date"] = {
             "type": "DateField",
             "label": "Latest Major Update Date",
             "available_for": ["order_by"],
         }
-        self.vista_settings["fields"]["assignee__full_name"]["available_for"] = [
-            "quicksearch",
-            "order_by",
-        ]
         self.vista_settings["fields"]["mmodel__model_name"]["available_for"] = [
             "quicksearch"
         ]

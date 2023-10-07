@@ -434,6 +434,35 @@ class Item(models.Model):
         return current_notes
         # return separator.join(current_notes)
 
+    def save(self, *args, **kwargs):
+        saved = super().save(*args, **kwargs)
+
+        for RelatedModel, field in [
+            (ItemAssignee, self.assignee),
+            (ItemBorrower, self.borrower),
+        ]:
+            do_create = False
+            holders = RelatedModel.objects.filter(when__lte=date.today())
+            if not holders.count():
+                do_create = True
+            else:
+                last_when = holders.first().when
+                last_holders = RelatedModel.objects.filter(
+                    when=last_when, item=self, entity=field
+                )
+                if not last_holders.count():
+                    do_create = True
+
+            if do_create:
+                print("tp23a7c27", field)
+                RelatedModel.objects.create(
+                    item=self,
+                    entity=field,
+                    when=date.today(),
+                )
+
+        return saved
+
     def __str__(self):
         return f"{self.common_name}"
 
@@ -455,6 +484,7 @@ class ItemAssignee(models.Model):
         Entity,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         help_text="The person or group to whom the item was assigned",
     )
     when = models.DateField(

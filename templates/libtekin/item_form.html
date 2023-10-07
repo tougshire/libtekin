@@ -3,7 +3,9 @@
 
 {% block content %}
   <h2>{{ object }}</h2>
-  {{ form.errors }}
+  {% for error in form.non_field_errors  %}
+  {{ error }}
+  {% endfor %}
   <form method="POST">
     <div class="form" id="div_form">
       {% csrf_token %}
@@ -127,6 +129,7 @@
 
       {{ itemassignees.management_form }}
       {% for assigneeform in itemassignees.forms %}
+        {{ assigneeform.errors }}
         {% if assigneeform.id.value > 0 %}
           <div id="div_assigneeform_{{ assigneeform.id.value }}" class="assigneeformsetform"  >
             {% for hiddenfield in assigneeform.hidden_fields %}
@@ -151,9 +154,9 @@
         <tr>
           <td><button type="button" id="button_addassignee">Add</button></td><td span="*"></td>
         </tr>
-        {% for assignee in object.assignee_set.all %}
+        {% for assignee in object.itemassignee_set.all %}
           <tr id="tr_assignee_{{ assignee.id }}">
-            <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee.level }}</td><td>{{ assignee.flagged|yesno:"Flagged,&nbsp" }}</td><td>{{ assignee.assigneecategory|default_if_none:"" }}</td><td>{{ assignee.maintext }}</td>
+            <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee.entity }}</td>
           </tr>
         {% endfor %}
       </table>
@@ -163,7 +166,8 @@
       <h3>itemBorrowers</h3>
 
       {{ itemborrowers.management_form }}
-      {% for borrowerform in fitemborrowers.forms %}
+      {% for borrowerform in itemborrowers.forms %}
+      {{ borrowerform.errors }}
         {% if borrowerform.id.value > 0 %}
           <div id="div_borrowerform_{{ borrowerform.id.value }}" class="borrowerformsetform"  >
             {% for hiddenfield in borrowerform.hidden_fields %}
@@ -211,15 +215,16 @@
     addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
     addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
     addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
-    addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
     addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
+    addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
     addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
 
     function getControlIdsForPopups(modelName) {
       controlIds={
         'Mmodel': ['id_mmodel'],
         'Location': ['id_location', 'id_home'],
-        'Entity': ['id_borrower', 'id_assignee', 'id_owner']
+        'Entity': ['id_assignee', 'id_borrower', 'id_owner']
+
       }
       return controlIds[modelName]
     }
