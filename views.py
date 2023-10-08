@@ -336,6 +336,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                 "assignee",
                 "itemassignee__entity",
                 "borrower",
+                "itemborrower__entity",
                 "home",
                 "location",
                 "status",
