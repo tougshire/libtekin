@@ -43,7 +43,6 @@ from .forms import (
     MmodelForm,
 )
 from .models import (
-    Condition,
     Entity,
     History,
     Item,

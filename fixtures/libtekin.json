@@ -1,45 +1,5 @@
 [
   {
-    "model": "libtekin.condition",
-    "pk": 1,
-    "fields": {
-      "name": "Excellent",
-      "sort_name": "A Excellent"
-    }
-  },
-  {
-    "model": "libtekin.condition",
-    "pk": 2,
-    "fields": {
-      "name": "Good but Worn",
-      "sort_name": "B Good"
-    }
-  },
-  {
-    "model": "libtekin.condition",
-    "pk": 3,
-    "fields": {
-      "name": "Usable with Issues",
-      "sort_name": "C Usable"
-    }
-  },
-  {
-    "model": "libtekin.condition",
-    "pk": 4,
-    "fields": {
-      "name": "Usable but Impaired",
-      "sort_name": "D Impaired"
-    }
-  },
-  {
-    "model": "libtekin.condition",
-    "pk": 5,
-    "fields": {
-      "name": "Not Properly Usable",
-      "sort_name": "E Not Usable"
-    }
-  },
-  {
     "model": "libtekin.role",
     "pk": 1,
     "fields": {

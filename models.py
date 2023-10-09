@@ -24,26 +24,6 @@ def get_default_level():
         return None
 
 
-class Condition(models.Model):
-    name = models.CharField(
-        "name",
-        max_length=75,
-        help_text='The name of the condition ("Good", "Usable with Issues", "Inoperative", etc)',
-    )
-    sort_name = models.CharField(
-        "sort name",
-        max_length=25,
-        blank=True,
-        help_text='A name for sorting, not normally displayed.  This can be as simple as "A","B", or "C", or something like "D Inoperative"',
-    )
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["sort_name", "name"]
-
-
 class EntityCategory(models.Model):
     name = models.CharField(
         "name",
@@ -369,12 +349,6 @@ class Item(models.Model):
         related_name="item_located",
         help_text="The current location of this item",
     )
-    condition = models.ForeignKey(
-        Condition,
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="The condition of this item",
-    )
     status = models.ForeignKey(
         Status,
         on_delete=models.SET_NULL,
@@ -573,8 +547,7 @@ class ItemNote(models.Model):
         verbose_name="Category",
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        help_text="The optional category for this note",
+        help_text="The category for this note",
     )
     maintext = models.CharField(
         "description",
