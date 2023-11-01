@@ -29,14 +29,14 @@
       </div>
     {% endfor %}
     {% endif %}
-    <h3>Assignee History</h3><a href="#" id="a_toggleAssignees">Hide Assignees</a>
+    <h3>Assignees</h3><a href="#" id="a_toggleAssignees">Hide Assignees</a>
     {% for itemassignee in object.itemassignee_set.all %}
       <div class="relatedset relateditemassignee" id="div_itemassignee-{{ forloop.counter0 }}">
         {% include 'touglates/list_fields.html' with field_1_label='Assignee:' field_1=itemassignee.when field_2=itemassignee.entity.full_name|default_if_none:'' %}
       </div>
     {% endfor %}
 
-    <h3>Borrower History</h3><a href="#" id="a_toggleBorrowers">Hide Borrowers</a>
+    <h3>Borrowers</h3><a href="#" id="a_toggleBorrowers">Hide Borrowers</a>
     {% for itemborrower in object.itemborrower_set.all %}
       <div class="relatedset relateditemborrower" id="div_itemborrower-{{ forloop.counter0 }}">
         {% include 'touglates/list_fields.html' with field_1_label='Borrower:' field_1=itemborrower.when field_2=itemborrower.entity.full_name|default_if_none:'' %}
@@ -77,16 +77,16 @@
     function toggleAssignees() {
       var itemAssignees=document.getElementsByClassName('relateditemassignee')
       var toggleAssignees = document.getElementById('a_toggleAssignees')
-      if(toggleAssignees.textContent=='Show Assignee History'){
+      if(toggleAssignees.textContent=='Show Assignees'){
         for(itemAssignee of itemAssignees) {
             itemAssignee.classList.remove('hidden')
           }
-        toggleAssignees.textContent='Hide Assignee History'
+        toggleAssignees.textContent='Hide Assignees'
       } else {
         for(itemAssignee of itemAssignees) {
           itemAssignee.classList.add('hidden')
         }
-        toggleAssignees.textContent='Show Assignee History'
+        toggleAssignees.textContent='Show Assignees'
       }
     }
     toggleAssignees()
@@ -97,16 +97,16 @@
     function toggleBorrowers() {
       var itemBorrowers=document.getElementsByClassName('relateditemborrower')
       var toggleBorrowers = document.getElementById('a_toggleBorrowers')
-      if(toggleBorrowers.textContent=='Show Borrower History'){
+      if(toggleBorrowers.textContent=='Show Borrowers'){
         for(itemBorrower of itemBorrowers) {
             itemBorrower.classList.remove('hidden')
           }
-        toggleBorrowers.textContent='Hide Borrower History'
+        toggleBorrowers.textContent='Hide Borrowers'
       } else {
         for(itemBorrower of itemBorrowers) {
           itemBorrower.classList.add('hidden')
         }
-        toggleBorrowers.textContent='Show Borrower History'
+        toggleBorrowers.textContent='Show Borrowers'
       }
     }
     toggleBorrowers()

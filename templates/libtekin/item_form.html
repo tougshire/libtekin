@@ -61,12 +61,6 @@
       <div id="div_location">
         {% include './_form_field.html' with field=form.location %}
       </div>
-      <div id="div_assignee">
-        {% include './_form_field.html' with field=form.assignee %}
-      </div>
-      <div id="div_borrower">
-        {% include './_form_field.html' with field=form.borrower %}
-      </div>
       <div id="div_owner">
         {% include './_form_field.html' with field=form.owner %}
       </div>
@@ -122,7 +116,7 @@
         {% endfor %}
       </table>
       <!-- begin primary -->
-      <h3>Primary Holders</h3>
+      <h3>Assignees</h3>
 
       {{ itemassignees.management_form }}
       {% for assigneeform in itemassignees.forms %}
@@ -160,7 +154,7 @@
 
       <!-- end primary -->
       <!-- begin borrower -->
-      <h3>itemBorrowers</h3>
+      <h3>Borrowers</h3>
 
       {{ itemborrowers.management_form }}
       {% for borrowerform in itemborrowers.forms %}

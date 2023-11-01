@@ -390,11 +390,6 @@ class Item(models.Model):
         "is deleted", default=False, help_text="If this item is deleted"
     )
 
-    def save(self, *args, **kwargs):
-        if self.primary_id_field:
-            setattr(self, "primary_id", getattr(self, self.primary_id_field))
-        super().save(*args, **kwargs)
-
     def get_absolute_url(self):
         return reverse("libtekin:item-detail", kwargs={"pk": self.pk})
 
@@ -409,31 +404,10 @@ class Item(models.Model):
         # return separator.join(current_notes)
 
     def save(self, *args, **kwargs):
+        if self.primary_id_field:
+            setattr(self, "primary_id", getattr(self, self.primary_id_field))
+
         saved = super().save(*args, **kwargs)
-
-        for RelatedModel, field in [
-            (ItemAssignee, self.assignee),
-            (ItemBorrower, self.borrower),
-        ]:
-            do_create = False
-            holders = RelatedModel.objects.filter(when__lte=date.today())
-            if not holders.count():
-                do_create = True
-            else:
-                last_when = holders.first().when
-                last_holders = RelatedModel.objects.filter(
-                    when=last_when, item=self, entity=field
-                )
-                if not last_holders.count():
-                    do_create = True
-
-            if do_create:
-                print("tp23a7c27", field)
-                RelatedModel.objects.create(
-                    item=self,
-                    entity=field,
-                    when=date.today(),
-                )
 
         return saved
 
@@ -470,9 +444,20 @@ class ItemAssignee(models.Model):
     )
 
     class Meta:
-        ordering = [
-            "-when",
-        ]
+        ordering = ["-when", "-pk"]
+
+    def __str__(self):
+        return f"{self.entity} -> {self.item} "
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # copy entity of the latest ItemAssignee record to the assignee field of the related Item record
+        latest_assignee = ItemAssignee.objects.filter(item=self.item).first()
+        if latest_assignee is not None:
+            if latest_assignee.entity is not None:
+                if self.item is not None:
+                    self.item.assignee = latest_assignee.entity
+                    self.item.save()
 
 
 class ItemBorrower(models.Model):
@@ -498,9 +483,20 @@ class ItemBorrower(models.Model):
     )
 
     class Meta:
-        ordering = [
-            "-when",
-        ]
+        ordering = ["-when", "-pk"]
+
+    def __str__(self):
+        return f"{self.entity} -> {self.item} "
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # copy entity of the latest ItemBorrower record to the borrower field of the related Item record
+        latest_borrower = ItemBorrower.objects.filter(item=self.item).first()
+        if latest_borrower is not None:
+            if latest_borrower.entity is not None:
+                if self.item is not None:
+                    self.item.borrower = latest_borrower.entity
+                    self.item.save()
 
 
 class ItemNoteLevel(models.Model):

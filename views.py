@@ -1,15 +1,14 @@
 import csv
-import sys
 import logging
-
-from typing import Any, Dict
+import sys
 import urllib
+from typing import Any, Dict
 from urllib.parse import urlencode
 
-from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import FieldError, ObjectDoesNotExist
+from django.db.models import Q
 from django.http import QueryDict
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -31,13 +30,13 @@ from tougshire_vistas.views import (
 
 from .forms import (
     EntityForm,
+    ItemAssigneeFormset,
     ItemBorrowerFormset,
     ItemCopyForm,
     ItemForm,
+    ItemItemNoteFormset,
     ItemNoteCategoryForm,
     ItemNoteForm,
-    ItemItemNoteFormset,
-    ItemAssigneeFormset,
     LocationForm,
     MmodelCategoryForm,
     MmodelForm,
@@ -111,26 +110,26 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
             "itemborrowers": ItemBorrowerFormset,
             "itemAssignees": ItemAssigneeFormset,
         }
-        formsetvar = {}
+        formsetdata = {}
         formsets_valid = True
         for formsetkey, formsetclass in formsetclasses.items():
             if self.request.POST:
-                formsetvar[formsetkey] = formsetclass(
+                formsetdata[formsetkey] = formsetclass(
                     self.request.POST, instance=self.object
                 )
             else:
-                formsetvar[formsetkey] = formsetclass(instance=self.object)
+                formsetdata[formsetkey] = formsetclass(instance=self.object)
 
-            if not (formsetvar[formsetkey]).is_valid():
+            if not (formsetdata[formsetkey]).is_valid():
                 print("tp23a6k55", formsetkey)
                 print(
-                    "tp23a6k56", formsetvar[formsetkey], formsetvar[formsetkey].errors
+                    "tp23a6k56", formsetdata[formsetkey], formsetdata[formsetkey].errors
                 )
 
-                for err in formsetvar[formsetkey].errors:
+                for err in formsetdata[formsetkey].errors:
                     print("tp23a6k57", err)
                     form.add_error(None, err)
-                    for formsetform in formsetvar[formsetkey].forms:
+                    for formsetform in formsetdata[formsetkey].forms:
                         print("tp23a6k58")
                         for err in formsetform.errors:
                             print("tp23a6k59", err)
@@ -187,18 +186,18 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             "itemborrowers": ItemBorrowerFormset,
             "itemAssignees": ItemAssigneeFormset,
         }
-        formsetvar = {}
+        formsetdata = {}
         formsets_valid = True
         for formsetkey, formsetclass in formsetclasses.items():
             if self.request.POST:
-                formsetvar[formsetkey] = formsetclass(
+                formsetdata[formsetkey] = formsetclass(
                     self.request.POST, instance=self.object
                 )
             else:
-                formsetvar[formsetkey] = formsetclass(instance=self.object)
+                formsetdata[formsetkey] = formsetclass(instance=self.object)
 
-            if (formsetvar[formsetkey]).is_valid():
-                formsetvar[formsetkey].save()
+            if (formsetdata[formsetkey]).is_valid():
+                formsetdata[formsetkey].save()
             else:
                 formsets_valid = False
 
@@ -208,6 +207,15 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             return self.form_invalid(form)
 
     def get_success_url(self):
+        if "popup" in self.kwargs:
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "app_name": "libtekin",
+                    "model_name": "Item",
+                },
+            )
         return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
 
 
@@ -348,6 +356,8 @@ class ItemList(PermissionRequiredMixin, ListView):
         )
         self.vista_settings["fields"]["assignee"]["label"] = "Current Assignee"
         self.vista_settings["fields"]["itemassignee__entity"]["label"] = "Assignees"
+        self.vista_settings["fields"]["borrower"]["label"] = "Current Borrower"
+        self.vista_settings["fields"]["itemborrower__entity"]["label"] = "Borrowers"
 
         self.vista_settings["fields"]["latest_update_date"] = {
             "type": "DateField",
@@ -780,10 +790,18 @@ class EntityCreate(PermissionRequiredMixin, CreateView):
     form_class = EntityForm
 
     def get_success_url(self):
-        if "opener" in self.request.POST and self.request.POST["opener"] > "":
-            return reverse_lazy("libtekin:entity-close", kwargs={"pk": self.object.pk})
-        else:
-            return reverse_lazy("libtekin:entity-detail", kwargs={"pk": self.object.pk})
+        print("tp23ave46")
+        if "popup" in self.kwargs:
+            print("tp23ave47")
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "app_name": "libtekin",
+                    "model_name": "Entity",
+                },
+            )
+        return reverse_lazy("libtekin:entity-detail", kwargs={"pk": self.object.pk})
 
 
 class EntityUpdate(PermissionRequiredMixin, UpdateView):
@@ -792,6 +810,18 @@ class EntityUpdate(PermissionRequiredMixin, UpdateView):
     form_class = EntityForm
 
     def get_success_url(self):
+        print("tp23ave46")
+        if "popup" in self.kwargs:
+            print("tp23ave46")
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "app_name": "libtekin",
+                    "model_name": "Entity",
+                },
+            )
+
         return reverse_lazy("libtekin:entity-detail", kwargs={"pk": self.object.pk})
 
 

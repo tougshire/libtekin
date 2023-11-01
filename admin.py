@@ -4,6 +4,8 @@ from .models import (
     Entity,
     EntityCategory,
     Item,
+    ItemAssignee,
+    ItemBorrower,
     ItemNote,
     ItemNoteCategory,
     ItemNoteLevel,
@@ -21,6 +23,8 @@ admin.site.register(Location)
 admin.site.register(LocationCategory)
 admin.site.register(MmodelCategory)
 admin.site.register(Mmodel)
+admin.site.register(ItemAssignee)
+admin.site.register(ItemBorrower)
 admin.site.register(ItemNoteCategory)
 
 

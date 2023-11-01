@@ -1,17 +1,18 @@
 from django.forms import ModelForm, inlineformset_factory, Select
+from django.urls import reverse_lazy
 from .models import (
     Entity,
     Item,
+    ItemAssignee,
     ItemBorrower,
     ItemNote,
     ItemNoteCategory,
-    ItemAssignee,
     Location,
     Mmodel,
     MmodelCategory,
 )
 from django import forms
-from touglates.widgets import TouglateDateInput
+from touglates.widgets import TouglateDateInput, TouglateRelatedSelect
 
 
 class MmodelSelect(Select):
@@ -67,9 +68,7 @@ class ItemForm(ModelForm):
             "connected_to",
             "status",
             "network_name",
-            "assignee",
             "owner",
-            "borrower",
             "home",
             "latest_inventory",
             "installation_date",
@@ -92,6 +91,14 @@ class ItemBorrowerForm(ModelForm):
             "entity",
             "when",
         ]
+        widgets = {
+            "entity": TouglateRelatedSelect(
+                related_data={
+                    "model": "Entity",
+                    "add_url": reverse_lazy("libtekin:item-entity-create"),
+                }
+            ),
+        }
 
 
 class ItemAssigneeForm(ModelForm):
@@ -102,6 +109,14 @@ class ItemAssigneeForm(ModelForm):
             "entity",
             "when",
         ]
+        widgets = {
+            "entity": TouglateRelatedSelect(
+                related_data={
+                    "model": "Entity",
+                    "add_url": reverse_lazy("libtekin:item-entity-create"),
+                }
+            ),
+        }
 
 
 class ItemNoteForm(ModelForm):
