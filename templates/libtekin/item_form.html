@@ -77,7 +77,8 @@
 
       {{ itemnotes.management_form }}
       {% for itemnoteform in itemnotes.forms %}
-        {% if itemnoteform.id.value > 0 %}
+
+        {% if itemnoteform.id.value > "" %}
           <div id="div_itemnoteform_{{ itemnoteform.id.value }}" class="itemnoteformsetform"  >
             {% for hiddenfield in itemnoteform.hidden_fields %}
               {{ hiddenfield }}

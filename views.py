@@ -121,24 +121,14 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
                 formsetdata[formsetkey] = formsetclass(instance=self.object)
 
             if not (formsetdata[formsetkey]).is_valid():
-                print("tp23a6k55", formsetkey)
-                print(
-                    "tp23a6k56", formsetdata[formsetkey], formsetdata[formsetkey].errors
-                )
-
                 for err in formsetdata[formsetkey].errors:
-                    print("tp23a6k57", err)
                     form.add_error(None, err)
                     for formsetform in formsetdata[formsetkey].forms:
-                        print("tp23a6k58")
                         for err in formsetform.errors:
-                            print("tp23a6k59", err)
                             form.add_error(None, err)
                 formsets_valid = False
 
         if not formsets_valid:
-            print("tp23a6l00")
-
             return self.form_invalid(form)
 
         return response
@@ -790,9 +780,7 @@ class EntityCreate(PermissionRequiredMixin, CreateView):
     form_class = EntityForm
 
     def get_success_url(self):
-        print("tp23ave46")
         if "popup" in self.kwargs:
-            print("tp23ave47")
             return reverse(
                 "touglates:popup_closer",
                 kwargs={
@@ -810,9 +798,7 @@ class EntityUpdate(PermissionRequiredMixin, UpdateView):
     form_class = EntityForm
 
     def get_success_url(self):
-        print("tp23ave46")
         if "popup" in self.kwargs:
-            print("tp23ave46")
             return reverse(
                 "touglates:popup_closer",
                 kwargs={
@@ -856,7 +842,6 @@ def get_primary_id_field(request, mmodel_id):
 
 def count_primary_id(request, pk=0, primary_id=""):
     if int(pk) > 0:
-        print("tp 2271431", primary_id)
         return HttpResponse(
             Item.objects.filter(primary_id=primary_id).exclude(pk=pk).count()
         )
