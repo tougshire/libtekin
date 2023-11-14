@@ -189,6 +189,7 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
             if (formsetdata[formsetkey]).is_valid():
                 formsetdata[formsetkey].save()
             else:
+                logger.critical(formsetdata[formsetkey].errors)
                 formsets_valid = False
 
         if formsets_valid:

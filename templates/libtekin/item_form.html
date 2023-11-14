@@ -76,8 +76,9 @@
       <h3>Notes</h3>
 
       {{ itemnotes.management_form }}
+      {{ itemnotes.errors }}
       {% for itemnoteform in itemnotes.forms %}
-
+        {{ itemnoteform.errors }}
         {% if itemnoteform.id.value  %}
           <div id="div_itemnoteform_{{ itemnoteform.id.value }}" class="itemnoteformsetform"  >
             {% for hiddenfield in itemnoteform.hidden_fields %}
@@ -120,8 +121,10 @@
       <h3>Assignees</h3>
 
       {{ itemassignees.management_form }}
+      {{ itemamassignees.errors }}
+
       {% for assigneeform in itemassignees.forms %}
-        {{ assigneeform.errors }}
+       {{ assigneeform.errors }}
         {% if assigneeform.id.value > 0 %}
           <div id="div_assigneeform_{{ assigneeform.id.value }}" class="assigneeformsetform"  >
             {% for hiddenfield in assigneeform.hidden_fields %}
@@ -158,8 +161,9 @@
       <h3>Borrowers</h3>
 
       {{ itemborrowers.management_form }}
+      {{ itemborrowers.errors }}
       {% for borrowerform in itemborrowers.forms %}
-      {{ borrowerform.errors }}
+      {{ borrowerform.errors }}                                                                                         
         {% if borrowerform.id.value > 0 %}
           <div id="div_borrowerform_{{ borrowerform.id.value }}" class="borrowerformsetform"  >
             {% for hiddenfield in borrowerform.hidden_fields %}
