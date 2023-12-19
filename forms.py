@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.forms import ModelForm, inlineformset_factory, Select
 from django.urls import reverse_lazy
 from .models import (
@@ -53,6 +54,19 @@ class EntityForm(ModelForm):
 
 
 class ItemForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        init = super().__init__(*args, **kwargs)
+
+        if hasattr(settings, "LIBTEKIN_ID_CHOICES"):
+            primary_id_choices = settings.LIBTEKIN_ID_CHOICES
+        else:
+            primary_id_choices = Mmodel.ID_CHOICES
+        self.fields["primary_id_field"].widget = forms.Select(
+            choices=primary_id_choices
+        )
+
+        return init
+
     class Meta:
         model = Item
         fields = [
@@ -148,6 +162,19 @@ class ItemNoteCategoryForm(ModelForm):
 
 
 class MmodelForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        init = super().__init__(*args, **kwargs)
+
+        if hasattr(settings, "LIBTEKIN_ID_CHOICES"):
+            primary_id_choices = settings.LIBTEKIN_ID_CHOICES
+        else:
+            primary_id_choices = Mmodel.ID_CHOICES
+        self.fields["primary_id_field"].widget = forms.Select(
+            choices=primary_id_choices
+        )
+
+        return init
+
     class Meta:
         model = Mmodel
         fields = ["brand", "model_name", "model_number", "category", "primary_id_field"]

@@ -139,14 +139,12 @@ class MmodelCategory(models.Model):
 
 
 class Mmodel(models.Model):
-    if hasattr(settings, "LIBTEKIN_ID_CHOICES"):
-        ID_CHOICES = settings.LIBTEKIN_ID_CHOICES
-    else:
-        ID_CHOICES = [
-            ("serial_number", "Serial Number"),
-            ("service_number", "Service Number"),
-            ("asset_number", "Asset Number"),
-        ]
+    ID_CHOICES = [
+        ("serial_number", "Serial Number"),
+        ("service_number", "Service Number"),
+        ("asset_number", "Asset Number"),
+        ("barcode", "Barcode"),
+    ]
 
     brand = models.CharField(
         "brand",
@@ -173,7 +171,6 @@ class Mmodel(models.Model):
     primary_id_field = models.CharField(
         "Primary ID Field",
         max_length=50,
-        choices=ID_CHOICES,
         blank=True,
         help_text='By default, the field which should be used as the primary ID field (ex: "SN", "Tag Number", etc)',
     )
@@ -264,7 +261,6 @@ class Item(models.Model):
     primary_id_field = models.CharField(
         "primary id is",
         max_length=50,
-        choices=Mmodel.ID_CHOICES,
         blank=True,
         help_text="The identifier which is the primary id",
     )
