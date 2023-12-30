@@ -381,7 +381,11 @@ class ItemList(PermissionRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset()
 
-        self.vistaobj = {"querydict": QueryDict(), "queryset": queryset}
+        self.vistaobj = {
+            "querydict": QueryDict(),
+            "queryset": queryset,
+            "model_name": "Item",
+        }
 
         return get_vista_queryset(self)
 
@@ -996,7 +1000,11 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset()
 
-        self.vistaobj = {"querydict": QueryDict(), "queryset": queryset}
+        self.vistaobj = {
+            "querydict": QueryDict(),
+            "queryset": queryset,
+            "model_name": "ItemNote",
+        }
 
         return get_vista_queryset(self)
 
