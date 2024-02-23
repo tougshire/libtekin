@@ -36,8 +36,8 @@
         {% if 'phone_number' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.phone_number %}
         {% endif %}
-        {% if 'essid' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.essid %}
+        {% if 'mobile_id' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.mobile_id %}
         {% endif %}
         {% if 'role' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.role %}
@@ -103,8 +103,8 @@
           {% if 'phone_number' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.phone_number %}
           {% endif %}
-          {% if 'essid' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.essid %}
+          {% if 'mobile_id' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.mobile_id %}
           {% endif %}
           {% if 'role' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.role %}

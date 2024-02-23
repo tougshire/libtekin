@@ -297,8 +297,8 @@ class Item(models.Model):
         blank=True,
         help_text="The phone number of the device",
     )
-    essid = models.CharField(
-        "ESSID", max_length=100, blank=True, help_text="The device's ESSID"
+    mobile_id = models.CharField(
+        "Mobile ID", max_length=100, blank=True, help_text="The device's IMEI, MEID, SSID, etc.."
     )
     owner = models.ForeignKey(
         Entity,

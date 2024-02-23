@@ -78,7 +78,7 @@ class ItemForm(ModelForm):
             "asset_number",
             "barcode",
             "phone_number",
-            "essid",
+            "mobile_id",
             "connected_to",
             "status",
             "network_name",

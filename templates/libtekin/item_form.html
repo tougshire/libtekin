@@ -43,8 +43,8 @@
       <div id="div_network_name">
         {% include './_form_field.html' with field=form.network_name %}
       </div>
-      <div id="div_essid">
-        {% include './_form_field.html' with field=form.essid %}
+      <div id="div_mobile_id">
+        {% include './_form_field.html' with field=form.mobile_id %}
       </div>
       <div id="div_phone_number">
         {% include './_form_field.html' with field=form.phone_number %}
@@ -163,7 +163,7 @@
       {{ itemborrowers.management_form }}
       {{ itemborrowers.errors }}
       {% for borrowerform in itemborrowers.forms %}
-      {{ borrowerform.errors }}                                                                                         
+      {{ borrowerform.errors }}
         {% if borrowerform.id.value > 0 %}
           <div id="div_borrowerform_{{ borrowerform.id.value }}" class="borrowerformsetform"  >
             {% for hiddenfield in borrowerform.hidden_fields %}
