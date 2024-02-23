@@ -79,6 +79,7 @@ class ItemForm(ModelForm):
             "barcode",
             "phone_number",
             "mobile_id",
+            "sim_iccid",
             "connected_to",
             "status",
             "network_name",

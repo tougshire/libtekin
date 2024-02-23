@@ -298,7 +298,13 @@ class Item(models.Model):
         help_text="The phone number of the device",
     )
     mobile_id = models.CharField(
-        "Mobile ID", max_length=100, blank=True, help_text="The device's IMEI, MEID, SSID, etc.."
+        "Mobile ID",
+        max_length=100,
+        blank=True,
+        help_text="The device's IMEI, MEID, SSID, etc..",
+    )
+    sim_iccid = models.CharField(
+        "SIM iccid", max_length=100, blank=True, help_text="The id of the SIM card"
     )
     owner = models.ForeignKey(
         Entity,

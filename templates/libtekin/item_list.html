@@ -39,6 +39,10 @@
         {% if 'mobile_id' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.mobile_id %}
         {% endif %}
+        {% if 'sim_iccid' in show_columns or not show_columns %}
+          {% include './_list_head.html' with field=labels.sim_iccid %}
+        {% endif %}
+
         {% if 'role' in show_columns or not show_columns %}
           {% include './_list_head.html' with field=labels.role %}
         {% endif %}
@@ -106,6 +110,10 @@
           {% if 'mobile_id' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.mobile_id %}
           {% endif %}
+          {% if 'sim_iccid' in show_columns or not show_columns %}
+            {% include './_list_field.html' with field=item.sim_iccid %}
+          {% endif %}
+
           {% if 'role' in show_columns or not show_columns %}
             {% include './_list_field.html' with field=item.role %}
           {% endif %}

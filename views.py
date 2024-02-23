@@ -324,6 +324,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                 "serial_number",
                 "phone_number",
                 "mobile_id",
+                "sim_iccid",
                 "asset_number",
                 "barcode",
                 "phone_number",
@@ -477,6 +478,17 @@ class ItemCSV(ItemList):
             or "mobile_id" in vista_data["show_columns"]
         ):
             row.append(context["labels"]["mobile_id"])
+        if (
+            not "show_columns" in vista_data
+            or "sim_iccid" in vista_data["show_columns"]
+        ):
+            row.append(context["labels"]["sim_iccid"])
+        if (
+            not "show_columns" in vista_data
+            or "sim_iccid" in vista_data["show_columns"]
+        ):
+            row.append(context["labels"]["sim_iccid"])
+
         if not "show_columns" in vista_data or "role" in vista_data["show_columns"]:
             row.append(context["labels"]["role"])
         if (
@@ -561,6 +573,11 @@ class ItemCSV(ItemList):
                 or "mobile_id" in vista_data["show_columns"]
             ):
                 row.append(item.mobile_id)
+            if (
+                not "show_columns" in vista_data
+                or "sim_iccid" in vista_data["show_columns"]
+            ):
+                row.append(item.sim_iccid)
             if not "show_columns" in vista_data or "role" in vista_data["show_columns"]:
                 row.append(item.role)
             if (
