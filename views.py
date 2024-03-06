@@ -1,8 +1,5 @@
 import csv
 import logging
-import sys
-import urllib
-from typing import Any, Dict
 from urllib.parse import urlencode
 
 from django.contrib import messages
@@ -333,6 +330,7 @@ class ItemList(PermissionRequiredMixin, ListView):
                 "owner",
                 "assignee",
                 "itemassignee__entity",
+                "itemassignee__entity__full_name",
                 "borrower",
                 "itemborrower__entity",
                 "home",
@@ -349,6 +347,10 @@ class ItemList(PermissionRequiredMixin, ListView):
         self.vista_settings["fields"]["itemassignee__entity"]["label"] = "Assignees"
         self.vista_settings["fields"]["borrower"]["label"] = "Current Borrower"
         self.vista_settings["fields"]["itemborrower__entity"]["label"] = "Borrowers"
+
+        self.vista_settings["fields"]["itemassignee__entity__full_name"][
+            "available_for"
+        ] = {"quicksearch"}
 
         self.vista_settings["fields"]["latest_update_date"] = {
             "type": "DateField",
