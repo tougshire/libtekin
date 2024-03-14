@@ -11,7 +11,13 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
+from django.views.generic.edit import (
+    CreateView,
+    DeleteView,
+    FormView,
+    UpdateView,
+    FormMixin,
+)
 from django.views.generic.list import ListView
 
 from tougshire_vistas.models import Vista
@@ -228,11 +234,18 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
         return context_data
 
 
-class ItemCopy(DetailView, FormView):
+class ItemCopy(PermissionRequiredMixin, FormMixin, DetailView):
     permission_required = "libtekin.add_item"
     template_name = "libtekin/item_confirm_copy.html"
-    form_class = ItemCopyForm
     model = Item
+    form_class = ItemCopyForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return redirect("libtekin:item-copy", self.object.pk)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -252,20 +265,18 @@ class ItemCopy(DetailView, FormView):
 
     def form_valid(self, form):
         item = Item.objects.get(pk=self.kwargs.get("pk"))
-        qty = form.cleaned_data["qty"]
         primary_id = item.primary_id
-        for n in range(0, qty):
-            item.pk = None
-            item.primary_id = "[copy of] " + primary_id
-            setattr(item, item.primary_id_field, "[copy of] " + primary_id)
-            item.save()  # item is now a new item, the original item is untouched
+        item.pk = None
+        item.primary_id = "[copy of] " + primary_id
+        setattr(item, item.primary_id_field, "[copy of] " + primary_id)
+        item.save()  # item is now a new item, the original item is untouched
 
         self.request.session["query"] = (
             "filter__fieldname__0=primary_id&filter__op__0=contains&filter__value__0=[copy of] "
             + primary_id
         )
 
-        return redirect("libtekin:item-list")
+        return redirect("libtekin:item-update", item.pk)
 
 
 class ItemDelete(PermissionRequiredMixin, UpdateView):

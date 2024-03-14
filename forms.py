@@ -196,7 +196,8 @@ class LocationForm(ModelForm):
 
 
 class ItemCopyForm(forms.Form):
-    qty = forms.IntegerField()
+    class Meta:
+        model = Item
 
 
 ItemItemNoteFormset = inlineformset_factory(Item, ItemNote, form=ItemNoteForm, extra=10)
