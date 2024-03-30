@@ -1,12 +1,46 @@
 {% extends './_base.html' %}
 {% load static %}
 {% block content %}
+{% include './_object_menu.html' %}
 
-{% include 'tougshire_vistas/filter.html' %}
-
+<div id = "div_search_form">
+  <table>
+    <form method="POST">
+      {% csrf_token %}
+      {{ filter.form.as_table }}
+      {{ as_csv.as_table }}
+      {{ filterstore_save.as_table }}
+      <tr><td> </td><td><input type="submit" /></td></tr>
+    </form>
+    <form method="GET" action="{% url 'libtekin:item-list' %}">
+      {{ filterstore_retrieve.as_table }}
+      <tr><td> </td><td><input type="submit" /></td></tr>
+    </form>
+  </table>
+</div>
+<div>
+  <a id="a_showhideSearchForm" href="#"></a>
+</div>
+<script>
+  function showhideSearchForm() {
+    var div_searchForm = document.getElementById("div_search_form")
+    if(div_searchForm.style.display=="none") {
+      div_searchForm.style.display="block"
+      a_showhideSearchForm.innerText="Hide Search Form"
+    } else {
+      div_searchForm.style.display="none"
+      a_showhideSearchForm.innerText="Show Search Form"
+    }
+  }
+  var a_showhideSearchForm = document.getElementById("a_showhideSearchForm")
+  a_showhideSearchForm.addEventListener("click", function(e) {
+    e.preventDefault()
+    showhideSearchForm()
+  })
+  showhideSearchForm()
+</script>
 <div class="list">
     <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
-    <div><a href="{% url 'libtekin:item-csv' %}">export</a></div>
       <div class="row rowhead">
         {% include './_list_head.html' with field='' %}
         {% if 'common_name' in show_columns or not show_columns %}
@@ -76,7 +110,7 @@
 
       </div>
 
-      {% for item in object_list %}
+      {% for item in filter.qs %}
         <div class="row">
           <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
           <div class="listfield"><a href="{% url 'libtekin:item-update' item.pk %}">edit</a></div>
@@ -151,39 +185,9 @@
 
     </div>
   </div>
-  <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a id="a_first" href="?page=1">&laquo; first</a>
-            <a id="a_previous" href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
+  {% include './_object_menu.html' %}
+  {% endblock %}
+  {% block bottomscript %}
+    {{ block.super }}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a id="a_next" href="?page={{ page_obj.next_page_number }}">next</a>
-            <a id="a_last" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-  </div>
-
-{% endblock %}
-{% block bottomscript %}
-  {{ block.super }}
-
-  <script>
-
-    for( paginator of ['a_first', 'a_previous', 'a_next', 'a_last']) {
-      if(!(document.getElementById(paginator)==null) ) {
-        document.getElementById(paginator).addEventListener('click', function(e) {
-          e.preventDefault()
-          document.getElementById('frm_vista').action = e.target.href
-          document.getElementById('frm_vista').submit()
-        });
-      }
-    }
-  </script>
-
-{% endblock %}
+  {% endblock %}

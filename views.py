@@ -11,25 +11,16 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import (
-    CreateView,
-    DeleteView,
-    FormView,
-    UpdateView,
-    FormMixin,
-)
+from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 from django.views.generic.list import ListView
 
-from tougshire_vistas.models import Vista
-from tougshire_vistas.views import (
-    delete_vista,
-    get_latest_vista,
-    get_vista_queryset,
-    make_vista,
-    make_vista_fields,
-    retrieve_vista,
-    vista_context_data,
+from django_filters_stoex.forms import (
+    CSVOptionForm,
+    FilterstoreRetrieveForm,
+    FilterstoreSaveForm,
 )
+from django_filters_stoex.views import FilterView
+from libtekin.filterset import ItemFilter
 
 from .forms import (
     EntityForm,
@@ -137,10 +128,17 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         return response
 
     def get_success_url(self):
-        if "opener" in self.request.POST and self.request.POST["opener"] > "":
-            return reverse_lazy("libtekin:item-close", kwargs={"pk": self.object.pk})
-        else:
-            return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
+
+        if "popup" in self.request.get_full_path():
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "app_name": self.model._meta.app_label,
+                    "model_name": self.model.__name__,
+                },
+            )
+        return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
 
 
 class ItemUpdate(PermissionRequiredMixin, UpdateView):
@@ -234,18 +232,11 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
         return context_data
 
 
-class ItemCopy(PermissionRequiredMixin, FormMixin, DetailView):
+class ItemCopy(DetailView, FormView):
     permission_required = "libtekin.add_item"
     template_name = "libtekin/item_confirm_copy.html"
-    model = Item
     form_class = ItemCopyForm
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return redirect("libtekin:item-copy", self.object.pk)
+    model = Item
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -265,18 +256,20 @@ class ItemCopy(PermissionRequiredMixin, FormMixin, DetailView):
 
     def form_valid(self, form):
         item = Item.objects.get(pk=self.kwargs.get("pk"))
+        qty = form.cleaned_data["qty"]
         primary_id = item.primary_id
-        item.pk = None
-        item.primary_id = "[copy of] " + primary_id
-        setattr(item, item.primary_id_field, "[copy of] " + primary_id)
-        item.save()  # item is now a new item, the original item is untouched
+        for n in range(0, qty):
+            item.pk = None
+            item.primary_id = "[copy of] " + primary_id
+            setattr(item, item.primary_id_field, "[copy of] " + primary_id)
+            item.save()  # item is now a new item, the original item is untouched
 
         self.request.session["query"] = (
             "filter__fieldname__0=primary_id&filter__op__0=contains&filter__value__0=[copy of] "
             + primary_id
         )
 
-        return redirect("libtekin:item-update", item.pk)
+        return redirect("libtekin:item-list")
 
 
 class ItemDelete(PermissionRequiredMixin, UpdateView):
@@ -309,336 +302,25 @@ class ItemSoftDelete(PermissionRequiredMixin, UpdateView):
         return context_data
 
 
-class ItemList(PermissionRequiredMixin, ListView):
+class ItemList(PermissionRequiredMixin, FilterView):
     permission_required = "libtekin.view_item"
-    model = Item
-    paginate_by = 30
-
-    def setup(self, request, *args, **kwargs):
-        self.vista_settings = {
-            "max_search_keys": 5,
-            "fields": [],
-        }
-
-        self.vista_settings["fields"] = make_vista_fields(
-            Item,
-            field_names=[
-                "primary_id",
-                "common_name",
-                "mmodel",
-                "mmodel__category",
-                "mmodel__model_name",
-                "network_name",
-                "serial_number",
-                "phone_number",
-                "mobile_id",
-                "sim_iccid",
-                "asset_number",
-                "barcode",
-                "phone_number",
-                "role",
-                "connected_to",
-                "owner",
-                "assignee",
-                "itemassignee__entity",
-                "itemassignee__entity__full_name",
-                "borrower",
-                "itemborrower__entity",
-                "home",
-                "location",
-                "status",
-                "connected_to__mmodel",
-                "connection__mmodel",
-                "latest_inventory",
-                "installation_date",
-                "status__is_active",
-            ],
-        )
-        self.vista_settings["fields"]["assignee"]["label"] = "Current Assignee"
-        self.vista_settings["fields"]["itemassignee__entity"]["label"] = "Assignees"
-        self.vista_settings["fields"]["borrower"]["label"] = "Current Borrower"
-        self.vista_settings["fields"]["itemborrower__entity"]["label"] = "Borrowers"
-
-        self.vista_settings["fields"]["itemassignee__entity__full_name"][
-            "available_for"
-        ] = {"quicksearch"}
-
-        self.vista_settings["fields"]["latest_update_date"] = {
-            "type": "DateField",
-            "label": "Latest Major Update Date",
-            "available_for": ["order_by"],
-        }
-        self.vista_settings["fields"]["mmodel__model_name"]["available_for"] = [
-            "quicksearch"
-        ]
-
-        self.vista_defaults = QueryDict(
-            urlencode(
-                [
-                    ("filter__fieldname__0", ["status__is_active"]),
-                    ("filter__op__0", ["exact"]),
-                    ("filter__value__0", [True]),
-                    ("order_by", ["primary_id", "common_name"]),
-                    ("paginate_by", self.paginate_by),
-                ],
-                doseq=True,
-            ),
-            mutable=True,
-        )
-
-        return super().setup(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def get_queryset(self, **kwargs):
-        queryset = super().get_queryset()
-
-        self.vistaobj = {
-            "querydict": QueryDict(),
-            "queryset": queryset,
-            "model_name": "Item",
-        }
-
-        return get_vista_queryset(self)
-
-    def get_paginate_by(self, queryset):
-        if (
-            "paginate_by" in self.vistaobj["querydict"]
-            and self.vistaobj["querydict"]["paginate_by"]
-        ):
-            return self.vistaobj["querydict"]["paginate_by"]
-
-        return super().get_paginate_by(self)
+    filterset_class = ItemFilter
+    filterstore_urlname = "libtekin:item-filterstore"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        vista_data = vista_context_data(self.vista_settings, self.vistaobj["querydict"])
-        vista_data["labels"]["Item"] = "item"
-
-        context_data = {**context_data, **vista_data}
-        context_data["vista_default"] = dict(self.vista_defaults)
-
-        context_data["vistas"] = Vista.objects.filter(
-            user=self.request.user, model_name="libtekin.item"
-        ).all()  # for choosing saved vistas
-
-        if self.request.POST.get("vista_name"):
-            context_data["vista_name"] = self.request.POST.get("vista_name")
-
+        context_data["filterstore_retrieve"] = FilterstoreRetrieveForm()
+        context_data["filterstore_save"] = FilterstoreSaveForm()
+        context_data["as_csv"] = CSVOptionForm()
         context_data["count"] = self.object_list.count()
-
+        context_data["labels"] = {
+            field.name: field.verbose_name
+            for field in Item._meta.get_fields()
+            if hasattr(field, "verbose_name")
+        }
+        print("tp243tb49", {field.name: field for field in Item._meta.get_fields()})
         return context_data
-
-
-class ItemCSV(ItemList):
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        context = self.get_context_data()
-
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": 'attachment; filename="items.csv"'},
-        )
-
-        writer = csv.writer(response)
-        vista_data = vista_context_data(self.vista_settings, self.vistaobj["querydict"])
-
-        row = []
-
-        if (
-            not "show_columns" in vista_data
-            or "common_name" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["common_name"])
-        if not "show_columns" in vista_data or "mmodel" in vista_data["show_columns"]:
-            row.append(context["labels"]["mmodel"])
-        if (
-            not "show_columns" in vista_data
-            or "primary_id" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["primary_id"])
-        if (
-            not "show_columns" in vista_data
-            or "serial_number" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["serial_number"])
-        if (
-            not "show_columns" in vista_data
-            or "phone_number" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["phone_number"])
-        if (
-            not "show_columns" in vista_data
-            or "asset_number" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["asset_number"])
-        if not "show_columns" in vista_data or "barcode" in vista_data["show_columns"]:
-            row.append(context["labels"]["barcode"])
-        if (
-            not "show_columns" in vista_data
-            or "network_name" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["network_name"])
-        if (
-            not "show_columns" in vista_data
-            or "phone_number" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["phone_number"])
-        if (
-            not "show_columns" in vista_data
-            or "mobile_id" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["mobile_id"])
-        if (
-            not "show_columns" in vista_data
-            or "sim_iccid" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["sim_iccid"])
-        if (
-            not "show_columns" in vista_data
-            or "sim_iccid" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["sim_iccid"])
-
-        if not "show_columns" in vista_data or "role" in vista_data["show_columns"]:
-            row.append(context["labels"]["role"])
-        if (
-            not "show_columns" in vista_data
-            or "connected_to" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["connected_to"])
-        if not "show_columns" in vista_data or "status" in vista_data["show_columns"]:
-            row.append(context["labels"]["status"])
-        if not "show_columns" in vista_data or "home" in vista_data["show_columns"]:
-            row.append(context["labels"]["home"])
-        if not "show_columns" in vista_data or "location" in vista_data["show_columns"]:
-            row.append(context["labels"]["location"])
-        if not "show_columns" in vista_data or "assignee" in vista_data["show_columns"]:
-            row.append(context["labels"]["assignee"])
-        if not "show_columns" in vista_data or "borrower" in vista_data["show_columns"]:
-            row.append(context["labels"]["borrower"])
-        if not "show_columns" in vista_data or "owner" in vista_data["show_columns"]:
-            row.append(context["labels"]["owner"])
-        if (
-            not "show_columns" in vista_data
-            or "latest_inventory" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["latest_inventory"])
-        if (
-            not "show_columns" in vista_data
-            or "installation_date" in vista_data["show_columns"]
-        ):
-            row.append(context["labels"]["installation_date"])
-
-        writer.writerow(row)
-
-        for item in self.object_list:
-            row = []
-            if (
-                not "show_columns" in vista_data
-                or "common_name" in vista_data["show_columns"]
-            ):
-                row.append(item.common_name)
-            if (
-                not "show_columns" in vista_data
-                or "mmodel" in vista_data["show_columns"]
-            ):
-                row.append(item.mmodel)
-            if (
-                not "show_columns" in vista_data
-                or "primary_id" in vista_data["show_columns"]
-            ):
-                row.append(item.primary_id)
-            if (
-                not "show_columns" in vista_data
-                or "serial_number" in vista_data["show_columns"]
-            ):
-                row.append(item.serial_number)
-            if (
-                not "show_columns" in vista_data
-                or "phone_number" in vista_data["show_columns"]
-            ):
-                row.append(item.phone_number)
-            if (
-                not "show_columns" in vista_data
-                or "asset_number" in vista_data["show_columns"]
-            ):
-                row.append(item.asset_number)
-            if (
-                not "show_columns" in vista_data
-                or "barcode" in vista_data["show_columns"]
-            ):
-                row.append(item.barcode)
-            if (
-                not "show_columns" in vista_data
-                or "network_name" in vista_data["show_columns"]
-            ):
-                row.append(item.network_name)
-            if (
-                not "show_columns" in vista_data
-                or "phone_number" in vista_data["show_columns"]
-            ):
-                row.append(item.phone_number)
-            if (
-                not "show_columns" in vista_data
-                or "mobile_id" in vista_data["show_columns"]
-            ):
-                row.append(item.mobile_id)
-            if (
-                not "show_columns" in vista_data
-                or "sim_iccid" in vista_data["show_columns"]
-            ):
-                row.append(item.sim_iccid)
-            if not "show_columns" in vista_data or "role" in vista_data["show_columns"]:
-                row.append(item.role)
-            if (
-                not "show_columns" in vista_data
-                or "connected_to" in vista_data["show_columns"]
-            ):
-                row.append(item.connected_to)
-            if (
-                not "show_columns" in vista_data
-                or "status" in vista_data["show_columns"]
-            ):
-                row.append(item.status)
-            if not "show_columns" in vista_data or "home" in vista_data["show_columns"]:
-                row.append(item.home)
-            if (
-                not "show_columns" in vista_data
-                or "location" in vista_data["show_columns"]
-            ):
-                row.append(item.location)
-            if (
-                not "show_columns" in vista_data
-                or "assignee" in vista_data["show_columns"]
-            ):
-                row.append(item.assignee)
-            if (
-                not "show_columns" in vista_data
-                or "borrower" in vista_data["show_columns"]
-            ):
-                row.append(item.borrower)
-            if (
-                not "show_columns" in vista_data
-                or "owner" in vista_data["show_columns"]
-            ):
-                row.append(item.owner)
-            if (
-                not "show_columns" in vista_data
-                or "latest_inventory" in vista_data["show_columns"]
-            ):
-                row.append(item.latest_inventory)
-            if (
-                not "show_columns" in vista_data
-                or "installation_date" in vista_data["show_columns"]
-            ):
-                row.append(item.installation_date)
-
-            writer.writerow(row)
-
-        return response
 
 
 class ItemClose(PermissionRequiredMixin, DetailView):
@@ -653,12 +335,16 @@ class MmodelCreate(PermissionRequiredMixin, CreateView):
     form_class = MmodelForm
 
     def get_success_url(self):
-        if "opener" in self.request.POST and self.request.POST["opener"] > "":
-            return reverse_lazy("libtekin:mmodel-close", kwargs={"pk": self.object.pk})
-        else:
-            return reverse_lazy("libtekin:mmodel-detail", kwargs={"pk": self.object.pk})
-
-        return response
+        if "popup" in self.request.get_full_path():
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "model_name": self.model.__name__,
+                    "app_name": self.model._meta.app_label,
+                },
+            )
+        return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
 
 
 class MmodelUpdate(PermissionRequiredMixin, UpdateView):
@@ -985,91 +671,12 @@ class ItemNoteList(PermissionRequiredMixin, ListView):
     model = ItemNote
     paginate_by = 30
 
-    def setup(self, request, *args, **kwargs):
-        self.vista_settings = {
-            "max_search_keys": 5,
-            "fields": [],
-        }
-
-        self.vista_settings["fields"] = make_vista_fields(
-            ItemNote,
-            field_names=[
-                "item",
-                "level",
-                "flagged",
-                "when",
-                "itemnotecategory",
-                "maintext",
-                "details",
-                "item__status__is_active",
-                "item__primary_id",
-                "level",
-            ],
-        )
-
-        self.vista_defaults = QueryDict(
-            urlencode(
-                [
-                    ("filter__fieldname__0", ["flagged"]),
-                    ("filter__op__0", ["gt"]),
-                    ("filter__value__0", [0]),
-                    ("order_by", ["when", "item"]),
-                    ("paginate_by", self.paginate_by),
-                    ("filter__fieldname__1", ["item__status__is_active"]),
-                    ("filter__op__1", ["exact"]),
-                    ("filter__value__1", [True]),
-                ],
-                doseq=True,
-            ),
-            mutable=True,
-        )
-
-        return super().setup(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def get_queryset(self, **kwargs):
-        queryset = super().get_queryset()
-
-        self.vistaobj = {
-            "querydict": QueryDict(),
-            "queryset": queryset,
-            "model_name": "ItemNote",
-        }
-
-        return get_vista_queryset(self)
-
-    def get_paginate_by(self, queryset):
-        if (
-            "paginate_by" in self.vistaobj["querydict"]
-            and self.vistaobj["querydict"]["paginate_by"]
-        ):
-            return self.vistaobj["querydict"]["paginate_by"]
-
-        return super().get_paginate_by(self)
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-
-        vista_data = vista_context_data(self.vista_settings, self.vistaobj["querydict"])
-
-        context_data = {**context_data, **vista_data}
-        context_data["vista_default"] = dict(self.vista_defaults)
-
-        context_data["vistas"] = Vista.objects.filter(
-            user=self.request.user, model_name="libtekin.itemnote"
-        ).all()  # for choosing saved vistas
-
-        if self.request.POST.get("vista_name"):
-            context_data["vista_name"] = self.request.POST.get("vista_name")
 
         context_data["count"] = self.object_list.count()
 
         return context_data
-
-
-################
 
 
 class ItemNoteCategoryCreate(PermissionRequiredMixin, CreateView):
