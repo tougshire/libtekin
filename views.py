@@ -319,7 +319,6 @@ class ItemList(PermissionRequiredMixin, FilterView):
             for field in Item._meta.get_fields()
             if hasattr(field, "verbose_name")
         }
-        print("tp243tb49", {field.name: field for field in Item._meta.get_fields()})
         return context_data
 
 

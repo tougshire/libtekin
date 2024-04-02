@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.forms import ModelForm, inlineformset_factory, Select
+from django.forms import ModelForm, SelectDateWidget, inlineformset_factory, Select
 from django.urls import reverse_lazy
 from .models import (
     Entity,
@@ -93,8 +93,8 @@ class ItemForm(ModelForm):
         widgets = {
             "mmodel": MmodelSelect,
             "connected_to": MmodelSelect,
-            "latest_inventory": TouglateDateInput(),
-            "installation_date": forms.DateInput(attrs={"type": "date"}),
+            "latest_inventory": SelectDateWidget(),
+            "installation_date": SelectDateWidget(),
         }
 
 
