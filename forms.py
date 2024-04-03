@@ -110,7 +110,7 @@ class ItemBorrowerForm(ModelForm):
             "entity": TouglateRelatedSelect(
                 related_data={
                     "model": "Entity",
-                    "add_url": reverse_lazy("libtekin:item-entity-create"),
+                    "add_url": reverse_lazy("libtekin:entity-popup"),
                 }
             ),
         }
@@ -128,7 +128,7 @@ class ItemAssigneeForm(ModelForm):
             "entity": TouglateRelatedSelect(
                 related_data={
                     "model": "Entity",
-                    "add_url": reverse_lazy("libtekin:item-entity-create"),
+                    "add_url": reverse_lazy("libtekin:entity-popup"),
                 }
             ),
         }
