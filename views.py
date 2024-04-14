@@ -114,12 +114,10 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
             else:
                 formsetdata[formsetkey] = formsetclass(instance=self.object)
 
-            if not (formsetdata[formsetkey]).is_valid():
-                for err in formsetdata[formsetkey].errors:
-                    form.add_error(None, err)
-                    for formsetform in formsetdata[formsetkey].forms:
-                        for err in formsetform.errors:
-                            form.add_error(None, err)
+            if (formsetdata[formsetkey]).is_valid():
+                formsetdata[formsetkey].save()
+            else:
+                logger.critical(formsetdata[formsetkey].errors)
                 formsets_valid = False
 
         if not formsets_valid:
@@ -193,10 +191,10 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
                 logger.critical(formsetdata[formsetkey].errors)
                 formsets_valid = False
 
-        if formsets_valid:
-            return response
-        else:
+        if not formsets_valid:
             return self.form_invalid(form)
+
+        return response
 
     def get_success_url(self):
         if "popup" in self.kwargs:
