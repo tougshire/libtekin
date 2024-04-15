@@ -20,6 +20,14 @@
     width: 100%;
     padding: 1px 1px;
 }
+
+.object-menu {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 1px 1px;
+}
+
 .menu-bottom {
     display: flex;
     justify-content: space-around;
@@ -27,41 +35,48 @@
     padding: 1px 1px;
 }
 
-.form .formset {
+.form .formsetform {
     margin-left:2em;
 }
 
-.form .field-wrapper {
+.form .form-field-outer-wrapper {
     margin-top:.5em;
 }
 
-.form .field {
-    width:80%;
-}
-
-.control {
+.form .form-field-inner-wrapper {
+    display:flex;
+    flex-wrap:wrap;
     width:100%;
+    margin-top:.5em;
 }
 
-.form .label {
+.form .form-field-label {
     width:15%;
 }
 
-.form .help_text {
+
+.form .form-field-control {
+    width:80%;
+    display:flex;
+}
+
+
+.form .form-field-help-text {
+    width:80%;
     margin-left:15%;
 }
 .list {
     width:100%;
     display:table;
 }
-.list .row {
+.list .row, .list .rowhead {
     display:table-row
 }
 .list .rowhead {
     background-color:#eeeeff;
 }
 
-.list .field {
+.list .list-field {
     display:table-cell;
     border: 1px solid lightblue;
     padding-left: .2em;
@@ -83,8 +98,14 @@
 .detail .detailset {
     margin-left:2em;
 }
+.detail .field-outer-wrapper {
+    display:flex;
+    width:100%;
+}
 
-.detail .field-wrapper {
+.detail .detail-field-inner-wrapper {
+    display:flex;
+    width:100%;
     margin-top:.5em;
 }
 
@@ -92,7 +113,7 @@
     display:flex;
 }
 
-.detail .label {
+.detail .detail-field-label {
     width:15%;
 }
 
@@ -128,8 +149,13 @@
     background-color:cadetblue
 }
 
-.menu a:link, .menu a:visited {
+.menu a:link, .menu a:visited, button.menu-item  {
     color:white;
+}
+
+button.menu-item  {
+    background:transparent;
+    font:inherit;
 }
 
 
@@ -151,3 +177,6 @@ textarea.widthlong {
 textarea.widthxlong {
     width:95%;
 }
+
+
+

@@ -1,3 +1,4 @@
+{% extends 'touglates/base.html' %}
 {% load static %}
 {% load touglates_tags %}
 <!DOCTYPE html>
@@ -5,10 +6,14 @@
 <head>
 <title>Library Technical Inventory</title>
 <script src="{% static 'touglates/touglates.js' %}"></script>
+{% block head_stylesheet %}
+{{ block.super }}
 <link rel="stylesheet" href="{% static 'libtekin/libtekin.css' %}">
 {% project_include_file 'main_css' as cssfile %}
 {% if cssfile %}<link rel="stylesheet" href="{% static cssfile %}">{% endif %}
+{% endblock %}
 </head>
+{% block body %}
 <body>
 {% if messages %}
   <ul class="messages">
@@ -28,4 +33,5 @@
 {% block bottomscript %}
 {% endblock %}
 </body>
+{% endblock %}
 </html>

@@ -1,5 +1,3 @@
-  <h2>{{ object }}</h2>
-
   <div class="detail">
     {% include './_detail_field.html' with label=item_labels.common_name field=object.common_name %}
     {% include './_detail_field.html' with label=item_labels.mmodel field=object.mmodel %}
@@ -116,4 +114,10 @@
       toggleBorrowers()
     });
 
+</script>
+<script>
+  document.getElementById('a_addnote').addEventListener('click', function(e) {
+    e.preventDefault()
+    window.open(e.target.href)
+  });
 </script>

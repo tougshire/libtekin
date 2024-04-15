@@ -1,0 +1,72 @@
+<div class="menu app-menu">
+
+  <div class="menu object-menu">
+
+    {% if perms.view_item %}
+      {% if 'item-list' == request.resolver_match.url_name %}
+        <div class="menu-item menu-list menu-here">
+            List
+        </div>
+      {% else %}
+        <div class="menu-item menu-list">
+          <a href="{% url 'libtekin:item-list' %}">List</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if perms.view_item %}
+      {% if 'item-detail' == request.resolver_match.url_name %}
+        <div class="menu-item menu-detail menu-here">
+            View
+        </div>
+      {% elif object.pk %}
+        <div class="menu-item menu-detail">
+          <a href="{% url 'libtekin:item-detail' object.pk %}">View</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if perms.add_item %}
+      {% if 'item-create' == request.resolver_match.url_name %}
+        <div class="menu-item menu-here menu-create">
+          <button form="form_item" class="menu-item" type="submit" >Submit</button></form>
+        </div>
+      {% else %}
+        <div class="menu-item menu-create">
+          <a href="{% url 'libtekin:item-create' %}">Add</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if perms.change_item %}
+      {% if 'item-update' == request.resolver_match.url_name %}
+        <div class="menu-item menu-update menu-here">
+          <button type="submit" form="form_item" class="menu-item menu-here" >Submit Changes</button>
+        </div>
+      {% elif object.pk %}
+        <div class="menu-item menu-update">
+          <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if perms.delete_item %}
+      {% if 'item-delete' == request.resolver_match.url_name %}
+        <div class="menu-item menu-delete menu-here">
+          <form method="POST" action="{% url 'libtekin:item-delete' object.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="menu-item" >Confirm Delete</button>
+          </form>
+        </div>
+      {% elif object.pk %}
+        <div class="menu-item menu-delete">
+          <a href="{% url 'libtekin:item-delete' object.pk %}">Delete</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+
+  </div>
+
+
+</div>

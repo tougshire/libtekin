@@ -2,52 +2,52 @@
 
   <div class="menu object-menu">
 
-    {% if perms.view_item %}
-      {% if 'item-list' == request.resolver_match.url_name %}
-        <div class="menu-item menu-here">
-            <a href="{% url 'libtekin:item-list' %}">List</a>
+    {% if perms.view_ + model_name  %}
+      {% if '' + model_name + '-list' == request.resolver_match.url_name %}
+        <div class="menu-' + model_name + ' menu-here">
+            <a href="{% url 'libtekin:'  + model_name  + '-list' %}">List</a>
         </div>
       {% else %}
-        <div class="menu-item">
-          <a href="{% url 'libtekin:item-list' %}">List</a>
+        <div class="menu-' + model_name + '">
+          <a href="{% url 'libtekin:' + model_name + '-list' %}">List</a>
         </div>
       {% endif %}
     {% endif %}
 
-    {% if perms.view_item %}
-      {% if 'item-detail' == request.resolver_match.url_name %}
-        <div class="menu-item menu-here">
-            <a href="{% url 'libtekin:item-detail' object.pk %}">View</a>
+    {% if perms.view_' + model_name  %}
+      {% if '' + model_name + '-detail' == request.resolver_match.url_name %}
+        <div class="menu-' + model_name + ' menu-here">
+            <a href="{% url 'libtekin:' + model_name + '-detail' object.pk %}">View</a>
         </div>
       {% elif object.pk %}
-        <div class="menu-item">
-          <a href="{% url 'libtekin:item-detail' object.pk %}">View</a>
+        <div class="menu-' + model_name + '">
+          <a href="{% url 'libtekin:' + model_name + '-detail' object.pk %}">View</a>
         </div>
       {% endif %}
     {% endif %}
 
-    {% if perms.add_item %}
-      {% if 'item-create' == request.resolver_match.url_name %}
-        <div class="menu-item menu-here">
-            <a href="{% url 'libtekin:item-create' %}">Add</a>
+    {% if perms.add_' + model_name  %}
+      {% if '' + model_name + '-create' == request.resolver_match.url_name %}
+        <div class="menu-' + model_name + ' menu-here">
+            <a href="{% url 'libtekin:' + model_name + '-create' %}">Add</a>
         </div>
 
       {% else %}
-        <div class="menu-item">
-          <a href="{% url 'libtekin:item-create' %}">Add</a>
+        <div class="menu-' + model_name + '">
+          <a href="{% url 'libtekin:' + model_name + '-create' %}">Add</a>
         </div>
       {% endif %}
     {% endif %}
 
-    {% if perms.change_item %}
-      {% if 'item-update' == request.resolver_match.url_name %}
-        <div class="menu-item menu-here">
-            <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+    {% if perms.change_' + model_name  %}
+      {% if '' + model_name + '-update' == request.resolver_match.url_name %}
+        <div class="menu-' + model_name + ' menu-here">
+            <a href="{% url 'libtekin:' + model_name + '-update' object.pk %}">Edit</a>
         </div>
 
       {% elif object.pk %}
-        <div class="menu-item">
-          <a href="{% url 'libtekin:item-update' object.pk %}">Edit</a>
+        <div class="menu-' + model_name + '">
+          <a href="{% url 'libtekin:' + model_name + '-update' object.pk %}">Edit</a>
         </div>
       {% endif %}
     {% endif %}

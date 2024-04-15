@@ -74,6 +74,7 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
     permission_required = "libtekin.add_item"
     model = Item
     form_class = ItemForm
+    template_name = "libtekin/item_create.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -143,6 +144,7 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = "libtekin.change_item"
     model = Item
     form_class = ItemForm
+    template_name = "libtekin/item_update.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

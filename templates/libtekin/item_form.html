@@ -1,113 +1,103 @@
-{% extends './_form.html' %}
-{% load static %}
 
-{% block content %}
-  <h2>{{ object }}</h2>
-  {% for error in form.non_field_errors  %}
-  {{ error }}
-  {% endfor %}
-  <form method="POST">
-    <div class="form" id="div_form">
-      {% csrf_token %}
-      {% for field in form.hidden_fields %}
-        {{ field }}
-      {% endfor %}
+<div class="form">
+  {{ form.errors }}
+  <form id="form_item" method="POST">
+  {{ form.media }}
+    {% csrf_token %}
 
       <div id="div_common_name">
-        {% include './_form_field.html' with field=form.common_name %}
+        {% include 'touglates/form_field.html' with field=form.common_name %}
       </div>
       <div id="div_mmodel">
-        {% include './_form_field.html' with field=form.mmodel %}
+        {% include 'touglates/form_field.html' with field=form.mmodel %}
       </div>
       <div id="div_role">
-        {% include './_form_field.html' with field=form.role %}
+        {% include 'touglates/form_field.html' with field=form.role %}
       </div>
       <div id="div_div_primary_id_count">
-        {% include './_form_field.html' with field="<div id='div_primary_id_count' class='errors'></div>" %}
+        {% include 'touglates/form_field.html' with field="<div id='div_primary_id_count' class='errors'></div>" %}
       </div>
       <div id="div_primary_id_field">
-        {% include './_form_field.html' with field=form.primary_id_field %}
+        {% include 'touglates/form_field.html' with field=form.primary_id_field %}
       </div>
       <div id="div_serial_number">
-        {% include './_form_field.html' with field=form.serial_number %}
+        {% include 'touglates/form_field.html' with field=form.serial_number %}
       </div>
       <div id="div_service_number">
-        {% include './_form_field.html' with field=form.service_number %}
+        {% include 'touglates/form_field.html' with field=form.service_number %}
       </div>
       <div id="div_asset_number">
-        {% include './_form_field.html' with field=form.asset_number %}
+        {% include 'touglates/form_field.html' with field=form.asset_number %}
       </div>
       <div id="div_barcode">
-        {% include './_form_field.html' with field=form.barcode %}
+        {% include 'touglates/form_field.html' with field=form.barcode %}
       </div>
       <div id="div_network_name">
-        {% include './_form_field.html' with field=form.network_name %}
+        {% include 'touglates/form_field.html' with field=form.network_name %}
       </div>
       <div id="div_mobile_id">
-        {% include './_form_field.html' with field=form.mobile_id %}
+        {% include 'touglates/form_field.html' with field=form.mobile_id %}
       </div>
       <div id="div_sim_iccid">
-        {% include './_form_field.html' with field=form.sim_iccid %}
+        {% include 'touglates/form_field.html' with field=form.sim_iccid %}
       </div>
 
       <div id="div_phone_number">
-        {% include './_form_field.html' with field=form.phone_number %}
+        {% include 'touglates/form_field.html' with field=form.phone_number %}
       </div>
       <div id="div_connected_to">
-        {% include './_form_field.html' with field=form.connected_to %}
+        {% include 'touglates/form_field.html' with field=form.connected_to %}
       </div>
       <div id="div_status">
-        {% include './_form_field.html' with field=form.status %}
+        {% include 'touglates/form_field.html' with field=form.status %}
       </div>
       <div id="div_home">
-        {% include './_form_field.html' with field=form.home %}
+        {% include 'touglates/form_field.html' with field=form.home %}
       </div>
       <div id="div_location">
-        {% include './_form_field.html' with field=form.location %}
+        {% include 'touglates/form_field.html' with field=form.location %}
       </div>
       <div id="div_owner">
-        {% include './_form_field.html' with field=form.owner %}
+        {% include 'touglates/form_field.html' with field=form.owner %}
       </div>
       <div id="div_latest_inventory">
-        {% include './_form_field.html' with field=form.latest_inventory %}
+        {% include 'touglates/form_field.html' with field=form.latest_inventory %}
       </div>
       <div id="div_installation_date">
-        {% include './_form_field.html' with field=form.installation_date %}
+        {% include 'touglates/form_field.html' with field=form.installation_date %}
       </div>
-
-      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
 
       <h3>Notes</h3>
 
       {{ itemnotes.management_form }}
-      {{ itemnotes.errors }}
+      {% if itemnotes.errors %}{{ itemnotes.errors }}{% endif %}
       {% for itemnoteform in itemnotes.forms %}
-        {{ itemnoteform.errors }}
+        {% if itemnoteform.errors %}{{ itemnoteform.errors }}{% endif %}
         {% if itemnoteform.id.value  %}
           <div id="div_itemnoteform_{{ itemnoteform.id.value }}" class="itemnoteformsetform"  >
             {% for hiddenfield in itemnoteform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=itemnoteform.when %}
-            {% include './_form_field.html' with field=itemnoteform.itemnotecategory %}
-            {% include './_form_field.html' with field=itemnoteform.maintext %}
-            {% include './_form_field.html' with field=itemnoteform.details %}
-            {% include './_form_field.html' with field=itemnoteform.level %}
-            {% include './_form_field.html' with field=itemnoteform.flagged %}
-            {% include './_form_field.html' with field=itemnoteform.DELETE %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.when %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.itemnotecategory %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.maintext %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.details %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.level %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.flagged %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.DELETE %}
           </div>
         {% else %}
           <div class="itemnoteformsetform itemnotenewform" >
             {% for hiddenfield in itemnoteform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=itemnoteform.when %}
-            {% include './_form_field.html' with field=itemnoteform.itemnotecategory %}
-            {% include './_form_field.html' with field=itemnoteform.maintext %}
-            {% include './_form_field.html' with field=itemnoteform.details %}
-            {% include './_form_field.html' with field=itemnoteform.level %}
-            {% include './_form_field.html' with field=itemnoteform.flagged %}
-            {% include './_form_field.html' with field=itemnoteform.DELETE %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.when %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.itemnotecategory %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.maintext %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.details %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.level %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.flagged %}
+            {% include 'touglates/form_field.html' with field=itemnoteform.DELETE %}
           </div>
         {% endif %}
       {% endfor %}
@@ -121,31 +111,30 @@
           </tr>
         {% endfor %}
       </table>
-      <!-- begin primary -->
+
       <h3>Assignees</h3>
 
       {{ itemassignees.management_form }}
-      {{ itemamassignees.errors }}
-
+      {% if itemamassignees.errors %}{{ itemamassignees.errors }}{% endif %}
       {% for assigneeform in itemassignees.forms %}
-       {{ assigneeform.errors }}
+       {% if assigneeform.errors %}{{ assigneeform.errors }}{% endif %}
         {% if assigneeform.id.value > 0 %}
           <div id="div_assigneeform_{{ assigneeform.id.value }}" class="assigneeformsetform"  >
             {% for hiddenfield in assigneeform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=assigneeform.when %}
-            {% include './_form_field.html' with field=assigneeform.entity %}
-            {% include './_form_field.html' with field=assigneeform.DELETE %}
+            {% include 'touglates/form_field.html' with field=assigneeform.when %}
+            {% include 'touglates/form_field.html' with field=assigneeform.entity %}
+            {% include 'touglates/form_field.html' with field=assigneeform.DELETE %}
           </div>
         {% else %}
           <div class="assigneeformsetform assigneenewform" >
             {% for hiddenfield in assigneeform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=assigneeform.when %}
-            {% include './_form_field.html' with field=assigneeform.entity %}
-            {% include './_form_field.html' with field=assigneeform.DELETE %}
+            {% include 'touglates/form_field.html' with field=assigneeform.when %}
+            {% include 'touglates/form_field.html' with field=assigneeform.entity %}
+            {% include 'touglates/form_field.html' with field=assigneeform.DELETE %}
           </div>
         {% endif %}
       {% endfor %}
@@ -160,8 +149,6 @@
         {% endfor %}
       </table>
 
-      <!-- end primary -->
-      <!-- begin borrower -->
       <h3>Borrowers</h3>
 
       {{ itemborrowers.management_form }}
@@ -173,18 +160,18 @@
             {% for hiddenfield in borrowerform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=borrowerform.when %}
-            {% include './_form_field.html' with field=borrowerform.entity %}
-            {% include './_form_field.html' with field=borrowerform.DELETE %}
+            {% include 'touglates/form_field.html' with field=borrowerform.when %}
+            {% include 'touglates/form_field.html' with field=borrowerform.entity %}
+            {% include 'touglates/form_field.html' with field=borrowerform.DELETE %}
           </div>
         {% else %}
           <div class="borrowerformsetform borrowernewform" >
             {% for hiddenfield in borrowerform.hidden_fields %}
               {{ hiddenfield }}
             {% endfor %}
-            {% include './_form_field.html' with field=borrowerform.when %}
-            {% include './_form_field.html' with field=borrowerform.entity %}
-            {% include './_form_field.html' with field=borrowerform.DELETE %}
+            {% include 'touglates/form_field.html' with field=borrowerform.when %}
+            {% include 'touglates/form_field.html' with field=borrowerform.entity %}
+            {% include 'touglates/form_field.html' with field=borrowerform.DELETE %}
           </div>
         {% endif %}
       {% endfor %}
@@ -201,16 +188,12 @@
 
       <!-- end borrower -->
 
-
-
-      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
+      <button type="Submit">Submit</button>
 
     </div>
 
   </form>
-{% endblock %}
-{% block bottomscript %}
-  {{ block.super }}
+
   <script>
     addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
     addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
@@ -340,5 +323,5 @@
     });
   </script>
 
-{% endblock %}
+
 
