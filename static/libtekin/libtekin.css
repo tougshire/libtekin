@@ -27,6 +27,10 @@
     width: 100%;
     padding: 1px 1px;
 }
+.menu-cluster {
+    display:flex;
+    justify-content: space-between;
+}
 
 .menu-bottom {
     display: flex;
@@ -153,15 +157,12 @@
     color:white;
 }
 
-button.menu-item  {
+button.menuitem  {
     background:transparent;
     font:inherit;
 }
 
 
-/* div.field {
-    width:80%;
-} */
 input.widthshort {
     width:15%;
 }
@@ -177,6 +178,3 @@ textarea.widthlong {
 textarea.widthxlong {
     width:95%;
 }
-
-
-

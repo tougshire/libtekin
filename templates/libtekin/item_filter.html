@@ -10,11 +10,11 @@
       {{ filter.form.as_table }}
       {{ as_csv.as_table }}
       {{ filterstore_save.as_table }}
-      <tr><td> </td><td><input type="submit" /></td></tr>
+      <tr><td>Submit Search</td><td><button type="submit">Search</button></td></tr>
     </form>
     <form method="GET" action="{% url 'libtekin:item-list' %}">
       {{ filterstore_retrieve.as_table }}
-      <tr><td> </td><td><input type="submit" /></td></tr>
+      <tr><td>Get Saved Filter</td><td><button type="submit">Retrieve</button></td></tr>
     </form>
   </table>
 </div>
