@@ -15,7 +15,6 @@ from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateVi
 from django.views.generic.list import ListView
 
 from django_filters_stoex.forms import (
-    CSVOptionForm,
     FilterstoreRetrieveForm,
     FilterstoreSaveForm,
 )
@@ -34,6 +33,7 @@ from .forms import (
     LocationForm,
     MmodelCategoryForm,
     MmodelForm,
+    CSVOptionForm,
 )
 from .models import (
     Entity,

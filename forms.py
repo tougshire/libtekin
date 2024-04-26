@@ -200,6 +200,16 @@ class ItemCopyForm(forms.Form):
         model = Item
 
 
+class CSVOptionForm(forms.Form):
+
+    make_csv = forms.BooleanField(
+        label="CSV",
+        initial=False,
+        required=False,
+        help_text="Download the result as a CSV file",
+    )
+
+
 ItemItemNoteFormset = inlineformset_factory(Item, ItemNote, form=ItemNoteForm, extra=10)
 ItemBorrowerFormset = inlineformset_factory(
     Item, ItemBorrower, form=ItemBorrowerForm, extra=10
