@@ -153,4 +153,9 @@ urlpatterns = [
         views.ItemNoteCategoryList.as_view(),
         name="itemnotecategory-list",
     ),
+    path(
+        "splmembers-member/popup/",
+        views.SplMembersMemberCreate.as_view(),
+        name="spl_members-member-popup",
+    ),
 ]

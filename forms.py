@@ -1,3 +1,4 @@
+from django.db.models import Q, F
 from django.conf import settings
 from django.forms import ModelForm, SelectDateWidget, inlineformset_factory, Select
 from django.urls import reverse_lazy
@@ -12,6 +13,7 @@ from .models import (
     Mmodel,
     MmodelCategory,
 )
+from spl_members.models import Member
 from django import forms
 from touglates.widgets import TouglateDateInput, TouglateRelatedSelect
 
@@ -84,6 +86,8 @@ class ItemForm(ModelForm):
             "status",
             "network_name",
             "owner",
+            "assignee",
+            "borrower",
             "home",
             "latest_inventory",
             "installation_date",
@@ -95,6 +99,20 @@ class ItemForm(ModelForm):
             "connected_to": MmodelSelect,
             "latest_inventory": SelectDateWidget(),
             "installation_date": SelectDateWidget(),
+            "assignee": TouglateRelatedSelect(
+                related_data={
+                    "model": "Member",
+                    "add_url": reverse_lazy("libtekin:spl_members-member-popup"),
+                },
+                add_filter_input=True,
+            ),
+            "borrower": TouglateRelatedSelect(
+                related_data={
+                    "model": "Member",
+                    "add_url": reverse_lazy("libtekin:spl_members-member-popup"),
+                },
+                add_filter_input=True,
+            ),
         }
 
 
@@ -103,14 +121,14 @@ class ItemBorrowerForm(ModelForm):
         model = ItemBorrower
         fields = [
             "item",
-            "entity",
+            "borrower",
             "when",
         ]
         widgets = {
-            "entity": TouglateRelatedSelect(
+            "borrower": TouglateRelatedSelect(
                 related_data={
-                    "model": "Entity",
-                    "add_url": reverse_lazy("libtekin:entity-popup"),
+                    "model": "Member",
+                    "add_url": reverse_lazy("libtekin:spl_members_member-popup"),
                 }
             ),
         }
@@ -121,14 +139,14 @@ class ItemAssigneeForm(ModelForm):
         model = ItemAssignee
         fields = [
             "item",
-            "entity",
+            "assignee",
             "when",
         ]
         widgets = {
-            "entity": TouglateRelatedSelect(
+            "assignee": TouglateRelatedSelect(
                 related_data={
-                    "model": "Entity",
-                    "add_url": reverse_lazy("libtekin:entity-popup"),
+                    "model": "Member",
+                    "add_url": reverse_lazy("libtekin:spl_members_member-popup"),
                 }
             ),
         }
@@ -198,6 +216,12 @@ class LocationForm(ModelForm):
 class ItemCopyForm(forms.Form):
     class Meta:
         model = Item
+
+
+class SplMembersMemberForm(forms.Form):
+    class Meta:
+        model = Member
+        fields = ["name_prefered", "surname", "name_full"]
 
 
 class CSVOptionForm(forms.Form):

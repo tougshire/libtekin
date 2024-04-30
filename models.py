@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import Count, OuterRef, Q, Subquery
 from django.db.models.functions import Concat
 from django.urls import reverse
+from spl_members.models import Member
 
 
 def get_default_status():
@@ -316,23 +317,24 @@ class Item(models.Model):
         help_text="The owner of the item",
     )
     assignee = models.ForeignKey(
-        Entity,
-        verbose_name="assignee",
+        Member,
+        verbose_name="member assignee",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="item_assigned",
-        help_text="The current responsible party for the item",
+        related_name="item_assigned_to_member",
+        help_text="The responsible party for the item",
     )
     borrower = models.ForeignKey(
-        Entity,
-        verbose_name="borrower",
+        Member,
+        verbose_name="member borrower",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="item_borrowed",
-        help_text="The current holder the item",
+        related_name="item_borrowed_to_member",
+        help_text="The temporary user of the item",
     )
+
     home = models.ForeignKey(
         Location,
         verbose_name="home",
@@ -430,13 +432,16 @@ class ItemAssignee(models.Model):
         null=True,
         help_text="The item to which assignment applies",
     )
-    entity = models.ForeignKey(
-        Entity,
+    assignee = models.ForeignKey(
+        Member,
+        verbose_name="member assignee",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text="The person or group to whom the item was assigned",
+        related_name="item_assigned",
+        help_text="The current responsible party for the item",
     )
+
     when = models.DateField(
         "when",
         blank=True,
@@ -451,16 +456,6 @@ class ItemAssignee(models.Model):
     def __str__(self):
         return f"{self.entity} -> {self.item} "
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # copy entity of the latest ItemAssignee record to the assignee field of the related Item record
-        latest_assignee = ItemAssignee.objects.filter(item=self.item).first()
-        if latest_assignee is not None:
-            if latest_assignee.entity is not None:
-                if self.item is not None:
-                    self.item.assignee = latest_assignee.entity
-                    self.item.save()
-
 
 class ItemBorrower(models.Model):
     item = models.ForeignKey(
@@ -469,12 +464,14 @@ class ItemBorrower(models.Model):
         null=True,
         help_text="The item to which this loan applies",
     )
-    entity = models.ForeignKey(
-        Entity,
+    borrower = models.ForeignKey(
+        Member,
+        verbose_name="member borrower",
         on_delete=models.SET_NULL,
-        blank=True,
         null=True,
-        help_text="The person or group to whom the item was lent.  This can be set to None to indicate that the previous borrower returned it.",
+        blank=True,
+        related_name="item_borrowed_by_member",
+        help_text="The current user of the item",
     )
     when = models.DateField(
         "when",

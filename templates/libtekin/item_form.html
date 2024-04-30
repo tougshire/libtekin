@@ -57,6 +57,9 @@
       <div id="div_location">
         {% include 'touglates/form_field.html' with field=form.location %}
       </div>
+      <div id="div_assignee">
+        {% include 'touglates/form_field.html' with field=form.assignee %}
+      </div>
       <div id="div_owner">
         {% include 'touglates/form_field.html' with field=form.owner %}
       </div>
@@ -112,7 +115,7 @@
         {% endfor %}
       </table>
 
-      <h3>Assignees</h3>
+      <h3>Assignee History</h3>
 
       {{ itemassignees.management_form }}
       {% if itemamassignees.errors %}{{ itemamassignees.errors }}{% endif %}
@@ -195,12 +198,12 @@
   </form>
 
   <script>
-    addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
-    addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
-    addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
-    addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
-    addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
-    addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
+    // addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
+    // addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
+    // addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
+    // addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
+    // addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
+    // addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
 
     function getControlIdsForPopups(modelName) {
       controlIds={

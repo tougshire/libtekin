@@ -13,7 +13,7 @@ class ItemFilter(StoexFilterSet):
 
     combined_text_search = CrossFieldSearchFilter(
         label="Text Search",
-        field_name="common_name,mmodel__model_name,network_name,serial_number,service_number,asset_number,assignee__full_name,assignee__friendly_name,barcode",
+        field_name="common_name,mmodel__model_name,network_name,serial_number,service_number,asset_number,assignee__name_full,assignee__name_prefered,barcode",
         lookup_expr="icontains",
     )
     primary_id = django_filters.CharFilter(
@@ -42,7 +42,7 @@ class ItemFilter(StoexFilterSet):
         label="Asset Number", field_name="asset_number", lookup_expr="icontains"
     )
     barcode_icontains = django_filters.CharFilter(
-        label="barcode", field_name="barcode", lookup_expr="icontains"
+        label="Barcode", field_name="barcode", lookup_expr="icontains"
     )
     network_name = django_filters.CharFilter(
         label="Network Name",

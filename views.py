@@ -20,6 +20,7 @@ from django_filters_stoex.forms import (
 )
 from django_filters_stoex.views import FilterView
 from libtekin.filterset import ItemFilter
+from spl_members.models import Member
 
 from .forms import (
     EntityForm,
@@ -34,6 +35,7 @@ from .forms import (
     MmodelCategoryForm,
     MmodelForm,
     CSVOptionForm,
+    SplMembersMemberForm,
 )
 from .models import (
     Entity,
@@ -146,8 +148,9 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     form_class = ItemForm
     template_name = "libtekin/item_update.html"
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        print("tp244ta12", kwargs)
+        context_data = super().get_context_data(*args, **kwargs)
 
         formsetclasses = {
             "itemnotes": ItemItemNoteFormset,
@@ -166,6 +169,39 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
         return context_data
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+
+        self.object = form.save(commit=False)
+
+        formsetclasses = {
+            "itemnotes": ItemItemNoteFormset,
+            "itemborrowers": ItemBorrowerFormset,
+            "itemAssignees": ItemAssigneeFormset,
+        }
+        formsetdata = {}
+        formsets_valid = True
+        for formsetkey, formsetclass in formsetclasses.items():
+            if self.request.POST:
+                formsetdata[formsetkey] = formsetclass(
+                    self.request.POST, instance=self.object
+                )
+
+            else:
+                formsetdata[formsetkey] = formsetclass(instance=self.object)
+
+            if (formsetdata[formsetkey]).is_valid():
+                formsetdata[formsetkey].save()
+            else:
+                logger.critical(formsetdata[formsetkey].errors)
+                formsets_valid = False
+
+        if not formsets_valid:
+            return self.form_invalid(form)
+
+        return response
+
+        #############
+
         response = super().form_valid(form)
 
         update_history(form, "Item", form.instance, self.request.user)
@@ -759,3 +795,21 @@ class ItemNoteCategoryClose(PermissionRequiredMixin, DetailView):
     permission_required = "libtekin.view_itemnotecategory"
     model = ItemNoteCategory
     template_name = "libtekin/itemnotecategory_closer.html"
+
+
+class SplMembersMemberCreate(PermissionRequiredMixin, CreateView):
+    permission_required = "spl_members.add_member"
+    model = Member
+    form_class = SplMembersMemberForm
+
+    def get_success_url(self):
+        if "popup" in self.kwargs:
+            return reverse(
+                "touglates:popup_closer",
+                kwargs={
+                    "pk": self.object.pk,
+                    "app_name": "spl_members",
+                    "model_name": "Member",
+                },
+            )
+        return reverse_lazy("spl_members:member-detail", kwargs={"pk": self.object.pk})
