@@ -416,7 +416,12 @@ class Item(models.Model):
         return saved
 
     def __str__(self):
-        return f"{self.common_name}"
+        if self.common_name:
+            return f"{self.common_name}"
+        elif self.primary_id:
+            return f"{self.primary_id}"
+        else:
+            return self.pk
 
     class Meta:
         ordering = ["primary_id"]
