@@ -459,7 +459,7 @@ class ItemAssignee(models.Model):
         ordering = ["-when", "-pk"]
 
     def __str__(self):
-        return f"{self.entity} -> {self.item} "
+        return f"{self.entity} -> {self.item}"
 
 
 class ItemBorrower(models.Model):

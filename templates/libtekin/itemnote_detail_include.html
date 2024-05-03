@@ -1,11 +1,11 @@
   <h2>{{ object }}</h2>
 
   <div class="detail">
-    {% include './_detail_field.html' with label=itemnote_labels.item field=object.item %}
-    {% include './_detail_field.html' with label=itemnote_labels.level field=object.level %}
-    {% include './_detail_field.html' with label=itemnote_labels.flagged field=object.flagged %}
-    {% include './_detail_field.html' with label=itemnote_labels.when field=object.when %}
-    {% include './_detail_field.html' with label=itemnote_labels.itemnotecategory field=object.itemnotecategory %}
-    {% include './_detail_field.html' with label=itemnote_labels.maintext field=object.maintext %}
-    {% include './_detail_field.html' with label=itemnote_labels.details field=object.details %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.item field=object.item %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.level field=object.level %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.flagged field=object.flagged %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.when field=object.when %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.itemnotecategory field=object.itemnotecategory %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.maintext field=object.maintext %}
+    {% include 'touglates/detail_field.html' with label=itemnote_labels.details field=object.details %}
 </div>

@@ -5,28 +5,28 @@
 <div class="list">
   <div><a href="{% url 'libtekin:itemnote-create' %}">create</a></div>
     <div class="row rowhead">
-        {% include './_list_head.html' with field='' %}
+        {% include 'touglates/list_head.html' with field='' %}
         {% if 'item' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.item %}
+          {% include 'touglates/list_head.html' with field=labels.item %}
         {% endif %}
         {% if 'level' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.level %}
+          {% include 'touglates/list_head.html' with field=labels.level %}
         {% endif %}
         {% if 'flagged' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.flagged %}
+          {% include 'touglates/list_head.html' with field=labels.flagged %}
         {% endif %}
 
         {% if 'when' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.when %}
+          {% include 'touglates/list_head.html' with field=labels.when %}
         {% endif %}
         {% if 'itemnotecategory' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.itemnotecategory %}
+          {% include 'touglates/list_head.html' with field=labels.itemnotecategory %}
         {% endif %}
         {% if 'maintext' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.maintext %}
+          {% include 'touglates/list_head.html' with field=labels.maintext %}
         {% endif %}
         {% if 'details' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.details %}
+          {% include 'touglates/list_head.html' with field=labels.details %}
         {% endif %}
 
       </div>
@@ -36,26 +36,26 @@
           <div class="listfield"><a href="{% url 'libtekin:itemnote-detail' itemnote.pk %}">view</a></div>
           <div class="listfield"><a href="{% url 'libtekin:itemnote-update' itemnote.pk %}">edit</a></div>
           {% if 'item' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.item %}
+            {% include 'touglates/list_field.html' with field=itemnote.item %}
           {% endif %}
           {% if 'level' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.level %}
+            {% include 'touglates/list_field.html' with field=itemnote.level %}
           {% endif %}
           {% if 'flagged' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.flagged %}
+            {% include 'touglates/list_field.html' with field=itemnote.flagged %}
           {% endif %}
 
           {% if 'when' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.when %}
+            {% include 'touglates/list_field.html' with field=itemnote.when %}
           {% endif %}
           {% if 'itemnotecategory' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.itemnotecategory %}
+            {% include 'touglates/list_field.html' with field=itemnote.itemnotecategory %}
           {% endif %}
           {% if 'maintext' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.maintext %}
+            {% include 'touglates/list_field.html' with field=itemnote.maintext %}
           {% endif %}
           {% if 'details' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=itemnote.details %}
+            {% include 'touglates/list_field.html' with field=itemnote.details %}
           {% endif %}
 
         </div>

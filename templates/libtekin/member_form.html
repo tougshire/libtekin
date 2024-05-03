@@ -1,0 +1,16 @@
+<div class="form">
+  {{ form.errors }}
+  <form id="form_person" method="POST">
+  {% csrf_token %}
+  {% include 'touglates/form_field.html' with field=form.name_prefered %}
+  {% include 'touglates/form_field.html' with field=form.surname %}
+  {% include 'touglates/form_field.html' with field=form.name_full %}
+  Please use the members application to add more detail
+
+
+
+{% include 'touglates/form_field.html' with label_tag="Submit Changes" field="<button type='submit'>Submit</button>" %}
+
+  </form>
+</div>
+

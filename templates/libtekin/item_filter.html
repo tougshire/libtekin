@@ -42,70 +42,70 @@
 <div class="list">
     <div><a href="{% url 'libtekin:item-create' %}">create</a></div>
       <div class="row rowhead">
-        {% include './_list_head.html' with field='' %}
+        {% include 'touglates/list_head.html' with field='' %}
         {% if 'common_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.common_name %}
+          {% include 'touglates/list_head.html' with field=labels.common_name %}
         {% endif %}
         {% if 'mmodel' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.mmodel %}
+          {% include 'touglates/list_head.html' with field=labels.mmodel %}
         {% endif %}
         {% if 'primary_id' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.primary_id %}
+          {% include 'touglates/list_head.html' with field=labels.primary_id %}
         {% endif %}
         {% if 'serial_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.serial_number %}
+          {% include 'touglates/list_head.html' with field=labels.serial_number %}
         {% endif %}
         {% if 'service_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.service_number %}
+          {% include 'touglates/list_head.html' with field=labels.service_number %}
         {% endif %}
         {% if 'asset_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.asset_number %}
+          {% include 'touglates/list_head.html' with field=labels.asset_number %}
         {% endif %}
         {% if 'barcode' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.barcode %}
+          {% include 'touglates/list_head.html' with field=labels.barcode %}
         {% endif %}
         {% if 'network_name' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.network_name %}
+          {% include 'touglates/list_head.html' with field=labels.network_name %}
         {% endif %}
         {% if 'phone_number' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.phone_number %}
+          {% include 'touglates/list_head.html' with field=labels.phone_number %}
         {% endif %}
         {% if 'mobile_id' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.mobile_id %}
+          {% include 'touglates/list_head.html' with field=labels.mobile_id %}
         {% endif %}
         {% if 'sim_iccid' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.sim_iccid %}
+          {% include 'touglates/list_head.html' with field=labels.sim_iccid %}
         {% endif %}
 
         {% if 'role' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.role %}
+          {% include 'touglates/list_head.html' with field=labels.role %}
         {% endif %}
         {% if 'connected_to' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.connected_to %}
+          {% include 'touglates/list_head.html' with field=labels.connected_to %}
         {% endif %}
         {% if 'status' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.status %}
+          {% include 'touglates/list_head.html' with field=labels.status %}
         {% endif %}
         {% if 'home' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.home %}
+          {% include 'touglates/list_head.html' with field=labels.home %}
         {% endif %}
         {% if 'location' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.location %}
+          {% include 'touglates/list_head.html' with field=labels.location %}
         {% endif %}
         {% if 'assignee' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.assignee %}
+          {% include 'touglates/list_head.html' with field=labels.assignee %}
         {% endif %}
         {% if 'borrower' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.borrower %}
+          {% include 'touglates/list_head.html' with field=labels.borrower %}
         {% endif %}
         {% if 'owner' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.owner %}
+          {% include 'touglates/list_head.html' with field=labels.owner %}
         {% endif %}
         {% if 'latest_inventory' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.latest_inventory %}
+          {% include 'touglates/list_head.html' with field=labels.latest_inventory %}
         {% endif %}
         {% if 'installation_date' in show_columns or not show_columns %}
-          {% include './_list_head.html' with field=labels.installation_date %}
+          {% include 'touglates/list_head.html' with field=labels.installation_date %}
         {% endif %}
 
       </div>
@@ -115,68 +115,68 @@
           <div class="listfield"><a href="{% url 'libtekin:item-detail' item.pk %}">view</a></div>
           <div class="listfield"><a href="{% url 'libtekin:item-update' item.pk %}">edit</a></div>
           {% if 'common_name' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.common_name %}
+            {% include 'touglates/list_field.html' with field=item.common_name %}
           {% endif %}
           {% if 'mmodel' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.mmodel %}
+            {% include 'touglates/list_field.html' with field=item.mmodel %}
           {% endif %}
           {% if 'primary_id' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.primary_id %}
+            {% include 'touglates/list_field.html' with field=item.primary_id %}
           {% endif %}
           {% if 'serial_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.serial_number %}
+            {% include 'touglates/list_field.html' with field=item.serial_number %}
           {% endif %}
           {% if 'service_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.service_number %}
+            {% include 'touglates/list_field.html' with field=item.service_number %}
           {% endif %}
           {% if 'asset_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.asset_number %}
+            {% include 'touglates/list_field.html' with field=item.asset_number %}
           {% endif %}
           {% if 'barcode' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.barcode %}
+            {% include 'touglates/list_field.html' with field=item.barcode %}
           {% endif %}
           {% if 'network_name' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.network_name %}
+            {% include 'touglates/list_field.html' with field=item.network_name %}
           {% endif %}
           {% if 'phone_number' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.phone_number %}
+            {% include 'touglates/list_field.html' with field=item.phone_number %}
           {% endif %}
           {% if 'mobile_id' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.mobile_id %}
+            {% include 'touglates/list_field.html' with field=item.mobile_id %}
           {% endif %}
           {% if 'sim_iccid' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.sim_iccid %}
+            {% include 'touglates/list_field.html' with field=item.sim_iccid %}
           {% endif %}
 
           {% if 'role' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.role %}
+            {% include 'touglates/list_field.html' with field=item.role %}
           {% endif %}
           {% if 'connected_to' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.connected_to %}
+            {% include 'touglates/list_field.html' with field=item.connected_to %}
           {% endif %}
           {% if 'status' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.status %}
+            {% include 'touglates/list_field.html' with field=item.status %}
           {% endif %}
           {% if 'home' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.home.short_name %}
+            {% include 'touglates/list_field.html' with field=item.home.short_name %}
           {% endif %}
           {% if 'location' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.location.short_name %}
+            {% include 'touglates/list_field.html' with field=item.location.short_name %}
           {% endif %}
           {% if 'assignee' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.assignee.friendly_name %}
+            {% include 'touglates/list_field.html' with field=item.assignee.friendly_name %}
           {% endif %}
           {% if 'borrower' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.borrower.friendly_name %}
+            {% include 'touglates/list_field.html' with field=item.borrower.friendly_name %}
           {% endif %}
           {% if 'owner' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.owner.friendly_name %}
+            {% include 'touglates/list_field.html' with field=item.owner.friendly_name %}
           {% endif %}
           {% if 'latest_inventory' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.latest_inventory %}
+            {% include 'touglates/list_field.html' with field=item.latest_inventory %}
           {% endif %}
           {% if 'installation_date' in show_columns or not show_columns %}
-            {% include './_list_field.html' with field=item.installation_date %}
+            {% include 'touglates/list_field.html' with field=item.installation_date %}
           {% endif %}
 
         </div>

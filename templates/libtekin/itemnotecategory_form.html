@@ -14,10 +14,10 @@
       {% endfor %}
 
       <div id="div_item">
-        {% include './_form_field.html' with field=form.name %}
+        {% include 'touglates/form_field.html' with field=form.name %}
       </div>
 
-      {% include './_form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
+      {% include 'touglates/form_button.html' with label="Submit Form" button='<button type="submit">Submit</button>' %}
 
 
     </div>

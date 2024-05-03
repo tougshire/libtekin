@@ -1,10 +1,10 @@
 <h2>{{ object }}</h2>
 <div class="detail">
-  {% include './_detail_field.html' with label=mmodel_labels.brand field=object.brand %}
-  {% include './_detail_field.html' with label=mmodel_labels.model_name field=object.model_name %}
-  {% include './_detail_field.html' with label=mmodel_labels.model_number field=object.model_number %}
-  {% include './_detail_field.html' with label=mmodel_labels.category field=object.category %}
-  {% include './_detail_field.html' with label=mmodel_labels.primary_id_field field=object.primary_id_field %}
+  {% include 'touglates/detail_field.html' with label=mmodel_labels.brand field=object.brand %}
+  {% include 'touglates/detail_field.html' with label=mmodel_labels.model_name field=object.model_name %}
+  {% include 'touglates/detail_field.html' with label=mmodel_labels.model_number field=object.model_number %}
+  {% include 'touglates/detail_field.html' with label=mmodel_labels.category field=object.category %}
+  {% include 'touglates/detail_field.html' with label=mmodel_labels.primary_id_field field=object.primary_id_field %}
 
   <h3>Items</h3>
   {% for item in object.item_set.all %}

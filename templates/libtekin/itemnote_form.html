@@ -14,32 +14,32 @@
       {% endfor %}
 
       <div id="div_item">
-        {% include './_form_field.html' with field=form.item %}
+        {% include 'touglates/form_field.html' with field=form.item %}
       </div>
       <div id="div_level">
-        {% include './_form_field.html' with field=form.level %}
+        {% include 'touglates/form_field.html' with field=form.level %}
       </div>
       <div id="div_flagged">
-        {% include './_form_field.html' with field=form.flagged %}
+        {% include 'touglates/form_field.html' with field=form.flagged %}
       </div>
 
       <div id="div_when">
-        {% include './_form_field.html' with field=form.when %}
+        {% include 'touglates/form_field.html' with field=form.when %}
       </div>
       <div id="div_itemnotecategory">
-        {% include './_form_field.html' with field=form.itemnotecategory %}
+        {% include 'touglates/form_field.html' with field=form.itemnotecategory %}
       </div>
       <div id="div_maintext">
-        {% include './_form_field.html' with field=form.maintext %}
+        {% include 'touglates/form_field.html' with field=form.maintext %}
       </div>
       <div id="div_details">
-        {% include './_form_field.html' with field=form.details %}
+        {% include 'touglates/form_field.html' with field=form.details %}
       </div>
 
       <div class="menu menu-bottom">
         <div class="menu-item">
           <button type="submit">Submit</button>
-        </div>  
+        </div>
         {% if object.pk %}
           {% if perms.libtekin.delete_itemnote %}
           <div class="menu-item">
@@ -47,7 +47,7 @@
           </div>
         {% endif %}
       {% endif %}
-  
+
       </div>
 
     </div>
