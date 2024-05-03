@@ -102,14 +102,14 @@ class ItemForm(ModelForm):
             "assignee": TouglateRelatedSelect(
                 related_data={
                     "model": "Member",
-                    "add_url": reverse_lazy("libtekin:spl_members-member-popup"),
+                    "add_url": reverse_lazy("libtekin:member-popup"),
                 },
                 add_filter_input=True,
             ),
             "borrower": TouglateRelatedSelect(
                 related_data={
                     "model": "Member",
-                    "add_url": reverse_lazy("libtekin:spl_members-member-popup"),
+                    "add_url": reverse_lazy("libtekin:member-popup"),
                 },
                 add_filter_input=True,
             ),
@@ -128,7 +128,7 @@ class ItemBorrowerForm(ModelForm):
             "borrower": TouglateRelatedSelect(
                 related_data={
                     "model": "Member",
-                    "add_url": reverse_lazy("libtekin:spl_members_member-popup"),
+                    "add_url": reverse_lazy("libtekin:member-popup"),
                 }
             ),
         }
@@ -146,7 +146,7 @@ class ItemAssigneeForm(ModelForm):
             "assignee": TouglateRelatedSelect(
                 related_data={
                     "model": "Member",
-                    "add_url": reverse_lazy("libtekin:spl_members_member-popup"),
+                    "add_url": reverse_lazy("libtekin:member-popup"),
                 }
             ),
         }
@@ -218,7 +218,7 @@ class ItemCopyForm(forms.Form):
         model = Item
 
 
-class SplMembersMemberForm(forms.Form):
+class MemberForm(ModelForm):
     class Meta:
         model = Member
         fields = ["name_prefered", "surname", "name_full"]

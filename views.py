@@ -35,7 +35,7 @@ from .forms import (
     MmodelCategoryForm,
     MmodelForm,
     CSVOptionForm,
-    SplMembersMemberForm,
+    MemberForm,
 )
 from .models import (
     Entity,
@@ -797,13 +797,20 @@ class ItemNoteCategoryClose(PermissionRequiredMixin, DetailView):
     template_name = "libtekin/itemnotecategory_closer.html"
 
 
-class SplMembersMemberCreate(PermissionRequiredMixin, CreateView):
+class MemberCreate(PermissionRequiredMixin, CreateView):
     permission_required = "spl_members.add_member"
     model = Member
-    form_class = SplMembersMemberForm
+    form_class = MemberForm
+    template_name = "libtekin/member_create.html"
+
+    def get_template_names(self):
+        template_names = super().get_template_names()
+        print("tp2451749", template_names)
+        return template_names
 
     def get_success_url(self):
-        if "popup" in self.kwargs:
+
+        if "popup" in self.request.get_full_path():
             return reverse(
                 "touglates:popup_closer",
                 kwargs={
@@ -813,3 +820,8 @@ class SplMembersMemberCreate(PermissionRequiredMixin, CreateView):
                 },
             )
         return reverse_lazy("spl_members:member-detail", kwargs={"pk": self.object.pk})
+
+
+class MemberDetail(PermissionRequiredMixin, DetailView):
+    permission_required = "libtekin.view_Member"
+    model = Member
