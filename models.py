@@ -1,4 +1,5 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from django.utils import timezone
 
 from django.apps import apps
 from django.conf import settings
@@ -413,6 +414,14 @@ class Item(models.Model):
 
         saved = super().save(*args, **kwargs)
 
+        item_assignee_recents = ItemAssignee.objects.filter(
+            item=self,
+            assignee=self.assignee,
+            when__gte=datetime.now() + timedelta(hours=-1),
+        )
+        if not item_assignee_recents.exists():
+            ItemAssignee.objects.create(item=self, assignee=self.assignee)
+
         return saved
 
     def __str__(self):
@@ -447,11 +456,11 @@ class ItemAssignee(models.Model):
         help_text="The current responsible party for the item",
     )
 
-    when = models.DateField(
+    when = models.DateTimeField(
         "when",
         blank=True,
         null=True,
-        default=date.today,
+        default=timezone.now,
         help_text="The effective date of the assignment",
     )
 
