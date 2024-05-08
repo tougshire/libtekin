@@ -1,0 +1,17 @@
+{% extends './_base.html' %}
+
+{% block content %}
+  {% include './item_menu.html' %}
+  <h2>{{ object }}</h2>
+  <div class="form">
+    {{ form.errors }}
+  <form method="POST" id="frm_copy"> {% csrf_token %}{{ object.pk }}
+    <button type="submit">Confirm Copy</button>
+  </form>
+</div>
+  {% include './item_detail_include.html' %}
+  {% include './item_menu.html' %}
+
+{% endblock %}
+
+

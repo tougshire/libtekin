@@ -142,6 +142,26 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
         return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
 
 
+class ItemCopy(PermissionRequiredMixin, UpdateView):
+    permission_required = "libtekin.add_item"
+    model = Item
+    fields = []
+    template_name = "libtekin/item_copy.html"
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        self.object = form.save(commit=False)
+        self.object.pk = None
+        self.object.common_name = "[Copy of] " + self.object.common_name
+        self.object.save()
+
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy("libtekin:item-update", kwargs={"pk": self.object.pk})
+
+
 class ItemUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = "libtekin.change_item"
     model = Item
@@ -149,7 +169,6 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
     template_name = "libtekin/item_update.html"
 
     def get_context_data(self, *args, **kwargs):
-        print("tp244ta12", kwargs)
         context_data = super().get_context_data(*args, **kwargs)
 
         formsetclasses = {
@@ -266,46 +285,6 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
         }
 
         return context_data
-
-
-class ItemCopy(DetailView, FormView):
-    permission_required = "libtekin.add_item"
-    template_name = "libtekin/item_confirm_copy.html"
-    form_class = ItemCopyForm
-    model = Item
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["itemnote_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNote._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-
-        return context_data
-
-    def form_valid(self, form):
-        item = Item.objects.get(pk=self.kwargs.get("pk"))
-        qty = form.cleaned_data["qty"]
-        primary_id = item.primary_id
-        for n in range(0, qty):
-            item.pk = None
-            item.primary_id = "[copy of] " + primary_id
-            setattr(item, item.primary_id_field, "[copy of] " + primary_id)
-            item.save()  # item is now a new item, the original item is untouched
-
-        self.request.session["query"] = (
-            "filter__fieldname__0=primary_id&filter__op__0=contains&filter__value__0=[copy of] "
-            + primary_id
-        )
-
-        return redirect("libtekin:item-list")
 
 
 class ItemDelete(PermissionRequiredMixin, UpdateView):

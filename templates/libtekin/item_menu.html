@@ -27,6 +27,18 @@
     {% endif %}
 
     {% if perms.add_item %}
+      {% if 'item-copy' == request.resolver_match.url_name %}
+        <div class="menu-item menu-detail menu-here">
+            Copy
+        </div>
+      {% elif object.pk %}
+        <div class="menu-item menu-copy">
+          <a href="{% url 'libtekin:item-copy' object.pk %}">Copy</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if perms.add_item %}
       {% if 'item-create' == request.resolver_match.url_name %}
         <div class="menu-item menu-here menu-create">
           <button form="form_item" class="menu-item" type="submit" >Submit</button></form>
