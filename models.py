@@ -422,6 +422,14 @@ class Item(models.Model):
         if not item_assignee_recents.exists():
             ItemAssignee.objects.create(item=self, assignee=self.assignee)
 
+        item_borrower_recents = ItemBorrower.objects.filter(
+            item=self,
+            borrower=self.borrower,
+            when__gte=datetime.now() + timedelta(hours=-1),
+        )
+        if not item_borrower_recents.exists():
+            ItemBorrower.objects.create(item=self, borrower=self.borrower)
+
         return saved
 
     def __str__(self):
@@ -468,7 +476,7 @@ class ItemAssignee(models.Model):
         ordering = ["-when", "-pk"]
 
     def __str__(self):
-        return f"{self.entity} -> {self.item}"
+        return f"{self.assignee} -> {self.item}"
 
 
 class ItemBorrower(models.Model):
@@ -499,17 +507,7 @@ class ItemBorrower(models.Model):
         ordering = ["-when", "-pk"]
 
     def __str__(self):
-        return f"{self.entity} -> {self.item} "
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # copy entity of the latest ItemBorrower record to the borrower field of the related Item record
-        latest_borrower = ItemBorrower.objects.filter(item=self.item).first()
-        if latest_borrower is not None:
-            if latest_borrower.entity is not None:
-                if self.item is not None:
-                    self.item.borrower = latest_borrower.entity
-                    self.item.save()
+        return f"{self.assignee} -> {self.item} "
 
 
 class ItemNoteLevel(models.Model):

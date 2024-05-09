@@ -127,7 +127,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include 'touglates/form_field.html' with field=assigneeform.when %}
-            {% include 'touglates/form_field.html' with field=assigneeform.entity %}
+            {% include 'touglates/form_field.html' with field=assigneeform.assignee %}
             {% include 'touglates/form_field.html' with field=assigneeform.DELETE %}
           </div>
         {% else %}
@@ -136,7 +136,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include 'touglates/form_field.html' with field=assigneeform.when %}
-            {% include 'touglates/form_field.html' with field=assigneeform.entity %}
+            {% include 'touglates/form_field.html' with field=assigneeform.assignee %}
             {% include 'touglates/form_field.html' with field=assigneeform.DELETE %}
           </div>
         {% endif %}
@@ -147,7 +147,7 @@
         </tr>
         {% for assignee in object.itemassignee_set.all %}
           <tr id="tr_assignee_{{ assignee.id }}">
-            <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee.entity }}</td>
+            <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee }}</td>
           </tr>
         {% endfor %}
       </table>
@@ -164,7 +164,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include 'touglates/form_field.html' with field=borrowerform.when %}
-            {% include 'touglates/form_field.html' with field=borrowerform.entity %}
+            {% include 'touglates/form_field.html' with field=borrowerform.borrower %}
             {% include 'touglates/form_field.html' with field=borrowerform.DELETE %}
           </div>
         {% else %}
@@ -173,7 +173,7 @@
               {{ hiddenfield }}
             {% endfor %}
             {% include 'touglates/form_field.html' with field=borrowerform.when %}
-            {% include 'touglates/form_field.html' with field=borrowerform.entity %}
+            {% include 'touglates/form_field.html' with field=borrowerform.borrower %}
             {% include 'touglates/form_field.html' with field=borrowerform.DELETE %}
           </div>
         {% endif %}
@@ -198,18 +198,12 @@
   </form>
 
   <script>
-    // addRelatedPopupButton( 'id_mmodel', 'Mmodel', '{% url "libtekin:mmodel-create" %}')
-    // addRelatedPopupButton( 'id_home', 'Location', '{% url "libtekin:location-create" %}')
-    // addRelatedPopupButton( 'id_location', 'Location', '{% url "libtekin:location-create" %}')
-    // addRelatedPopupButton( 'id_assignee', 'Entity', '{% url "libtekin:entity-create" %}')
-    // addRelatedPopupButton( 'id_borrower', 'Entity', '{% url "libtekin:entity-create" %}')
-    // addRelatedPopupButton( 'id_owner', 'Entity', '{% url "libtekin:entity-create" %}')
 
     function getControlIdsForPopups(modelName) {
       controlIds={
         'Mmodel': ['id_mmodel'],
         'Location': ['id_location', 'id_home'],
-        'Entity': ['id_assignee', 'id_borrower', 'id_owner']
+        'Member': ['id_assignee', 'id_borrower', 'id_owner']
 
       }
       return controlIds[modelName]
