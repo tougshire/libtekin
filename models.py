@@ -453,14 +453,16 @@ class ItemAssignee(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         help_text="The item to which assignment applies",
+        related_name="historical_assignements",
     )
+
     assignee = models.ForeignKey(
         Member,
         verbose_name="member assignee",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="item_assigned",
+        related_name="historical_assignements",
         help_text="The current responsible party for the item",
     )
 
@@ -485,6 +487,7 @@ class ItemBorrower(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         help_text="The item to which this loan applies",
+        related_name="historical_borrow",
     )
     borrower = models.ForeignKey(
         Member,
@@ -492,8 +495,8 @@ class ItemBorrower(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="item_borrowed_by_member",
-        help_text="The current user of the item",
+        related_name="historical_borrow",
+        help_text="The user of the item",
     )
     when = models.DateField(
         "when",

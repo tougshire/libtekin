@@ -2,6 +2,7 @@ from django.http import QueryDict
 import django_filters
 
 from django_filters_stoex.filterset import StoexFilterSet
+from spl_members.models import Member
 from .models import Item, Mmodel, Status
 from django.db import models
 from django import forms
@@ -26,6 +27,31 @@ class ItemFilter(StoexFilterSet):
         field_name="common_name",
         lookup_expr="icontains",
     )
+    assignee__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="assignee",
+        label="Current Assignee",
+        queryset=Member.objects.all(),
+    )
+    historical_assignements__assignee__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="historical_assignements__assignee",
+        label="Historical Assignees",
+        queryset=Member.objects.all(),
+    )
+    borrower__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="borrower",
+        label="Current Borrower",
+        queryset=Member.objects.all(),
+    )
+    historical_borrow__borrower__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="historical_borrow__borrower",
+        label="Historical Borrowers",
+        queryset=Member.objects.all(),
+    )
+
     mmodel__in = django_filters.ModelMultipleChoiceFilter(
         widget=DropdownSelectMultiple,
         field_name="mmodel",
