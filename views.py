@@ -149,14 +149,15 @@ class ItemCopy(PermissionRequiredMixin, UpdateView):
     template_name = "libtekin/item_copy.html"
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        valid = super().form_valid(form)
 
         self.object = form.save(commit=False)
+
         self.object.pk = None
         self.object.common_name = "[Copy of] " + self.object.common_name
         self.object.save()
 
-        return response
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy("libtekin:item-update", kwargs={"pk": self.object.pk})
