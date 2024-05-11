@@ -51,7 +51,6 @@ class ItemFilter(StoexFilterSet):
         label="Historical Borrowers",
         queryset=Member.objects.all(),
     )
-
     mmodel__in = django_filters.ModelMultipleChoiceFilter(
         widget=DropdownSelectMultiple,
         field_name="mmodel",
