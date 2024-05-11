@@ -149,12 +149,19 @@ class ItemCopy(PermissionRequiredMixin, UpdateView):
     template_name = "libtekin/item_copy.html"
 
     def form_valid(self, form):
-        valid = super().form_valid(form)
 
         self.object = form.save(commit=False)
+        try:
+            setattr(
+                self.object,
+                self.object.primary_id_field,
+                "[Copy of] " + getattr(self.object, self.object.primary_id_field),
+            )
+        except Exception as e:
+            logger.log(logging.WARNING, e)
+            self.object.common_name = "[Copy of] " + self.object.common_name
 
         self.object.pk = None
-        self.object.common_name = "[Copy of] " + self.object.common_name
         self.object.save()
 
         return HttpResponseRedirect(self.get_success_url())
