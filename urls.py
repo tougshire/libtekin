@@ -26,6 +26,11 @@ urlpatterns = [
         "item/<str:copied_from>/copied/", views.ItemList.as_view(), name="item-copied"
     ),
     path(
+        "item/csv/",
+        views.ItemCSV.as_view(),
+        name="item-csv",
+    ),
+    path(
         "primary_id_count/<str:primary_id>/",
         views.count_primary_id,
         name="primary-id-count",

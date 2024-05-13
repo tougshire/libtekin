@@ -5,10 +5,10 @@
 
 <div id = "div_search_form">
   <table>
-    <form method="POST">
+    <form id="frm_filter" method="POST">
       {% csrf_token %}
       {{ filter.form.as_table }}
-      {{ as_csv.as_table }}
+      {{ csv_form.as_table }}
       {{ filterstore_save.as_table }}
       <tr><td>Submit Search</td><td><button type="submit">Search</button></td></tr>
     </form>
@@ -189,5 +189,12 @@
   {% endblock %}
   {% block bottomscript %}
     {{ block.super }}
-
+    {% if make_csv %}
+    <script>
+      var frm_filter = document.getElementById("frm_filter")
+      frm_filter.action="{% url 'libtekin:item-csv' %}"
+      frm_filter.submit()
+      frm_filter.action=""
+    </script>
+    {% endif %}
   {% endblock %}

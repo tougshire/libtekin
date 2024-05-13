@@ -335,13 +335,88 @@ class ItemList(PermissionRequiredMixin, FilterView):
 
         context_data["filterstore_retrieve"] = FilterstoreRetrieveForm()
         context_data["filterstore_save"] = FilterstoreSaveForm()
-        context_data["as_csv"] = CSVOptionForm()
+        context_data["make_csv"] = self.request.POST.get("make_csv", None)
+        context_data["csv_form"] = CSVOptionForm()
         context_data["count"] = self.object_list.count()
         context_data["labels"] = {
             field.name: field.verbose_name
             for field in Item._meta.get_fields()
             if hasattr(field, "verbose_name")
         }
+        return context_data
+
+
+class ItemCSV(PermissionRequiredMixin, FilterView):
+
+    permission_required = "libtekin.view_item"
+    filterset_class = ItemFilter
+    template_name = "libtekin/csv.txt"
+    content_type = "text/csv"
+    headers = {"Content-Disposition": 'attachment; filename="libtekin.csv"'}
+
+    def dispatch(self, *args, **kwargs):
+        response = super().dispatch(*args, **kwargs)
+        response.headers = {
+            "Content-Disposition": 'attachment; filename="libtekin.csv"'
+        }
+        return response
+
+    def get_context_data(self, *args, **kwargs):
+
+        context_data = super().get_context_data(*args, **kwargs)
+
+        data = [
+            [
+                "common_name",
+                "mmodel",
+                "primary_id_field",
+                "serial_number",
+                "service_number",
+                "asset_number",
+                "barcode",
+                "phone_number",
+                "mobile_id",
+                "sim_iccid",
+                "connected_to",
+                "status",
+                "network_name",
+                "owner",
+                "assignee",
+                "borrower",
+                "home",
+                "latest_inventory",
+                "installation_date",
+                "location",
+                "role",
+            ]
+        ]
+        for item in context_data["filter"].qs:
+            data.append(
+                [
+                    item.common_name,
+                    item.mmodel,
+                    item.primary_id_field,
+                    item.serial_number,
+                    item.service_number,
+                    item.asset_number,
+                    item.barcode,
+                    item.phone_number,
+                    item.mobile_id,
+                    item.sim_iccid,
+                    item.connected_to,
+                    item.status,
+                    item.network_name,
+                    item.owner,
+                    item.assignee,
+                    item.borrower,
+                    item.home,
+                    item.latest_inventory,
+                    item.installation_date,
+                    item.location,
+                    item.role,
+                ]
+            )
+        context_data["data"] = data
         return context_data
 
 
