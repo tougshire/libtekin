@@ -3,7 +3,7 @@ import django_filters
 
 from django_filters_stoex.filterset import StoexFilterSet
 from spl_members.models import Member
-from .models import Item, Mmodel, Role, Status
+from .models import Item, Mmodel, MmodelCategory, Role, Status
 from django.db import models
 from django import forms
 from django_filters_stoex.filters import CrossFieldSearchFilter
@@ -62,6 +62,12 @@ class ItemFilter(StoexFilterSet):
         field_name="mmodel",
         label="Model",
         queryset=Mmodel.objects.all(),
+    )
+    mmodel__category__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="mmodel__category",
+        label="Model Category",
+        queryset=MmodelCategory.objects.all(),
     )
     serial_number = django_filters.CharFilter(
         label="Serial Number", field_name="serial_number", lookup_expr="icontains"
