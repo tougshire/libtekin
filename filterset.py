@@ -3,7 +3,7 @@ import django_filters
 
 from django_filters_stoex.filterset import StoexFilterSet
 from spl_members.models import Member
-from .models import Item, Mmodel, Status
+from .models import Item, Mmodel, Role, Status
 from django.db import models
 from django import forms
 from django_filters_stoex.filters import CrossFieldSearchFilter
@@ -26,6 +26,12 @@ class ItemFilter(StoexFilterSet):
         label="Common Name",
         field_name="common_name",
         lookup_expr="icontains",
+    )
+    role__in = django_filters.ModelMultipleChoiceFilter(
+        widget=DropdownSelectMultiple,
+        field_name="role",
+        label="Role",
+        queryset=Role.objects.all(),
     )
     assignee__in = django_filters.ModelMultipleChoiceFilter(
         widget=DropdownSelectMultiple,
