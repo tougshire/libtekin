@@ -198,19 +198,6 @@
   </form>
 
   <script>
-
-    function getControlIdsForPopups(modelName) {
-      controlIds={
-        'Mmodel': ['id_mmodel'],
-        'Location': ['id_location', 'id_home'],
-        'Member': ['id_assignee', 'id_borrower', 'id_owner']
-
-      }
-      return controlIds[modelName]
-    }
-
-  </script>
-  <script>
     function setPrimaryIdField() {
       var primaryIdField = document.getElementById('{{ form.primary_id_field.id_for_label }}')
       var mmodel = document.getElementById('{{ form.mmodel.id_for_label }}')
@@ -289,7 +276,6 @@
   </script>
 
   <script>
-    addFilterInput("{{ form.mmodel.id_for_label }}")
     addFilterInput("{{ form.connected_to.id_for_label }}")
   </script>
 

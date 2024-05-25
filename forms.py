@@ -95,8 +95,14 @@ class ItemForm(ModelForm):
             "role",
         ]
         widgets = {
-            "mmodel": MmodelSelect,
-            "connected_to": MmodelSelect,
+            # "mmodel": MmodelSelect,
+            "mmodel": TouglateRelatedSelect(
+                related_data={
+                    "model": "Mmodel",
+                    "add_url": reverse_lazy("libtekin:mmodel-popup"),
+                },
+                add_filter_input=True,
+            ),
             "latest_inventory": SelectDateWidget(),
             "installation_date": SelectDateWidget(),
             "assignee": TouglateRelatedSelect(
