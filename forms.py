@@ -101,6 +101,7 @@ class ItemForm(ModelForm):
             "installation_date": SelectDateWidget(),
             "assignee": TouglateRelatedSelect(
                 related_data={
+                    "model_app": "spl_members",
                     "model": "Member",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 },
@@ -108,6 +109,7 @@ class ItemForm(ModelForm):
             ),
             "borrower": TouglateRelatedSelect(
                 related_data={
+                    "model_app": "spl_members",
                     "model": "Member",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 },
@@ -127,6 +129,7 @@ class ItemBorrowerForm(ModelForm):
         widgets = {
             "borrower": TouglateRelatedSelect(
                 related_data={
+                    "model_app": "spl_members",
                     "model": "Member",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 }
@@ -145,6 +148,7 @@ class ItemAssigneeForm(ModelForm):
         widgets = {
             "assignee": TouglateRelatedSelect(
                 related_data={
+                    "model_app": "spl_members",
                     "model": "Member",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 }
