@@ -15,7 +15,7 @@ from .models import (
 )
 from spl_members.models import Member
 from django import forms
-from touglates.widgets import TouglateDateInput, TouglateRelatedSelect
+from touglates.widgets import TouglateDateInput, TouglatesRelatedSelect
 
 
 class MmodelSelect(Select):
@@ -96,27 +96,28 @@ class ItemForm(ModelForm):
         ]
         widgets = {
             # "mmodel": MmodelSelect,
-            "mmodel": TouglateRelatedSelect(
+            "mmodel": TouglatesRelatedSelect(
                 related_data={
-                    "model": "Mmodel",
+                    "model_name": "Mmodel",
+                    "app_name": "libtekin",
                     "add_url": reverse_lazy("libtekin:mmodel-popup"),
                 },
                 add_filter_input=True,
             ),
             "latest_inventory": SelectDateWidget(),
             "installation_date": SelectDateWidget(),
-            "assignee": TouglateRelatedSelect(
+            "assignee": TouglatesRelatedSelect(
                 related_data={
-                    "model_app": "spl_members",
-                    "model": "Member",
+                    "model_name": "Member",
+                    "app_name": "libtekin",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 },
                 add_filter_input=True,
             ),
-            "borrower": TouglateRelatedSelect(
+            "borrower": TouglatesRelatedSelect(
                 related_data={
-                    "model_app": "spl_members",
-                    "model": "Member",
+                    "model_name": "Member",
+                    "app_name": "libtekin",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 },
                 add_filter_input=True,
@@ -133,10 +134,10 @@ class ItemBorrowerForm(ModelForm):
             "when",
         ]
         widgets = {
-            "borrower": TouglateRelatedSelect(
+            "borrower": TouglatesRelatedSelect(
                 related_data={
-                    "model_app": "spl_members",
-                    "model": "Member",
+                    "model_name": "Member",
+                    "app_name": "libtekin",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 }
             ),
@@ -152,10 +153,10 @@ class ItemAssigneeForm(ModelForm):
             "when",
         ]
         widgets = {
-            "assignee": TouglateRelatedSelect(
+            "assignee": TouglatesRelatedSelect(
                 related_data={
-                    "model_app": "spl_members",
-                    "model": "Member",
+                    "model_name": "Member",
+                    "app_name": "libtekin",
                     "add_url": reverse_lazy("libtekin:member-popup"),
                 }
             ),

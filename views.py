@@ -135,7 +135,7 @@ class ItemCreate(PermissionRequiredMixin, CreateView):
                 "touglates:popup_closer",
                 kwargs={
                     "pk": self.object.pk,
-                    "model_app": self.model._meta.app_label,
+                    "app_name": self.model._meta.app_label,
                     "model_name": self.model.__name__,
                 },
             )
@@ -267,7 +267,7 @@ class ItemUpdate(PermissionRequiredMixin, UpdateView):
                 "touglates:popup_closer",
                 kwargs={
                     "pk": self.object.pk,
-                    "model_app": self.model._meta.app_label,
+                    "app_name": self.model._meta.app_label,
                     "model_name": self.model.__name__,
                 },
             )
@@ -438,7 +438,7 @@ class MmodelCreate(PermissionRequiredMixin, CreateView):
                 kwargs={
                     "pk": self.object.pk,
                     "model_name": self.model.__name__,
-                    "model_app": self.model._meta.app_label,
+                    "app_name": self.model._meta.app_label,
                 },
             )
         return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
@@ -605,7 +605,7 @@ class EntityCreate(PermissionRequiredMixin, CreateView):
                 "touglates:popup_closer",
                 kwargs={
                     "pk": self.object.pk,
-                    "model_app": self.model._meta.app_label,
+                    "app_name": self.model._meta.app_label,
                     "model_name": self.model.__name__,
                 },
             )
@@ -623,7 +623,7 @@ class EntityUpdate(PermissionRequiredMixin, UpdateView):
                 "touglates:popup_closer",
                 kwargs={
                     "pk": self.object.pk,
-                    "model_app": self.model._meta.app_label,
+                    "app_name": self.model._meta.app_label,
                     "model_name": self.model.__name__,
                 },
             )
@@ -877,7 +877,7 @@ class MemberCreate(PermissionRequiredMixin, CreateView):
                 "touglates:popup_closer",
                 kwargs={
                     "pk": self.object.pk,
-                    "model_app": "spl_members",
+                    "app_name": "spl_members",
                     "model_name": "Member",
                 },
             )
