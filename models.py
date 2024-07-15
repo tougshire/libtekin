@@ -419,8 +419,12 @@ class Item(models.Model):
             assignee=self.assignee,
             when__gte=datetime.now() + timedelta(hours=-1),
         )
-        if not item_assignee_recents.exists():
+        if item_assignee_recents.exists():
+            if item_assignee_recents.last() != self.assignee:
+                ItemAssignee.objects.create(item=self, assignee=self.assignee)
+        else:
             ItemAssignee.objects.create(item=self, assignee=self.assignee)
+
 
         item_borrower_recents = ItemBorrower.objects.filter(
             item=self,

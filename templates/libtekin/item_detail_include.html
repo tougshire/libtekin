@@ -29,7 +29,7 @@
     {% endfor %}
     {% endif %}
     <h3>Assignees</h3><a href="#" id="a_toggleAssignees">Hide Assignees</a>
-    {% for itemassignee in object.itemassignee_set.all %}
+    {% for itemassignee in object.historical_assignements.all %}
       <div class="relatedset relateditemassignee" id="div_itemassignee-{{ forloop.counter0 }}">
         {% include 'touglates/list_fields.html' with field_1_label='Assignee:' field_1=itemassignee.when field_2=itemassignee.assignee|default_if_none:'' %}
       </div>
