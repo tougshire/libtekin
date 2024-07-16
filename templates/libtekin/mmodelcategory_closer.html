@@ -1,5 +1,8 @@
 {% extends './_base.html' %}
 {% block content %}
+{% endblock %}
+{% block bottomscript %}
+{{ block.super }}
 <script>
 if(window.opener) {
   window.opener.addOptionFromPopup({{ object.pk }}, "{{ object }}", 'MmodelCategory')

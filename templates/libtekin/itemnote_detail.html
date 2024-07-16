@@ -9,12 +9,15 @@
         <a href="{% url 'libtekin:itemnote-update' object.pk %}">Edit</a>
       </div>
     {% endif %}
-    
+
       <div class="menu-item">
         <a href="{% url 'libtekin:item-detail' object.item.pk %}">Go to Item</a>
       </div>
-  
-    
+
+
   </div>
+{% endblock %}
+{% block bottomscript %}
+{{ block.super }}
 {% endblock %}
 

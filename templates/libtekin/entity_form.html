@@ -35,7 +35,9 @@
       </div>
     </div>
   </form>
-
+{% endblock %}
+{% block bottomscript %}
+{{ block.super }}
   <script>
     if(window.opener) {
       document.getElementById('input_opener').value = window.opener.location.href

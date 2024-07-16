@@ -10,3 +10,6 @@
   <a href="{% url 'libtekin:entity-delete' object.pk %}">Delete</a>
   </div>
 {% endblock %}
+{% block bottomscript %}
+{{ block.super }}
+{% endblock %}

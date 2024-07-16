@@ -69,7 +69,10 @@
         {% include 'touglates/form_field.html' with field=form.installation_date %}
       </div>
 
-      <h3>Notes</h3>
+      <div class="formsetaccessory formsetaccessory--titlediv">
+        <div><h3 id="h3_customernotes" class="formsetaccessory__titleel">Notes</h3></div>
+        <div><button type="button" id="button_additemnote" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_customernotes">Add Note</button></div>
+      </div>
 
       {{ itemnotes.management_form }}
       {% if itemnotes.errors %}{{ itemnotes.errors }}{% endif %}
@@ -104,9 +107,6 @@
         {% endif %}
       {% endfor %}
       <table>
-        <tr>
-          <td><button type="button" id="button_additemnote">Add</button></td><td span="*"></td>
-        </tr>
         {% for itemnote in object.itemnote_set.all %}
           <tr id="tr_itemnote_{{ itemnote.id }}">
             <td><button type="button" id="button_edititemnote_{{ itemnote.id }}" data-formid="div_itemnoteform_{{ itemnote.id }}" data-displayid="tr_itemnote_{{ itemnote.id }}" class="itemnote_edit_button">edit</button></td><td>{{ itemnote.when }}</td><td>{{ itemnote.level }}</td><td>{{ itemnote.flagged|yesno:"Flagged,&nbsp;" }}</td><td>{{ itemnote.itemnotecategory|default_if_none:"" }}</td><td>{{ itemnote.maintext }}</td>
@@ -114,7 +114,11 @@
         {% endfor %}
       </table>
 
-      <h3>Assignee History</h3>
+      <div class="formsetaccessory formsetaccessory--titlediv">
+        <div><h3 id="h3_customernotes" class="formsetaccessory__titleel">Assignment History</h3></div>
+        <div><button type="button" id="button_addassignee" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_customernotes">Add Historical Assignee</button></div>
+      </div>
+
 
       {{ itemassignees.management_form }}
       {% if itemamassignees.errors %}{{ itemamassignees.errors }}{% endif %}
@@ -141,9 +145,6 @@
         {% endif %}
       {% endfor %}
       <table>
-        <tr>
-          <td><button type="button" id="button_addassignee">Add</button></td><td span="*"></td>
-        </tr>
         {% for assignee in object.itemassignee_set.all %}
           <tr id="tr_assignee_{{ assignee.id }}">
             <td><button type="button" id="button_editassignee_{{ assignee.id }}" data-formid="div_assigneeform_{{ assignee.id }}" data-displayid="tr_assignee_{{ assignee.id }}" class="assignee_edit_button">edit</button></td><td>{{ assignee.when }}</td><td>{{ assignee }}</td>

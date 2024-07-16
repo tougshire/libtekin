@@ -8,14 +8,17 @@
     {% if perms.libtekin.delete_itemnote %}
       <div class="menu-item">
         <form method="Post">{% csrf_token %}<button type="submit">Confirm Delete</button></form>
-      </div>  
+      </div>
     {% endif %}
-    
+
       <div class="menu-item">
         <a href="{% url 'libtekin:itemnote-detail' object.item.pk %}">Return to Note</a>
       </div>
-  
-    
+
+
   </div>
+{% endblock %}
+{% block bottomscript %}
+{{ block.super }}
 {% endblock %}
 

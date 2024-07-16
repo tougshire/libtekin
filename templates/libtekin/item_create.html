@@ -1,4 +1,4 @@
-{% extends './_base.html' %}
+{% extends './_form.html' %}
 
 {% block content %}
   {% include './item_menu.html' %}
@@ -6,6 +6,9 @@
   {% include './item_form.html' %}
   {% include './item_menu.html' %}
 
+{% endblock %}
+{% block bottomscript %}
+{{ block super }}
 {% endblock %}
 
 

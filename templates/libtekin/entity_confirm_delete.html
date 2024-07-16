@@ -1,4 +1,4 @@
-{% extends './_base.html' %}
+{% extends './_form.html' %}
 {% block content %}
 {{ object }}
 <form method="POST">
@@ -6,4 +6,7 @@
 <div>
 <button type="submit">Confirm Delete</button>
 </div>
+{% endblock %}
+{% block bottomscript %}
+{{ block.super }}
 {% endblock %}

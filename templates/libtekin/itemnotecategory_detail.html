@@ -8,8 +8,11 @@
       <div class="menu-item">
         <a href="{% url 'libtekin:itemnotecategory-update' object.pk %}">Edit</a>
       </div>
-  
+
     {% endif %}
   </div>
 {% endblock %}
 
+{% block bottomscript %}
+{{ block.super }}
+{% endblock %}
