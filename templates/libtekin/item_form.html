@@ -70,8 +70,8 @@
       </div>
 
       <div class="formsetaccessory formsetaccessory--titlediv">
-        <div><h3 id="h3_customernotes" class="formsetaccessory__titleel">Notes</h3></div>
-        <div><button type="button" id="button_additemnote" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_customernotes">Add Note</button></div>
+        <div><h3 id="h3_itemnotes" class="formsetaccessory__titleel">Notes</h3></div>
+        <div><button type="button" id="button_additemnote" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_itemnotes">Add Note</button></div>
       </div>
 
       {{ itemnotes.management_form }}
@@ -115,8 +115,8 @@
       </table>
 
       <div class="formsetaccessory formsetaccessory--titlediv">
-        <div><h3 id="h3_customernotes" class="formsetaccessory__titleel">Assignment History</h3></div>
-        <div><button type="button" id="button_addassignee" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_customernotes">Add Historical Assignee</button></div>
+        <div><h3 id="h3_assignees" class="formsetaccessory__titleel">Assignment History</h3></div>
+        <div><button type="button" id="button_addassignee" class="formsetaccessory__button js_vmargins" data-vmarginsource="h3_assignees">Add Historical Assignee</button></div>
       </div>
 
 
@@ -152,7 +152,10 @@
         {% endfor %}
       </table>
 
-      <h3>Borrowers</h3>
+      <div class="formsetaccessory formsetaccessory--titlediv">
+        <div><h3 id="h3_borrowers" class="formsetaccessory__titleel">Borrower History</h3></div>
+        <div><button type="button" id="button_addborrower" class="formsetaccessory__button>Add Borrower</button></div>
+      </div>
 
       {{ itemborrowers.management_form }}
       {{ itemborrowers.errors }}
@@ -203,7 +206,6 @@
       var mmodel = document.getElementById('{{ form.mmodel.id_for_label }}')
       var mmodelSelectedOptions = mmodel.selectedOptions
       if(mmodelSelectedOptions.length==1) {
-        console.log('mmodelSelectedOptionsCount==1')
         primaryIdField.value=mmodelSelectedOptions[0].getAttribute('data-primary_id_field')
       }
       movePrimaryIdField()
