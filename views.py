@@ -439,6 +439,9 @@ class MmodelCreate(PermissionRequiredMixin, CreateView):
                     "pk": self.object.pk,
                     "model_name": self.model.__name__,
                     "app_name": self.model._meta.app_label,
+                    "to_field_value":"-",
+                    "attrs":f"data-primary_id_field={ self.object.primary_id_field }",
+                    "callback": "setPrimaryIdField"
                 },
             )
         return reverse_lazy("libtekin:item-detail", kwargs={"pk": self.object.pk})
@@ -867,7 +870,6 @@ class MemberCreate(PermissionRequiredMixin, CreateView):
 
     def get_template_names(self):
         template_names = super().get_template_names()
-        print("tp2451749", template_names)
         return template_names
 
     def get_success_url(self):
