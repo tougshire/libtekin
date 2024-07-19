@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
 {% include './item_menu.html' %}
-
 <div id = "div_search_form">
   <table>
     <form id="frm_filter" method="POST">
@@ -186,15 +185,5 @@
     </div>
   </div>
   {% include './item_menu.html' %}
-  {% endblock %}
-  {% block bottomscript %}
-    {{ block.super }}
-    {% if make_csv %}
-    <script>
-      var frm_filter = document.getElementById("frm_filter")
-      frm_filter.action="{% url 'libtekin:item-csv' %}"
-      frm_filter.submit()
-      frm_filter.action=""
-    </script>
-    {% endif %}
+
   {% endblock %}
