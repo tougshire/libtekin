@@ -76,7 +76,7 @@ class ItemForm(ModelForm):
             "mmodel",
             "primary_id_field",
             "serial_number",
-            "service_number",
+            "bios_serial_number",
             "asset_number",
             "barcode",
             "phone_number",

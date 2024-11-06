@@ -143,7 +143,7 @@ class MmodelCategory(models.Model):
 class Mmodel(models.Model):
     ID_CHOICES = [
         ("serial_number", "Serial Number"),
-        ("service_number", "Service Number"),
+        ("bios_serial_number", "Bios Serial Number"),
         ("asset_number", "Asset Number"),
         ("barcode", "Barcode"),
     ]
@@ -261,7 +261,7 @@ class Item(models.Model):
         help_text="The primary ID used for this item",
     )
     primary_id_field = models.CharField(
-        "primary id is",
+        "primary id field",
         max_length=50,
         blank=True,
         help_text="The identifier which is the primary id",
@@ -273,13 +273,13 @@ class Item(models.Model):
         "serial number",
         max_length=100,
         blank=True,
-        help_text="The serial number or alternate ID (service tag or asset number) which is used as the serial number",
+        help_text="The serial number or alternate ID which is used as the serial number",
     )
-    service_number = models.CharField(
-        "service number",
+    bios_serial_number = models.CharField(
+        "bios serial number",
         max_length=100,
         blank=True,
-        help_text="The serial number or alternate ID (service tag or asset number) which is considered second to the primary ID",
+        help_text="The serial number stored in bios used by several computer manufacturers",
     )
     asset_number = models.CharField(
         "asset number",

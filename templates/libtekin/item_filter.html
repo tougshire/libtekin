@@ -54,8 +54,8 @@
         {% if 'serial_number' in show_columns or not show_columns %}
           {% include 'touglates/list_head.html' with field=labels.serial_number %}
         {% endif %}
-        {% if 'service_number' in show_columns or not show_columns %}
-          {% include 'touglates/list_head.html' with field=labels.service_number %}
+        {% if 'bios_serial_number' in show_columns or not show_columns %}
+          {% include 'touglates/list_head.html' with field=labels.bios_serial_number %}
         {% endif %}
         {% if 'asset_number' in show_columns or not show_columns %}
           {% include 'touglates/list_head.html' with field=labels.asset_number %}
@@ -125,8 +125,8 @@
           {% if 'serial_number' in show_columns or not show_columns %}
             {% include 'touglates/list_field.html' with field=item.serial_number %}
           {% endif %}
-          {% if 'service_number' in show_columns or not show_columns %}
-            {% include 'touglates/list_field.html' with field=item.service_number %}
+          {% if 'bios_serial_number' in show_columns or not show_columns %}
+            {% include 'touglates/list_field.html' with field=item.bios_serial_number %}
           {% endif %}
           {% if 'asset_number' in show_columns or not show_columns %}
             {% include 'touglates/list_field.html' with field=item.asset_number %}

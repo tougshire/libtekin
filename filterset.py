@@ -14,7 +14,7 @@ class ItemFilter(StoexFilterSet):
 
     combined_text_search = CrossFieldSearchFilter(
         label="Text Search",
-        field_name="common_name,mmodel__model_name,network_name,serial_number,service_number,asset_number,assignee__name_full,assignee__name_prefered,barcode",
+        field_name="common_name,mmodel__model_name,network_name,serial_number,bios_serial_number,asset_number,assignee__name_full,assignee__name_prefered,barcode",
         lookup_expr="icontains",
     )
     primary_id = django_filters.CharFilter(
@@ -72,8 +72,8 @@ class ItemFilter(StoexFilterSet):
     serial_number = django_filters.CharFilter(
         label="Serial Number", field_name="serial_number", lookup_expr="icontains"
     )
-    service_number = django_filters.CharFilter(
-        label="Service Number", field_name="service_number", lookup_expr="icontains"
+    bios_serial_number = django_filters.CharFilter(
+        label="Bios Serial Number", field_name="bios_serial_number", lookup_expr="icontains"
     )
     asset_number = django_filters.CharFilter(
         label="Asset Number", field_name="asset_number", lookup_expr="icontains"
@@ -114,7 +114,7 @@ class ItemFilter(StoexFilterSet):
             "mmodel",
             "primary_id_field",
             "serial_number",
-            "service_number",
+            "bios_serial_number",
             "asset_number",
             "barcode",
             "phone_number",
@@ -138,7 +138,7 @@ class ItemFilter(StoexFilterSet):
             # "common_name",
             # "primary_id_field",
             # "serial_number",
-            # "service_number",
+            # "bios_serial_number",
             # "asset_number",
             # "barcode",
             # "phone_number",
