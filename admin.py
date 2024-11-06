@@ -15,6 +15,7 @@ from .models import (
     MmodelCategory,
     History,
     Status,
+    Role,
 )
 
 admin.site.register(EntityCategory)
@@ -47,6 +48,7 @@ class StatusAdmin(admin.ModelAdmin):
         "is_default",
     )
 
+admin.site.register(Role)
 
 admin.site.register(Status, StatusAdmin)
 
