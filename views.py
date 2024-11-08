@@ -21,6 +21,7 @@ from django_filters_stoex.forms import (
 from django_filters_stoex.views import FilterView
 from libtekin.filterset import ItemFilter
 from spl_members.models import Member
+from touglates.views import make_labels
 
 from .forms import (
     EntityForm,
@@ -281,16 +282,8 @@ class ItemDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["itemnote_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNote._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["item_labels"] = make_labels(Item)
+        context_data["itemnote_labels"] = make_labels(ItemNote)
 
         return context_data
 
@@ -311,16 +304,8 @@ class ItemSoftDelete(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["itemnote_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNote._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["item_labels"] = make_labels(Item)
+        context_data["itemnote_labels"] = make_labels(ItemNote)
 
         return context_data
 
@@ -338,11 +323,7 @@ class ItemList(PermissionRequiredMixin, FilterView):
         context_data["make_csv"] = self.request.POST.get("make_csv", None)
         context_data["csv_form"] = CSVOptionForm()
         context_data["count"] = self.object_list.count()
-        context_data["labels"] = {
-            field.name: field.verbose_name
-            for field in Item._meta.get_fields()
-            if hasattr(field, "verbose_name")
-        }
+        context_data["labels"] = make_labels(Item)
         return context_data
 
 
@@ -463,11 +444,7 @@ class MmodelDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["mmodel_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Mmodel._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["mmodel_labels"] = make_labels(Mmodel)
 
         return context_data
 
@@ -485,11 +462,8 @@ class MmodelList(PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["mmodel_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Mmodel._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["mmodel_labels"] = make_labels(Mmodel)
+
         return context_data
 
 
@@ -722,16 +696,8 @@ class ItemNoteDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["itemnote_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNote._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["itemnote_labels"] = make_labels(ItemNote)
+        context_data["item_labels"] = make_labels(Item)
 
         return context_data
 
@@ -752,16 +718,8 @@ class ItemNoteSoftDelete(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["itemnote_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNote._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["itemnote_labels"] = make_labels(ItemNote)
+        context_data["item_labels"] = make_labels(Item)
 
         return context_data
 
@@ -831,16 +789,8 @@ class ItemNoteCategoryDetail(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["itemnotecategory_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in ItemNoteCategory._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
-        context_data["item_labels"] = {
-            field.name: field.verbose_name.title()
-            for field in Item._meta.get_fields()
-            if type(field).__name__[-3:] != "Rel"
-        }
+        context_data["itemnotecategory_labels"] = make_labels(ItemNoteCategory)
+        context_data["item_labels"] = make_labels(Item)
 
         return context_data
 
