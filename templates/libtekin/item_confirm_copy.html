@@ -1,6 +1,6 @@
 {% extends './_base.html' %}
 {% block content %}
-  {% include './item_detail_include.html' with hide_notes="true" %}
+  {% include './item_display_fields.html' with hide_notes="true" %}
 <form method="POST">
 {% csrf_token %}
 <div>
